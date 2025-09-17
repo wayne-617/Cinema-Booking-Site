@@ -18,21 +18,19 @@ html, body, #root {
 }
 
 .login-card {
-  /* --- CHANGED: Semi-transparent red background --- */
-  background-color: rgba(139, 0, 0, 0.65); /* DarkRed with 65% opacity */
+  background-color: rgba(139, 0, 0, 0.65); 
   padding: 40px;
   border-radius: 10px;
   text-align: center;
-  /* --- CHANGED: Re-added backdrop-filter for blur effect --- */
-  backdrop-filter: blur(6px); /* Creates the frosted glass effect */
-  -webkit-backdrop-filter: blur(6px); /* For Safari compatibility */
+  backdrop-filter: blur(6px); 
+  -webkit-backdrop-filter: blur(6px); 
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   color: white;
 }
 .home-icon {
-  width: 50px; /* Adjust size here */
+  width: 50px; 
   height: auto;
-  margin-left: 10px; /* Space between the text and icon */
+  margin-left: 10px; 
 }
 
 
@@ -47,7 +45,6 @@ html, body, #root {
   padding: 15px;
   margin-bottom: 15px;
   border: none;
-  /* Keeping input backgrounds solid for better readability */
   background-color: #A52A2A; 
   color: white;
   border-radius: 10px;
