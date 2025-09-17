@@ -8,3 +8,8 @@ CSCI 4050
 
 ## Backend Swagger API
 `http://localhost:9090/swagger-ui/index.html#/`
+
+## To start frontend:
+- `cd frontend`
+- `npm install`
+- `npm start`
