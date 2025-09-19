@@ -9,6 +9,10 @@ CSCI 4050
 ## Backend Swagger API
 `http://localhost:9090/swagger-ui/index.html#/`
 
+# Database
+`docker exec -it cinema_app_mysql mysql -u user -p`
+Password: `userpassword`
+
 ## To start frontend:
 - `cd frontend`
 - `npm install`
