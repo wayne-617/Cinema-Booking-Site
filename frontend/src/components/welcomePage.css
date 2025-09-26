@@ -4,59 +4,25 @@ html, body, #root {
   padding: 0;
 }
 
-.full-screen-container {
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  background: url('https://res.cloudinary.com/dvucimldu/image/upload/v1758073827/4dx_interior_img02_wide-c89a3d8756fae045234d9e7bc0a17258b43cdbcb_nr7sls.jpg') 
-              no-repeat center center/cover;
-  background-attachment: fixed;
+
+img {
+  border-radius: 4px;
+  padding: 5px;
+  width: 75px;
 }
 
-.welcome-card {
-  background-color: rgba(139, 0, 0, 0.65);
-  padding: 40px;
+.buttons {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  font-weight: bold;
   border-radius: 10px;
-  text-align: center;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  color: white;
-  width: 90%;
-  max-width: 400px;
+  cursor: pointer;
+  transition: var(--primary-accent) 0.3s ease;
 }
 
-.welcome-title {
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.welcome-links {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
-
-.welcome-link {
-  color: #FFD700;
-  text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: bold;
-  transition: color 0.3s ease;
-}
-
-.welcome-link:hover {
-  color: #FFA500;
-  text-decoration: underline;
-}
-
-.link-separator {
-  color: white;
-  font-size: 1.2rem;
-  font-weight: bold;
+.buttons:hover {
+  background-color: var(--primary-accent);
 }

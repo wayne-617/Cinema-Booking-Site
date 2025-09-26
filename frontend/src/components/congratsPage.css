@@ -18,14 +18,14 @@ html, body, #root {
 }
 
 .congrats-card {
-  background-color: rgba(139, 0, 0, 0.65);
+  background-color: var(--main-color);
   padding: 40px;
   border-radius: 10px;
   text-align: center;
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  color: white;
+  color: var(--secondary-color);
   width: 90%;
   max-width: 400px;
 }
@@ -59,8 +59,8 @@ html, body, #root {
   width: 100%;
   padding: 15px;
   border: none;
-  background-color: darkred;
-  color: white;
+  background-color: var(--secondary-color);
+  color: var(--second-accent-color);
   font-weight: bold;
   border-radius: 10px;
   cursor: pointer;
@@ -68,5 +68,5 @@ html, body, #root {
 }
 
 .congrats-button:hover {
-  background-color: #A52A2A;
+  background-color: var(--accent-color);
 }

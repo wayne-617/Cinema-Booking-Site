@@ -1,8 +1,7 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom'; 
-import axios from './api/axiosConfig'; 
+import { Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import './globals.css';
 import SignIn from './components/loginPage';
 import Register from './components/Register';
 import CongratsPage from './components/congratsPage';
