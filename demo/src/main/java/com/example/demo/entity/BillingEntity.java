@@ -50,23 +50,23 @@ public class BillingEntity {
         return last_four;
     }
 
-    public long setUid(long uid) {
+    public void setUid(long uid) {
         this.uid = uid;
     }
 
-    public String setFirstName(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String setLastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public int setCardInfo(String last_four){
+    public void setCardInfo(int last_four){
         this.last_four = last_four;
     }
 }
