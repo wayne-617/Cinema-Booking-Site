@@ -1,5 +1,83 @@
-h1 span {
-	text-decoration: underline;
-	font-weight: bolder;
-	font-size: 3.1rem;
+.dualCarouselSection {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 40px 0;
+  flex-wrap: wrap; 
+}
+
+/* Each carousel box takes half width */
+.carouselBox {
+  flex: 1 1 45%;
+  max-width: 600px;
+  min-width: 300px;
+  min-height: 100px;
+  text-align: center;
+
+}
+
+/* Keep Swiper nicely contained */
+
+
+/* Image styling */
+.carouselImage {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.carouselImage:hover {
+  transform: scale(1.03);
+}
+
+/* Centered text */
+.carouselHeader {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.carouselTitle {
+  color: #fff;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* Placeholder for second carousel */
+.carouselPlaceholder {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ccc;
+  font-style: italic;
+}
+
+.movieSwiper {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.movieSwiper .swiper-pagination {
+  position: static;
+  margin-top: 12px;
+}
+
+.movieSwiper .swiper-pagination-bullet {
+  background: #fff;
+  opacity: 0.6;
+  width: 10px;
+  height: 10px;
+  margin: 0 6px !important;
+  transition: opacity 0.3s ease;
+}
+
+.movieSwiper .swiper-pagination-bullet-active {
+  opacity: 1;
+  background: #F9D48B; /* optional: red for cinema theme */
 }
