@@ -21,6 +21,7 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<WelcomePage />} />
+          <Route path="/admin" element={<NotFoundPage />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/register" element={<Register />} />
           <Route path="/congrats" element={<CongratsPage />} />
