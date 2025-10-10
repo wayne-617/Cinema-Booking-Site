@@ -5,36 +5,6 @@ import "./moviesPage.css";
 export function moviesPage() {
   return (
     <div className="bodyDiv">
-      <header className="mainHeader">
-              <div className="headerDiv">
-                <div className="logoDiv">
-                  <img src={logo} alt="Logo" className="logo" />
-                  <span className="spanner">Absolute Cinema</span>
-                </div>
-                <div className="navBar">
-                  <a href="/movies" className="buttons">
-                    Movies
-                  </a>
-                  <a href="/showtimes" className="buttons">
-                    Showtimes
-                  </a>
-                  <a href="/theaters" className="buttons">
-                    Theaters
-                  </a>
-                  <a href="/" className="buttons">
-                    About
-                  </a>
-                </div>
-                <div className="navDiv">
-                  <a href="/login" className="buttons">
-                    Sign In
-                  </a>
-                  <a href="/register" className="buttons">
-                    Sign Up
-                  </a>
-                </div>
-              </div>
-            </header>
       <section className="contentSection">
         <section className="bodySection">
           <div className="bodyTextDiv">

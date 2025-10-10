@@ -6,3 +6,191 @@
   --secondary-accent: #F9D48B;
   --text-color: #F0F0F0;
 }
+
+html,
+body,
+#root {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: "Ubuntu", sans-serif;
+  background-color: var(--background-color);
+  color: var(--background-color);
+}
+
+
+img {
+	border-radius: 0.25rem;
+	padding: 0.25rem;
+	width: 45rem;
+}
+
+.buttons {
+	color: var(--text-color);
+	text-decoration: none;
+	margin: 0 0.8rem;
+	padding: 0.5rem 1rem;
+	border-radius: 0.5rem;
+	transition: background-color 0.2s, transform 0.2s;
+  font-size: 1.5rem;
+}
+
+.buttons:hover {
+	background-color: var(--primary-accent);
+	transform: translateY(-2px);
+}
+
+.bigButton:hover {
+	background-color: var(--primary-accent);
+	box-shadow: 0rem 0.5rem 1rem rgba(0, 0, 0, 0.3);
+	transform: scale(1.03);
+}
+
+.bodyDiv {
+	min-height: 100vh;
+	background-color: var(--background-color);
+}
+
+.mainHeader {
+	border-bottom: 1px solid var(--primary-accent);
+	width: 100%;
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+}
+
+.mainFooter {
+	text-align: center;
+	padding: 2rem;
+	background-color: var(--background-color);
+	color: var(--text-color);
+	font-size: 0.9rem;
+	border-top: 1px solid var(--primary-accent);
+}
+
+.headerDiv {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: var(--background-color);
+	padding: 0.8rem 2rem;
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+}
+
+
+.logoDiv {
+	gap: 0.5rem;
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+}
+
+
+.navBar {
+	gap: 1rem;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+}
+
+.navDiv {
+	gap: 1rem;
+	display: flex;
+	align-items: center;
+}
+
+.contentSection {
+	background: linear-gradient(to bottom, var(--background-color), var(--primary-color));
+}
+
+.bodySection {
+	overflow: hidden;
+	position: relative;
+	align-items: center;
+	inset: 0;
+	z-Index: 10;
+}
+
+.bodyTextDiv {
+	z-index: 20;
+	padding: 5rem;
+	padding-top: 30px;
+	max-width: 1200px;
+	position: relative;
+	align-items: center;
+	justify-content: space-between;
+	inset: 0;
+	background-color: var(--background-color);
+	border-radius: 1rem;
+	margin: 3rem auto;
+	box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.4);
+}
+
+
+.headerText {
+	font-size: 3rem;
+	font-family: var(--font-heading);
+	font-weight: 700;
+	line-height: 1.1;
+	margin-bottom: 1.5rem;
+}
+
+.smallerText {
+	color: var(--text-color);
+	font-size: 1.25rem;
+	line-height: 1.6;
+	margin-bottom: 2rem;
+}
+
+.bodyButtonDiv {
+	gap: 1rem;
+	display: flex;
+	flex-direction: column;
+}
+
+.bigButton {
+	width: 100%;
+	padding: 1rem;
+	border: none;
+	background-color: var(--primary-color);
+	color: var(--text-color);
+	font-weight: bold;
+	border-radius: 0.75rem;
+	cursor: pointer;
+	transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+	padding: 1.25rem 2rem;
+	font-size: 1rem;
+  text-decoration: none;
+  text-align: center;
+}
+
+
+.smallHeader {
+	font-size: 2rem;
+	font-family: var(--font-heading);
+	font-weight: "bold";
+	margin-bottom: 1rem;
+}
+
+.gridDiv {
+	gap: 2rem;
+	display: grid;
+	grid-template-columns: 1fr;
+}
+
+.primaryDiv {
+	text-align: center;
+	margin: 0 auto 1rem;
+	align-items: center;
+	transition: background-color 0.2s;
+	border-radius: 50%;
+	justify-content: center;
+	background-color: var(--primary-color) / 0.1;
+}
+
+.bottomSection {
+	background-color: (var(--secondary-color) / 0.3);
+}
