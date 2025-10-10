@@ -10,9 +10,16 @@ public class Movie {
     private Long movie_id;
 
     private String title;
+    private String genre;
+    private String cast;
     private String director;
+    private String producer;
+    private String synopsis;
     private String poster_url;
+    private String reviews;
+    private String rating;
 
+    
     public Long getMovie_id() { return movie_id; }
     public void setMovie_id(Long movie_id) { this.movie_id = movie_id; }
 
