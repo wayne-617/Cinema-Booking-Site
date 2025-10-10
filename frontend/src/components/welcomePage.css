@@ -1,28 +1,5 @@
-html, body, #root {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-
-img {
-  border-radius: 4px;
-  padding: 5px;
-  width: 75px;
-}
-
-.buttons {
-  width: 100%;
-  padding: 15px;
-  border: none;
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  font-weight: bold;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: var(--primary-accent) 0.3s ease;
-}
-
-.buttons:hover {
-  background-color: var(--primary-accent);
+h1 span {
+	text-decoration: underline;
+	font-weight: bolder;
+	font-size: 3.1rem;
 }
