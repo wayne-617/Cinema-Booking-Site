@@ -12,13 +12,13 @@ export function welcomePage() {
             <span className="spanner">Absolute Cinema</span>
           </div>
           <div className="navBar">
-            <a href="/login" className="buttons">
+            <a href="/movies" className="buttons">
               Movies
             </a>
-            <a href="/login" className="buttons">
+            <a href="/showtimes" className="buttons">
               Showtimes
             </a>
-            <a href="/login" className="buttons">
+            <a href="/theaters" className="buttons">
               Theaters
             </a>
             <a href="/" className="buttons">
