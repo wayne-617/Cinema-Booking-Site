@@ -2,12 +2,22 @@ import React from "react";
 import "./register.css";
 import logo from "../logo512.png";
 import { Link, useNavigate } from "react-router-dom";
+//import { text } from "stream/consumers";
 
 function Register() {
   const navigate = useNavigate();
-
+  
+  // will need to be modified at later date - checks to see if admin registration is valid
   const handleRegisterClick = () => {
+    const phone = document.getElementById("myPhone");
+    const emailaddr = document.getElementById("myEmail");
+    const pass = document.getElementById("myPass");
+    const username = document.getElementById("myName");
+    if (username.value === "admin" && emailaddr.value === "admin@user.com" && phone.value === "1234567890" && pass.value === "masterkey") {
     navigate("/congrats");
+    } else {
+      navigate("/")
+    }
   };
   return (
     <div className="bodyDiv">
@@ -16,28 +26,27 @@ function Register() {
           <div className="bodyTextDiv">
             <input
               type="text"
-              placeholder="Username"
+              placeholder="Name"
               className="register-input"
+              id = "myName"
+            />
+            <input
+              type="number"
+              placeholder="Phone Number"
+              className="register-input"
+              id = "myPhone"
             />
             <input
               type="email"
               placeholder="Email"
               className="register-input"
-            />
-            <input
-              type="email"
-              placeholder="Confirm Email"
-              className="register-input"
+              id = "myEmail"
             />
             <input
               type="password"
-              placeholder="Password"
+              placeholder="password"
               className="register-input"
-            />
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              className="register-input"
+              id = "myPass"
             />
             <button className="register-button" onClick={handleRegisterClick}>
               Register

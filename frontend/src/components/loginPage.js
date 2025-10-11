@@ -1,9 +1,23 @@
 import React from "react";
 import "./loginPage.css";
 import logo from "../logo512.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function LoginPage() {
+  const navigate = useNavigate();
+
+  const handleRegisterClick = () => {
+   
+    const emailaddr = document.getElementById("myEmail");
+    const pass = document.getElementById("myPass");
+   
+    if (emailaddr.value === "admin@user.com" && pass.value === "masterkey") {
+    navigate("/admin");
+    } else {
+      navigate("/login")
+    }
+  };
+
   return (
     <div className="bodyDiv">
       <section className="contentSection">
@@ -22,16 +36,18 @@ function LoginPage() {
 
             <div className="login-form">
               <input
-                type="text"
-                placeholder="Username"
+                type="email"
+                placeholder="Email"
                 className="login-input"
+                id = "myEmail"
               />
               <input
                 type="password"
                 placeholder="Password"
                 className="login-input"
+                id = "myPass"
               />
-              <button className="login-button">Sign In</button>
+              <button className="login-button" onClick={handleRegisterClick}>Sign In</button>
             </div>
             <div className="login-footer">
               Don’t have an account? <Link to="/register">Register</Link>
