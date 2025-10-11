@@ -32,6 +32,8 @@ public class Movie {
     @Column(name = "mpaa_rating")
     private String mpaaRating;
 
+    private MovieStatus status;
+
     private LocalDateTime showtime;
     private String poster_url;
     
@@ -67,6 +69,9 @@ public class Movie {
 
     public String getMpaaRating() { return mpaaRating; }
     public void setMpaaRating(String mpaaRating) { this.mpaaRating = mpaaRating; }
+
+    public MovieStatus getStatus() { return status; }
+    public void setStatus(MovieStatus status) { this.status = status; } 
 
     public LocalDateTime getShowtime() { return showtime; }
     public void setShowtime(LocalDateTime showtime) { this.showtime = showtime; }
