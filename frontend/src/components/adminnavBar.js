@@ -1,28 +1,25 @@
 import React from "react";
-import logo from "../logo512.png";
-import { NavLink } from 'react-router-dom';
-import "./navBar.css";
+import "./adminnavBar.css";
 
-export function navBar() {
+export function adminnavBar() {
   return (
       <header className="mainHeader">
         <div className="headerDiv">
           <div className="logoDiv">
-            <img src={logo} alt="Logo" className="logo" />
-            <h1 className="logo">Absolute Cinema</h1>
+            <h1 className="logo">AC Admin</h1>
           </div>
           <div className="navBar">
-            <a href="/movies" className="buttons">
-              Movies
+            <a href="/adminmovies" className="buttons">
+              Manage Movies
             </a>
-            <a href="/showtimes" className="buttons">
-              Showtimes
+            <a href="/adminpromotions" className="buttons">
+              Mange Promotions
             </a>
-            <a href="/theaters" className="buttons">
-              Theaters
+            <a href="/admintheaters" className="buttons">
+              Edit Theatres
             </a>
-            <a href="/" className="buttons">
-              About
+            <a href="/admin" className="buttons">
+              Admin Dashboard
             </a>
           </div>
           <div className="navDiv">
@@ -37,4 +34,4 @@ export function navBar() {
       </header>
   );
 }
-export default navBar;
+export default adminnavBar;
