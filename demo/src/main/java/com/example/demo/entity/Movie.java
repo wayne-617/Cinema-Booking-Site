@@ -9,7 +9,8 @@ import jakarta.persistence.*;
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long movie_id;
+     @Column(name = "movie_id") 
+    private Long movieId;  
 
     private String title;
 
@@ -35,8 +36,9 @@ public class Movie {
     private LocalDateTime showtime;
     private String poster_url;
     
-    public Long getMovie_id() { return movie_id; }
-    public void setMovie_id(Long movie_id) { this.movie_id = movie_id; }
+     public Long getMovieId() { return movieId; }
+    
+    public void setMovieId(Long movieId) { this.movieId = movieId; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }

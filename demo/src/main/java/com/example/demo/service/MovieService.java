@@ -23,7 +23,6 @@ public class MovieService  {
         movie.setTitle(title);
         movie.setCategory(genre);
         movie.setDirector(director);
-        movie.setMovie_id(movie_id);
         movie.setTrailer_picture(poster_url);
         movie.setCastMembers(cast);
         movie.setProducer(producer);
@@ -43,7 +42,6 @@ public class MovieService  {
         movie.setTitle(title);
         movie.setCategory(genre);
         movie.setDirector(director);
-        movie.setMovie_id(movie_id);
         movie.setTrailer_picture(poster_url);
         movie.setCastMembers(cast);
         movie.setProducer(producer);
