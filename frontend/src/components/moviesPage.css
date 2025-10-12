@@ -1,0 +1,148 @@
+.moviesPageContainer {
+  padding: 50px 8%;
+  background: radial-gradient(circle at top left, #141414, #000);
+  color: #fff;
+  min-height: 100vh;
+}
+
+.moviesHeader {
+  font-size: 2.4rem;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #f9d48b;
+}
+
+.moviesSubheader {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #bbb;
+}
+
+.movieGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 30px;
+}
+
+.movieCard {
+  background: #1c1c1c;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movieCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+}
+
+.moviePoster {
+  width: 100%;
+  height: 330px;
+  object-fit: cover;
+}
+
+.movieTitle {
+  font-size: 1.2rem;
+  margin: 10px 0 4px;
+  text-align: center;
+}
+
+.movieCategory {
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 4px;
+}
+
+.movieRating {
+  text-align: center;
+  color: #f9d48b;
+  margin-bottom: 10px;
+}
+
+/* ===== Showtime Styling ===== */
+.showtimeDropdown {
+  background: #101010;
+  padding: 18px 20px;
+  border-top: 1px solid #333;
+  border-radius: 0 0 12px 12px;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.showtimeDropdown h3 {
+  font-size: 1.2rem;
+  color: #f9d48b;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.showtimeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* spacing between showtimes */
+  align-items: center;
+}
+
+.showtimeBox {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 15px 20px;
+  width: 90%;
+  max-width: 320px;
+  text-align: center;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.showtimeBox:hover {
+  transform: translateY(-4px);
+  background: #242424;
+  cursor: pointer;
+}
+
+.showtimeDate,
+.showtimeTime,
+.showtimeTheater {
+  margin: 5px 0;
+  color: #ddd;
+}
+
+.showtimeTheater {
+  font-style: italic;
+  color: #f9d48b;
+}
+
+.bookButton {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: none;
+  background: #f9d48b;
+  color: #000;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.bookButton:hover {
+  background: #ffd65e;
+}
+
+.noShowtimes {
+  color: #777;
+  font-style: italic;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
