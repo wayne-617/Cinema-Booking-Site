@@ -44,7 +44,7 @@ function LoginPage() {
                 id = "discountPromotion"
               />
               <button className="login-button" onClick={handleRegisterClick}>Sign In</button>
-            </div>
+            </div>  
           </div>
         </section>
       </section>
