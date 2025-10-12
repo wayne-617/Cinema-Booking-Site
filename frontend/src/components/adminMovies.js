@@ -67,6 +67,7 @@ function LoginPage() {
           <div className="bodyTextDiv">
             <div className="movie-input">
               <h1>Manage Movies Page</h1>
+              <form id="Mform">
               <input
                 type="text"
                 placeholder="Movie Name"
@@ -185,7 +186,7 @@ function LoginPage() {
 
               <button className="login-button" onClick={publishMovie}>Publish Movie</button>
             </div>
-          </div>
+            </div>
         </section>
       </section>
     </div>
