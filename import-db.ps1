@@ -16,11 +16,11 @@ if (-Not (Test-Path $sqlFilePath)) {
 
 # Copy file into container
 Write-Host "Copying SQL file into Docker container..."
-docker cp $sqlFilePath "$containerName:$remotePath"
+docker cp $sqlFilePath "${containerName}:${remotePath}"
 
 # Import database
 Write-Host "Importing data into MySQL..."
-docker exec -i $containerName mysql -u $dbUser -p$dbPassword $dbName < $remotePath
+Get-Content $sqlFilePath | docker exec -i $containerName mysql -u $dbUser -p$dbPassword $dbName
 
 # Done
 Write-Host "Database import complete. Your cinema data has been loaded."

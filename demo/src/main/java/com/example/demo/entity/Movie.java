@@ -61,6 +61,9 @@ public class Movie {
     public String getReviews() { return reviews; }
     public void setReviews(String reviews) { this.reviews = reviews; }
 
+    public String getPoster_url() { return poster_url; }
+    public void setPoster_url(String poster_url) { this.poster_url = poster_url; }
+    
     public String getTrailer_picture() { return trailer_picture; }
     public void setTrailer_picture(String trailer_picture) { this.trailer_picture = trailer_picture; }
 
@@ -73,8 +76,7 @@ public class Movie {
     public LocalDateTime getShowtime() { return showtime; }
     public void setShowtime(LocalDateTime showtime) { this.showtime = showtime; }
 
-    public String getPoster_url() { return poster_url; }
-    public void setPoster_url(String poster_url) { this.poster_url = poster_url; }
+
 
 
 

@@ -9,6 +9,13 @@ import "swiper/css/navigation";
 import { fallbackMovies } from "../data/fallbackMovies";
 
 
+const handleWatchTrailer = (url) => {
+    if (url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    } else {
+      alert("Trailer not available for this movie.");
+    }
+  };
 
 export default function WelcomePage() {
   const [movies, setMovies] = useState([]);
@@ -53,6 +60,47 @@ export default function WelcomePage() {
           </div>
         </section>
 
+        {/* Featured Trailers Section */}
+        <section className="trailerSection">
+          <h2 className="carouselHeader">Featured Trailers</h2>
+
+          <Swiper
+            spaceBetween={30}
+            centeredSlides={true}
+            autoplay={{
+              delay: 8000,
+              disableOnInteraction: false,
+            }}
+            pagination={{ clickable: true }}
+            navigation={true}
+            modules={[Autoplay, Pagination, Navigation]}
+            className="trailerSwiper"
+          >
+            {movies
+              .filter((m) => m.trailer_video)
+              .map((movie) => (
+                <SwiperSlide key={movie.movie_id}>
+                  <div className="trailerSlide">
+                    <img
+                      className="trailerImage"
+                      src={movie.trailer_picture || movie.poster_url}
+                      alt={movie.title}
+                    />
+                    <div className="trailerOverlay">
+                      <h2 className="trailerTitle">{movie.title}</h2>
+                      <p className="trailerCategory">{movie.category}</p>
+                      <button
+                        className="watchButton"
+                        onClick={() => handleWatchTrailer(movie.trailer_video)}
+                      >
+                        ▶ Watch Trailer
+                      </button>
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+          </Swiper>
+        </section>
         {/* Caleb Currently Showing Movie Carousel */}
         <section className="dualCarouselSection">
           {/* Now Showing */}
