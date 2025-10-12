@@ -8,8 +8,9 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const publishMovie = async () => {
-   
-    const mid = document.getElementById("movieId");
+    
+    
+     
     const cast = document.getElementById("movieCast");
     const director = document.getElementById("movieDir");
     const category = document.getElementById("movieCat");
@@ -24,7 +25,7 @@ function LoginPage() {
     const trailerLink = document.getElementById("trailLink");
     
     const publishedMovie = {
-      movieId: mid.value,
+    
       castMembers: cast.value,
       director: director.value,
       mpaaRating: rating.value,
@@ -39,17 +40,24 @@ function LoginPage() {
 
   }
     
-    const response = await fetch("http://localhost:9090/api/movies", {
+    const response = await fetch("http://localhost:9090/api/movies/addMovies", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(publishedMovie)
     }).then(response => {
       if (!response.ok) throw new Error("Publish movie failed.");
+      
       return response.json()
+     
     }).then(data => {console.log("Movie submitted to db");}).catch(
       error => {console.error("Error:", error);
 
       });
+    document.getElementById("Mform").reset();
+    document.getElementById("Mform2").reset();
+    document.getElementById("Mform3").reset();
+    document.getElementById("Mform4").reset();
+      
   };
 
   return (
@@ -59,13 +67,7 @@ function LoginPage() {
           <div className="bodyTextDiv">
             <div className="movie-input">
               <h1>Manage Movies Page</h1>
-              <form>
-              <input
-                type="number"
-                placeholder="id"
-                className="movie-input"
-                id = "movieId"
-              />
+              <form id="Mform">
               <input 
                 type="text"
                 placeholder="cast"
@@ -85,7 +87,7 @@ function LoginPage() {
                 id = "movieDir"
               />
               </form>
-              <form>
+              <form id="Mform2">
                 <input 
                 type="text"
                 placeholder="mpaa rating"
@@ -111,7 +113,7 @@ function LoginPage() {
                 id = "reviews"
               />
               </form>
-              <form>
+              <form id="Mform3">
                 <input 
                 type="number"
                 placeholder="showtime"
@@ -137,7 +139,7 @@ function LoginPage() {
                 id = "movieTrailPic"
               />
               </form>
-              <form>
+              <form id="Mform4">
                 <input 
                 type="text"
                 placeholder="trailer link"

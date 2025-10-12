@@ -21,7 +21,7 @@ public class MovieController {
     public MovieController(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
     }
-    @PostMapping("/api/movies")
+    @PostMapping("/addMovies")
     public Movie addMovie(@RequestBody Movie movie) {  
         return movieRepository.save(movie);
     }
