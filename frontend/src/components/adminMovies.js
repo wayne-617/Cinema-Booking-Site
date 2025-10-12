@@ -3,19 +3,53 @@ import "./loginPage.css";
 import logo from "../logo512.png";
 import { Link, useNavigate } from "react-router-dom";
 
+
 function LoginPage() {
   const navigate = useNavigate();
 
-  const handleRegisterClick = () => {
+  const publishMovie = async () => {
    
-    const emailaddr = document.getElementById("myEmail");
-    const pass = document.getElementById("myPass");
-   
-    if (emailaddr.value === "admin@user.com" && pass.value === "masterkey") {
-    navigate("/admin");
-    } else {
-      navigate("/login")
-    }
+    const mid = document.getElementById("movieId");
+    const cast = document.getElementById("movieCast");
+    const director = document.getElementById("movieDir");
+    const category = document.getElementById("movieCat");
+    const rating = document.getElementById("rating");
+    const poster = document.getElementById("poster");
+    const producer = document.getElementById("movieProd");
+    const reviews = document.getElementById("reviews");
+    const showtime = document.getElementById("showtime");
+    const synopsis = document.getElementById("syn");
+    const title = document.getElementById("movieTitle");
+    const trailerPic = document.getElementById("movieTrailPic");
+    const trailerLink = document.getElementById("trailLink");
+    
+    const publishedMovie = {
+      movieId: mid.value,
+      castMembers: cast.value,
+      director: director.value,
+      mpaaRating: rating.value,
+      poster_url: poster.value,
+      producer: producer.value,
+      reviews: reviews.value,
+      showtime: showtime.value,
+      synopsis: synopsis.value,
+      title: title.value,
+      trailer_picture: trailerPic.value,
+      trailer_video: trailerLink.value
+
+  }
+    
+    const response = await fetch("http://localhost:9090/api/movies", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(publishedMovie)
+    }).then(response => {
+      if (!response.ok) throw new Error("Publish movie failed.");
+      return response.json()
+    }).then(data => {console.log("Movie submitted to db");}).catch(
+      error => {console.error("Error:", error);
+
+      });
   };
 
   return (
@@ -23,21 +57,96 @@ function LoginPage() {
       <section className="contentSection">
         <section className="bodySection">
           <div className="bodyTextDiv">
-            <div className="login-form">
+            <div className="movie-input">
               <h1>Manage Movies Page</h1>
+              <form>
               <input
-                type="email"
-                placeholder="Email"
-                className="login-input"
-                id = "myEmail"
+                type="number"
+                placeholder="id"
+                className="movie-input"
+                id = "movieId"
               />
-              <input
-                type="password"
-                placeholder="Password"
-                className="login-input"
-                id = "myPass"
+              <input 
+                type="text"
+                placeholder="cast"
+                className="movie-input"
+                id = "movieCast"
               />
-              <button className="login-button" onClick={handleRegisterClick}>Sign In</button>
+              <input 
+                type="text"
+                placeholder="category"
+                className="movie-input"
+                id = "movieCat"
+              />
+              <input 
+                type="text"
+                placeholder="director"
+                className="movie-input"
+                id = "movieDir"
+              />
+              </form>
+              <form>
+                <input 
+                type="text"
+                placeholder="mpaa rating"
+                className="movie-input"
+                id = "rating"
+              />
+              <input 
+                type="text"
+                placeholder="poster url"
+                className="movie-input"
+                id = "poster"
+              />
+              <input 
+                type="text"
+                placeholder="producer"
+                className="movie-input"
+                id = "movieProd"
+              />
+              <input 
+                type="text"
+                placeholder="reviews"
+                className="movie-input"
+                id = "reviews"
+              />
+              </form>
+              <form>
+                <input 
+                type="number"
+                placeholder="showtime"
+                className="movie-input"
+                id = "showtime"
+              />
+              <input 
+                type="text"
+                placeholder="synopsis"
+                className="movie-input"
+                id = "syn"
+              />
+              <input 
+                type="text"
+                placeholder="title"
+                className="movie-input"
+                id = "movieTitle"
+              />
+              <input 
+                type="text"
+                placeholder="trailer Picture"
+                className="movie-input"
+                id = "movieTrailPic"
+              />
+              </form>
+              <form>
+                <input 
+                type="text"
+                placeholder="trailer link"
+                className="movie-input"
+                id = "trailLink"
+              />
+              </form>
+
+              <button className="login-button" onClick={publishMovie}>Publish Movie</button>
             </div>
             <div className="login-footer">
               Don’t have an account? <Link to="/register">Register</Link>

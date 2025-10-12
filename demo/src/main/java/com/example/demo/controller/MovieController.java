@@ -6,6 +6,9 @@ import com.example.demo.repository.MovieRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -18,7 +21,11 @@ public class MovieController {
     public MovieController(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
     }
-
+    @PostMapping("/api/movies")
+    public Movie addMovie(@RequestBody Movie movie) {  
+        return movieRepository.save(movie);
+    }
+    
     @GetMapping
     public List<Movie> getAllMovies() {
         return movieRepository.findAll();
