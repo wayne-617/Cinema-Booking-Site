@@ -21,7 +21,6 @@ import OrderSummaryPage from './components/orderSummaryPage';
 import CheckoutPage from './components/checkoutPage';
 import OrderConfirmationPage from './components/orderConfirmationPage';
 import EditProfilePage from './components/editProfilePage';
-
 import './app.css'; 
 
 function App() {
@@ -34,7 +33,7 @@ function App() {
           <Route path="/login" element={<SignIn />} />
           <Route path="/register" element={<Register />} />
           <Route path="/congrats" element={<CongratsPage />} />
-          
+        
           <Route path="/movies" element={<MoviesPage />} />
           <Route path="/showtimes" element={<ShowtimesPage />} />
           <Route path="/theaters" element={<TheatersPage />} />
@@ -52,6 +51,8 @@ function App() {
           <Route path="/adminpromotions" element={<AdminPromotions />} />
           <Route path="/adminmovies" element={<AdminMovies />} />
           <Route path="/adminusers" element={<AdminUsers />} />
+          
+          <Route path="/editProfile" element={<EditProfilePage />} />
         </Route>
       </Routes>
     </div>
