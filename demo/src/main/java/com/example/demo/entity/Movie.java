@@ -82,6 +82,4 @@ public class Movie {
     public LocalDateTime getShowtime() { return showtime; }
     public void setShowtime(LocalDateTime showtime) { this.showtime = showtime; }
 
-
-
 }
