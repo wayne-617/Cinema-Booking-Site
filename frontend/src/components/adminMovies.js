@@ -1,12 +1,39 @@
-import React from "react";
-import "./loginPage.css";
+import React, { useEffect, useState } from "react";
+import "./adminMovies.css";
 import logo from "../logo512.png";
 import { Link, useNavigate } from "react-router-dom";
 
 
-function LoginPage() {
+function AdminMovies() {
+  const [movies, setMovies] = useState([]);
+  const [showtimes, setShowtimes] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState(null);
   const navigate = useNavigate();
 
+
+  // Fetch movies
+  useEffect(() => {
+    fetch("http://localhost:9090/api/movies")
+      .then((res) => res.json())
+      .then((data) => setMovies(data))
+      .catch((err) => console.error("Error loading movies:", err));
+  }, []);
+
+  // Fetch showtimes
+  useEffect(() => {
+    fetch("http://localhost:9090/api/showtimes")
+      .then((res) => res.json())
+      .then((data) => setShowtimes(data))
+      .catch((err) => console.error("Error loading showtimes:", err));
+  }, []);
+
+  // Filter showtimes for selected movie
+  const getMovieShowtimes = (movieId) =>
+    showtimes.filter((s) => s.movieId === movieId);
+
+  const handleShowtimeClick = (showtimeId) => {
+    navigate(`/seat-reservation/${showtimeId}`);
+  };
   const publishMovie = async () => {
     
     
@@ -59,30 +86,31 @@ function LoginPage() {
     document.getElementById("Mform4").reset();
       
   };
+  
 
   return (
     <div className="bodyDiv">
       <section className="contentSection">
         <section className="bodySection">
           <div className="bodyTextDiv">
+             <h1>Add a New Movie</h1>
             <div className="movie-input">
-              <h1>Manage Movies Page</h1>
               <form id="Mform">
               <input
                 type="text"
-                placeholder="Movie Name"
+                placeholder="Title"
                 className="login-input"
                 id = "movieName"
               />
               <input
                 type="text"
-                placeholder="Director Name"
+                placeholder="Director"
                 className="login-input"
                 id = "directorName"
               />
                <input
                 type="text"
-                placeholder="Producer Name"
+                placeholder="Producer"
                 className="login-input"
                 id = "producerName"
               />
@@ -188,9 +216,100 @@ function LoginPage() {
             </div>
             </div>
         </section>
+        <section className="body-section">
+        <div className="movieList">
+        {movies.map((movie) => (
+            <div className="movieEditItem" key={movie.movieId}>
+              <form id="editMovie">
+              <input
+                type="text"
+                value={movie.title}
+                className="movieEdit"
+                id = "movieName"
+              />
+              <input
+                type="text"
+                value={movie.category}
+                className="movieEdit"
+                id = "movieCategory"
+              />
+               <input
+                type="text"
+                value={movie.director}
+                className="movieEdit"
+                id = "movieDirector"
+              />
+               <input
+                type="text"
+                value={movie.producer}
+                className="movieEdit"
+                id = "movieProducer"
+              />
+               <input
+                type="text"
+                value={movie.castMembers}
+                className="movieEdit"
+                id = "castMembers"
+              />
+               <input
+                type="text"
+                value={movie.synopsis}
+                className="movieEdit"
+                id = "movieSynopsis"
+              />
+               <input
+                type="text"
+                value={movie.reviews}
+                className="movieEdit"
+                id = "movieReviews"
+              />
+               <input
+                type="text"
+                value={movie.trailer_picture}
+                className="movieEdit"
+                id = "movieTrailerPicture"
+              />
+               <input
+                type="text"
+                value={movie.trailer_video}
+                className="movieEdit"
+                id = "movieTrailerVideo"
+              />
+               <input
+                type="text"
+                value={movie.mpaaRating}
+                className="movieEdit"
+                id = "movieRating"
+              />
+               <input
+                type="text"
+                value={movie.showtime}
+                className="movieEdit"
+                id = "movieShowtime"
+              />
+               <input
+                type="text"
+                value={movie.poster_url}
+                className="movieEdit"
+                id = "moviePoster"
+              />
+               <input
+                type="text"
+                value={movie.status
+                }
+                className="movieEdit"
+                id = "movieStatus"
+              />
+              </form>
+               <button className="movieEditButton" onClick={publishMovie}>Update Movie</button>
+                <button className="movieEditButton" onClick={publishMovie}>Remove Movie</button>
+            </div>
+        ))}
+        </div>
+    </section>
       </section>
     </div>
   );
 }
 
-export default LoginPage;
+export default AdminMovies;

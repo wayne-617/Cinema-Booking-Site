@@ -12,7 +12,7 @@ function LoginPage() {
     const pass = document.getElementById("myPass");
    
     if (emailaddr.value === "admin@user.com" && pass.value === "masterkey") {
-    navigate("/admin");
+    navigate("/admindashboard");
     } else {
       navigate("/login")
     }
