@@ -6,19 +6,27 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
-  
-  // will need to be modified at later date - checks to see if admin registration is valid
+
   const handleRegisterClick = () => {
     const phone = document.getElementById("myPhone");
     const emailaddr = document.getElementById("myEmail");
     const pass = document.getElementById("myPass");
     const username = document.getElementById("myName");
-    if (username.value === "admin" && emailaddr.value === "admin@user.com" && phone.value === "1234567890" && pass.value === "masterkey") {
-    navigate("/congrats");
+
+    // Admin account check
+    if (
+      username.value === "admin" &&
+      emailaddr.value === "admin@user.com" &&
+      phone.value === "1234567890" &&
+      pass.value === "masterkey"
+    ) {
+      navigate("/admin");
     } else {
-      navigate("/")
+      navigate("/congrats");
     }
   };
+
+
   return (
     <div className="bodyDiv">
       <section className="contentSection">
@@ -26,51 +34,27 @@ function Register() {
           <div className="bodyTextDiv">
             <input
               type="text"
-              placeholder="Name (required)"
+              placeholder="Name"
               className="register-input"
               id = "myName"
             />
             <input
-              type="tel"
-              placeholder="Phone Number (required)"
+              type="number"
+              placeholder="Phone Number"
               className="register-input"
               id = "myPhone"
             />
             <input
               type="email"
-              placeholder="Email (required)"
+              placeholder="Email"
               className="register-input"
               id = "myEmail"
             />
             <input
               type="password"
-              placeholder="password (required)"
+              placeholder="password"
               className="register-input"
               id = "myPass"
-            />
-             <input
-              type="address"
-              placeholder="Address (optional)"
-              className="register-input"
-              id = "myAddress"
-            />
-             <input
-              type="number"
-              placeholder="Card Number (optional)"
-              className="register-input"
-              id = "myCard"
-            />
-             <input
-              type="hidden"
-              placeholder="Card Security Code (optional)"
-              className="register-input"
-              id = "mySC"
-            />
-             <input
-              type="address"
-              placeholder="Billing Address (optional)"
-              className="register-input"
-              id = "myBillingAddress"
             />
             <button className="register-button" onClick={handleRegisterClick}>
               Register
