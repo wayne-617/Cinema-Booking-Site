@@ -10,13 +10,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.web.bind.annotation.GetMapping;
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.RegisterRequest;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -54,5 +58,11 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<UserDetails> getUser(@PathVariable String email) {
+        UserDetails user = userService.loadUserByUsername(email);
+        return ResponseEntity.ok(user);
     }
 }

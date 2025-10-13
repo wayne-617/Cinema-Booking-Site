@@ -21,6 +21,7 @@ import CheckoutPage from './components/checkoutPage';
 import OrderConfirmationPage from './components/orderConfirmationPage';
 
 import './app.css'; 
+import EditProfilePage from './components/editProfilePage';
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
           <Route path="/login" element={<SignIn />} />
           <Route path="/register" element={<Register />} />
           <Route path="/congrats" element={<CongratsPage />} />
-          
+          <Route path="/editProfile" element={<EditProfilePage />} />
           <Route path="/movies" element={<MoviesPage />} />
           <Route path="/showtimes" element={<ShowtimesPage />} />
           <Route path="/theaters" element={<TheatersPage />} />
