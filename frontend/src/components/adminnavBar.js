@@ -23,11 +23,8 @@ export function adminnavBar() {
             </a>
           </div>
           <div className="navDiv">
-            <a href="/login" className="buttons">
-              Sign In
-            </a>
-            <a href="/register" className="buttons">
-              Sign Up
+            <a href="/" className="buttons">
+              Sign out
             </a>
           </div>
         </div>

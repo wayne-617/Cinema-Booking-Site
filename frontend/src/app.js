@@ -15,6 +15,7 @@ import AdminLayout from './components/adminpageLayout';
 import Dashboard from './components/dashboardPage'
 import AdminPromotions from './components/adminPromotions'
 import AdminMovies from './components/adminMovies'
+import SeatReservationPage from './components/seatReservationPage';
 
 import './app.css'; 
 
@@ -31,6 +32,7 @@ function App() {
           <Route path="/movies" element={<MoviesPage />} />
           <Route path="/showtimes" element={<ShowtimesPage />} />
           <Route path="/theaters" element={<TheatersPage />} />
+          <Route path="/seat-reservation/:showtimeId" element={<SeatReservationPage />} />
         {<Route path="*" element={<NotFoundPage />} /> }
         </Route>
         <Route element={<AdminLayout />}>

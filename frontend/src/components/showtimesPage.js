@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./showtimesPage.css";
+
 
 function ShowtimesPage() {
   const [showtimes, setShowtimes] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Adjust your date range here
     const start = "2025-10-14";
     const end = "2025-10-18";
 
@@ -26,18 +28,24 @@ function ShowtimesPage() {
     return acc;
   }, {});
 
+  // Convert SQL-style HH:mm:ss to readable 12-hour time
   const formatTime = (timeString) => {
     const [hour, minute] = timeString.split(":");
     const date = new Date();
     date.setHours(hour, minute);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  // When user clicks a showtime card
+  const handleShowtimeClick = (showtimeId) => {
+    navigate(`/seat-reservation/${showtimeId}`);
   };
 
   return (
     <div className="showtimes-container">
       <h1>🎬 Showtimes</h1>
 
-      {/* Date buttons */}
+      {/* Date Buttons */}
       <div className="day-selector">
         {Object.keys(grouped).map((date) => (
           <button
@@ -54,14 +62,23 @@ function ShowtimesPage() {
         ))}
       </div>
 
-      {/* Display times for selected date */}
+      {/* Showtimes for selected day */}
       <div className="times-grid">
         {selectedDate && grouped[selectedDate] ? (
           grouped[selectedDate].map((st, index) => (
-            <div key={index} className="movie-card">
-              <img src={st.posterUrl} alt={st.title} />
+            <div
+              key={index}
+              className="movie-card"
+              onClick={() => handleShowtimeClick(st.showtimeId)}
+            >
+              <img
+                src={st.posterUrl}
+                alt={st.title}
+                className="movie-poster"
+              />
               <h3>{st.title}</h3>
               <p className="time-text">{formatTime(st.showTime)}</p>
+              <p className="click-text">🎟 Click to reserve seats</p>
             </div>
           ))
         ) : (
