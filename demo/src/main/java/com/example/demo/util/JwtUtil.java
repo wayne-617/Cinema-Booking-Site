@@ -29,9 +29,10 @@ public class JwtUtil {
 
         UserEntity user = userRepository.findByUsername(username)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
-            
+
         return Jwts.builder()
                 .setSubject(username)
+                .claim("userId", user.getId())
                 .claim("role", user.getRole())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
