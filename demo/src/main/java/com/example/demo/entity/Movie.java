@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import java.time.LocalDateTime;
+import com.example.demo.entity.MovieStatus;
 
 import jakarta.persistence.*;
 
@@ -33,12 +34,13 @@ public class Movie {
     @Column(name = "mpaa_rating")
     private String mpaaRating;
 
-    private MovieStatus status;
-
     private LocalDateTime showtime;
     private String poster_url;
+      
+    @Enumerated(EnumType.STRING)
+    private MovieStatus status;
     
-     public Long getMovieId() { return movieId; }
+    public Long getMovieId() { return movieId; }
     
     public void setMovieId(Long movieId) { this.movieId = movieId; }
 
@@ -80,10 +82,6 @@ public class Movie {
 
     public LocalDateTime getShowtime() { return showtime; }
     public void setShowtime(LocalDateTime showtime) { this.showtime = showtime; }
-
-
-
-
 
 
 
