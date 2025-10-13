@@ -68,17 +68,53 @@ function LoginPage() {
             <div className="movie-input">
               <h1>Manage Movies Page</h1>
               <form id="Mform">
-              <input 
+              <input
                 type="text"
-                placeholder="cast"
-                className="movie-input"
-                id = "movieCast"
+                placeholder="Movie Name"
+                className="login-input"
+                id = "movieName"
               />
-              <input 
+              <input
                 type="text"
-                placeholder="category"
-                className="movie-input"
-                id = "movieCat"
+                placeholder="Director Name"
+                className="login-input"
+                id = "directorName"
+              />
+               <input
+                type="text"
+                placeholder="Producer Name"
+                className="login-input"
+                id = "producerName"
+              />
+              <input
+                type="text"
+                placeholder="Synopsis"
+                className="login-input"
+                id = "movieSynopsis"
+              />
+               <input
+                type="test"
+                placeholder="Movie Review"
+                className="login-input"
+                id = "movieReview"
+              />
+              <input
+                type="url"
+                placeholder="Trailer Picture"
+                className="login-input"
+                id = "trailerPicture"
+              />
+               <input
+                type="url"
+                placeholder="Trailer Video"
+                className="login-input"
+                id = "trailerVideo"
+              />
+              <input
+                type="text"
+                placeholder="Rating"
+                className="login-input"
+                id = "movieRating"
               />
               <input 
                 type="text"
@@ -150,10 +186,7 @@ function LoginPage() {
 
               <button className="login-button" onClick={publishMovie}>Publish Movie</button>
             </div>
-            <div className="login-footer">
-              Don’t have an account? <Link to="/register">Register</Link>
             </div>
-          </div>
         </section>
       </section>
     </div>
