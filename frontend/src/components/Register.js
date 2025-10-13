@@ -26,27 +26,51 @@ function Register() {
           <div className="bodyTextDiv">
             <input
               type="text"
-              placeholder="Name"
+              placeholder="Name (required)"
               className="register-input"
               id = "myName"
             />
             <input
-              type="number"
-              placeholder="Phone Number"
+              type="tel"
+              placeholder="Phone Number (required)"
               className="register-input"
               id = "myPhone"
             />
             <input
               type="email"
-              placeholder="Email"
+              placeholder="Email (required)"
               className="register-input"
               id = "myEmail"
             />
             <input
               type="password"
-              placeholder="password"
+              placeholder="password (required)"
               className="register-input"
               id = "myPass"
+            />
+             <input
+              type="address"
+              placeholder="Address (optional)"
+              className="register-input"
+              id = "myAddress"
+            />
+             <input
+              type="number"
+              placeholder="Card Number (optional)"
+              className="register-input"
+              id = "myCard"
+            />
+             <input
+              type="hidden"
+              placeholder="Card Security Code (optional)"
+              className="register-input"
+              id = "mySC"
+            />
+             <input
+              type="address"
+              placeholder="Billing Address (optional)"
+              className="register-input"
+              id = "myBillingAddress"
             />
             <button className="register-button" onClick={handleRegisterClick}>
               Register

@@ -20,7 +20,7 @@ export default function OrderConfirmationPage() {
 
   return (
     <div className="confirmation-container">
-      <h1>🎉 Order Confirmed!</h1>
+      <h1> Order Confirmed!</h1>
       <p>Thank you, {info.name || "Guest"}!</p>
 
       <h3>Your Tickets:</h3>

@@ -71,7 +71,7 @@ const handleWatchTrailer = (url) => {
               right in the action.
             </p>
             <div className="bodyButtonDiv">
-              <a className="bigButton" href="/login">Book Tickets Now</a>
+              <a className="bigButton" href="/movies">Book Tickets Now</a>
             </div>
           </div>
         </section>
@@ -142,7 +142,7 @@ const handleWatchTrailer = (url) => {
         <section className="dualCarouselSection">
           {/* Now Showing */}
           <div className="carouselBox">
-            <h2 className="carouselHeader">Now Showing</h2>
+            <h2 className="carouselHeader">Currently Running</h2>
             {nowShowing.length > 0 ? (
               <Swiper
                 spaceBetween={30}
