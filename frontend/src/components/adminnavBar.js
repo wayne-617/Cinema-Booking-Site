@@ -27,6 +27,9 @@ export function adminnavBar() {
               Sign out
             </a>
           </div>
+            <a href ="/editProfile" className="buttons">
+              Edit Profile
+            </a>
         </div>
       </header>
   );

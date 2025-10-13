@@ -16,6 +16,10 @@ public class UserEntity {
     @NotNull
     @Column(nullable = false)
     private String password;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.CUSTOMER;
 
     public Long getId() {
         return id;
@@ -29,6 +33,10 @@ public class UserEntity {
         return password;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -39,6 +47,10 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
 }
