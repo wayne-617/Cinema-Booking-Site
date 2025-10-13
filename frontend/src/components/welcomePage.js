@@ -17,6 +17,8 @@ const handleWatchTrailer = (url) => {
     }
   };
 
+
+
 export default function WelcomePage() {
   const [movies, setMovies] = useState([]);
   useEffect(() => {
@@ -42,6 +44,8 @@ export default function WelcomePage() {
       });
   }, []);
    
+    const nowShowing = movies.filter((m) => m.status === "NOW_PLAYING");
+  const comingSoon = movies.filter((m) => m.status === "COMING_SOON");
   return (
     <div className="bodyDiv">
       <section className="contentSection">
@@ -106,39 +110,68 @@ export default function WelcomePage() {
           {/* Now Showing */}
           <div className="carouselBox">
             <h2 className="carouselHeader">Now Showing</h2>
-            <Swiper
-              spaceBetween={30}
-              centeredSlides={true}
-              autoplay={{
-                delay: 2500,
-                disableOnInteraction: false,
-              }}
-              pagination={{ clickable: true }}
-              navigation={true}
-              modules={[Autoplay, Pagination, Navigation]}
-              className="movieSwiper"
-            >
-              {movies.map((movie) => (
-                <SwiperSlide key={movie.movie_id}>
-                  <div className="carouselSlide">
-                    <img
-                      src={movie.poster_url}
-                      alt={movie.title}
-                      className="carouselImage"
-                    />
-                    <h3 className="carouselTitle">{movie.title}</h3>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+            {nowShowing.length > 0 ? (
+              <Swiper
+                spaceBetween={30}
+                centeredSlides={true}
+                autoplay={{ delay: 3000, disableOnInteraction: false }}
+                pagination={{ clickable: true }}
+                navigation={true}
+                modules={[Autoplay, Pagination, Navigation]}
+                className="movieSwiper"
+              >
+                {nowShowing.map((movie) => (
+                  <SwiperSlide key={movie.movie_id}>
+                    <div className="carouselSlide">
+                      <img
+                        src={movie.poster_url}
+                        alt={movie.title}
+                        className="carouselImage"
+                      />
+                      <h3 className="carouselTitle">{movie.title}</h3>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : (
+              <div className="carouselPlaceholder">
+                <p>No movies currently showing.</p>
+              </div>
+            )}
           </div>
+
 
           {/* Upcoming Movies placeholder */}
           <div className="carouselBox">
-            <h2 className="carouselHeader">Upcoming Movies</h2>
-            <div className="carouselPlaceholder">
-              <p>Coming Soon...</p>
-            </div>
+            <h2 className="carouselHeader">Coming Soon</h2>
+            {comingSoon.length > 0 ? (
+              <Swiper
+                spaceBetween={30}
+                centeredSlides={true}
+                autoplay={{ delay: 3500, disableOnInteraction: false }}
+                pagination={{ clickable: true }}
+                navigation={true}
+                modules={[Autoplay, Pagination, Navigation]}
+                className="movieSwiper"
+              >
+                {comingSoon.map((movie) => (
+                  <SwiperSlide key={movie.movie_id}>
+                    <div className="carouselSlide" da                                                                                                                                          ta-movie-id={movie.movie_id}>
+                      <img
+                        src={movie.poster_url}
+                        alt={movie.title}
+                        className="carouselImage"
+                      />
+                      <h3 className="carouselTitle">{movie.title}</h3>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : (
+              <div className="carouselPlaceholder">
+                <p>Coming Soon...</p>
+              </div>
+            )}
           </div>
         </section>
         <section className="bodySection">

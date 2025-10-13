@@ -1,0 +1,31 @@
+.ticket-container {
+  text-align: center;
+  padding: 2rem;
+}
+.ticket-grid {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.ticket-card {
+  background: var(--primary-color);
+  color: var(--text-color);
+  padding: 1rem;
+  border-radius: 1rem;
+  width: 180px;
+}
+input {
+  width: 60px;
+  padding: 0.2rem;
+  font-size: 1rem;
+}
+.continue-btn {
+  margin-top: 2rem;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--secondary-color);
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+}

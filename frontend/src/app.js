@@ -16,6 +16,9 @@ import Dashboard from './components/dashboardPage'
 import AdminPromotions from './components/adminPromotions'
 import AdminMovies from './components/adminMovies'
 import SeatReservationPage from './components/seatReservationPage';
+import OrderSummaryPage from './components/orderSummaryPage';
+import CheckoutPage from './components/checkoutPage';
+import OrderConfirmationPage from './components/orderConfirmationPage';
 
 import './app.css'; 
 
@@ -33,6 +36,10 @@ function App() {
           <Route path="/showtimes" element={<ShowtimesPage />} />
           <Route path="/theaters" element={<TheatersPage />} />
           <Route path="/seat-reservation/:showtimeId" element={<SeatReservationPage />} />
+          <Route path="/order-summary" element={<OrderSummaryPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+
         {<Route path="*" element={<NotFoundPage />} /> }
         </Route>
         <Route element={<AdminLayout />}>

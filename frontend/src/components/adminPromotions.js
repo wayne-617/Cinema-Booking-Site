@@ -25,25 +25,26 @@ function LoginPage() {
           <div className="bodyTextDiv">
             <div className="title-container">
                <h1>Manage Promotions Page</h1>
-            <div className="login-form">
-              <input
-                type="email"
-                placeholder="Email"
+            <input
+                type="text"
+                placeholder="Promotion Name"
                 className="login-input"
-                id = "myEmail"
+                id = "promotionName"
               />
               <input
-                type="password"
-                placeholder="Password"
+                type="time"
+                placeholder="Expiration Date"
                 className="login-input"
-                id = "myPass"
+                id = "expireTime"
+              />
+               <input
+                type="number"
+                placeholder="Promotion Discount %"
+                className="login-input"
+                id = "discountPromotion"
               />
               <button className="login-button" onClick={handleRegisterClick}>Sign In</button>
-            </div>
-            <div className="login-footer">
-              Don’t have an account? <Link to="/register">Register</Link>
-            </div>
-          </div>
+            </div>  
           </div>
         </section>
       </section>
