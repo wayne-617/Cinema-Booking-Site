@@ -142,7 +142,7 @@ const handleWatchTrailer = (url) => {
         <section className="dualCarouselSection">
           {/* Now Showing */}
           <div className="carouselBox">
-            <h2 className="carouselHeader">Now Showing</h2>
+            <h2 className="carouselHeader">Currently Running</h2>
             {nowShowing.length > 0 ? (
               <Swiper
                 spaceBetween={30}
