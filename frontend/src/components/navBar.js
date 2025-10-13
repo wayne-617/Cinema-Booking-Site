@@ -103,7 +103,7 @@ export function NavBar() {
 
           <div className="navDiv">
             <a href="/login" className="buttons">
-              Sign In
+              Log In
             </a>
             <a href="/register" className="buttons">
               Sign Up

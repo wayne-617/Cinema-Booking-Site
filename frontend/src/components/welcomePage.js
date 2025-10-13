@@ -71,7 +71,7 @@ const handleWatchTrailer = (url) => {
               right in the action.
             </p>
             <div className="bodyButtonDiv">
-              <a className="bigButton" href="/login">Book Tickets Now</a>
+              <a className="bigButton" href="/movies">Book Tickets Now</a>
             </div>
           </div>
         </section>
