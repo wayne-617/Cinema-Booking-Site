@@ -39,32 +39,34 @@ function AdminMovies() {
     
      
     const cast = document.getElementById("movieCast");
-    const director = document.getElementById("movieDir");
-    const category = document.getElementById("movieCat");
-    const rating = document.getElementById("rating");
-    const poster = document.getElementById("poster");
-    const producer = document.getElementById("movieProd");
-    const reviews = document.getElementById("reviews");
-    const showtime = document.getElementById("showtime");
-    const synopsis = document.getElementById("syn");
+    const director = document.getElementById("movieDirector");
+    const category = document.getElementById("movieCategory");
+    const rating = document.getElementById("movieRating");
+    const poster = document.getElementById("moviePoster");
+    const producer = document.getElementById("movieProducer");
+    const reviews = document.getElementById("movieReview");
+    const showtime = document.getElementById("movieShowtime");
+    const synopsis = document.getElementById("movieSynopsis");
     const title = document.getElementById("movieTitle");
-    const trailerPic = document.getElementById("movieTrailPic");
-    const trailerLink = document.getElementById("trailLink");
+    const trailerPic = document.getElementById("moviePoster");
+    const trailerLink = document.getElementById("trailerVideo");
+        const status = document.getElementById("movieStatus");
     
     const publishedMovie = {
     
       castMembers: cast.value,
       director: director.value,
+      category: category.value,
       mpaaRating: rating.value,
       poster_url: poster.value,
       producer: producer.value,
       reviews: reviews.value,
-      showtime: showtime.value,
       synopsis: synopsis.value,
+      showtime: showtime.value,
       title: title.value,
       trailer_picture: trailerPic.value,
-      trailer_video: trailerLink.value
-
+      trailer_video: trailerLink.value,
+      status: status.value
   }
     
     const response = await fetch("http://localhost:9090/api/movies/addMovies", {
@@ -81,10 +83,6 @@ function AdminMovies() {
 
       });
     document.getElementById("Mform").reset();
-    document.getElementById("Mform2").reset();
-    document.getElementById("Mform3").reset();
-    document.getElementById("Mform4").reset();
-      
   };
   
 
@@ -100,19 +98,19 @@ function AdminMovies() {
                 type="text"
                 placeholder="Title"
                 className="login-input"
-                id = "movieName"
+                id = "movieTitle"
               />
               <input
                 type="text"
                 placeholder="Director"
                 className="login-input"
-                id = "directorName"
+                id = "movieDirector"
               />
                <input
                 type="text"
                 placeholder="Producer"
                 className="login-input"
-                id = "producerName"
+                id = "movieProducer"
               />
               <input
                 type="text"
@@ -128,9 +126,9 @@ function AdminMovies() {
               />
               <input
                 type="url"
-                placeholder="Trailer Picture"
+                placeholder="Movie Poster"
                 className="login-input"
-                id = "trailerPicture"
+                id = "moviePoster"
               />
                <input
                 type="url"
@@ -144,74 +142,29 @@ function AdminMovies() {
                 className="login-input"
                 id = "movieRating"
               />
+              <input
+                type="datetime-local"
+                placeholder="Showtime"
+                className="login-input"
+                id = "movieShowtime"
+              />
               <input 
                 type="text"
-                placeholder="director"
+                placeholder="Cast"
                 className="movie-input"
-                id = "movieDir"
+                id = "movieCast"
               />
+              <input 
+                type="text"
+                placeholder="Catergory"
+                className="movie-input"
+                id = "movieCategory"
+              />
+<select id="movieStatus" name="Status">
+  <option value="NOW_PLAYING">Now Playing</option>
+  <option value="COMING_SOON">Coming Soon</option>
+</select> 
               </form>
-              <form id="Mform2">
-                <input 
-                type="text"
-                placeholder="mpaa rating"
-                className="movie-input"
-                id = "rating"
-              />
-              <input 
-                type="text"
-                placeholder="poster url"
-                className="movie-input"
-                id = "poster"
-              />
-              <input 
-                type="text"
-                placeholder="producer"
-                className="movie-input"
-                id = "movieProd"
-              />
-              <input 
-                type="text"
-                placeholder="reviews"
-                className="movie-input"
-                id = "reviews"
-              />
-              </form>
-              <form id="Mform3">
-                <input 
-                type="number"
-                placeholder="showtime"
-                className="movie-input"
-                id = "showtime"
-              />
-              <input 
-                type="text"
-                placeholder="synopsis"
-                className="movie-input"
-                id = "syn"
-              />
-              <input 
-                type="text"
-                placeholder="title"
-                className="movie-input"
-                id = "movieTitle"
-              />
-              <input 
-                type="text"
-                placeholder="trailer Picture"
-                className="movie-input"
-                id = "movieTrailPic"
-              />
-              </form>
-              <form id="Mform4">
-                <input 
-                type="text"
-                placeholder="trailer link"
-                className="movie-input"
-                id = "trailLink"
-              />
-              </form>
-
               <button className="login-button" onClick={publishMovie}>Publish Movie</button>
             </div>
             </div>
