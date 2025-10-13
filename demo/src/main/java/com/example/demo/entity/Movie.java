@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import java.time.LocalDateTime;
-import com.example.demo.entity.MovieStatus;
 
 import jakarta.persistence.*;
 
