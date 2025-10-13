@@ -1,33 +1,86 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./seatReservationPage.css";
 
 function SeatReservationPage() {
   const { showtimeId } = useParams();
+  const navigate = useNavigate();
 
   const rows = 6;
   const cols = 8;
 
-  // Mock API call or backend fetch for reserved seats
-  const [reservedSeats, setReservedSeats] = useState(["B3", "B4", "C5", "D2"]);
+  // Mock reserved seats — this could later come from your DB
+  const [reservedSeats, setReservedSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const [tickets, setTickets] = useState([]);
+  
 
+  // Fake "fetch" of reserved seats based on showtimeId
+  useEffect(() => {
+    // In real app, you’d call:
+    // fetch(`/api/showtimes/${showtimeId}/reserved-seats`)
+    //   .then(res => res.json())
+    //   .then(data => setReservedSeats(data));
+    // Simulate different reserved seats for different showtimes:
+    const mockData =
+      showtimeId === "1"
+        ? ["A2", "B3", "B4"]
+        : showtimeId === "2"
+        ? ["C5", "C6"]
+        : ["D1", "E4"];
+    setReservedSeats(mockData);
+  }, [showtimeId]);
+
+  // Handle seat selection toggle
   const toggleSeat = (seatId) => {
-    if (reservedSeats.includes(seatId)) return; // cannot select reserved seat
+    if (reservedSeats.includes(seatId)) return;
     if (selectedSeats.includes(seatId)) {
-      setSelectedSeats(selectedSeats.filter((id) => id !== seatId));
+      setSelectedSeats(selectedSeats.filter((s) => s !== seatId));
+      setTickets(tickets.filter((t) => t.seatId !== seatId));
     } else {
       setSelectedSeats([...selectedSeats, seatId]);
+      setTickets([
+        ...tickets,
+        { seatId, ageType: "Adult", price: 12 }, // default adult
+      ]);
     }
   };
 
-  const handleReserve = () => {
-    alert(`You reserved: ${selectedSeats.join(", ")}`);
-    // Here you’d POST to your backend to confirm reservation
+  const handleAgeChange = (seatId, newAgeType) => {
+    const newTickets = tickets.map((t) =>
+      t.seatId === seatId
+        ? { ...t, ageType: newAgeType, price: getPrice(newAgeType) }
+        : t
+    );
+    setTickets(newTickets);
   };
 
+  const getPrice = (ageType) => {
+    switch (ageType) {
+      case "Child":
+        return 8;
+      case "Senior":
+        return 10;
+      default:
+        return 12;
+    }
+  };
+
+  const total = tickets.reduce((sum, t) => sum + t.price, 0);
+
+  const handleDeleteTicket = (seatId) => {
+    setTickets(tickets.filter((t) => t.seatId !== seatId));
+    setSelectedSeats(selectedSeats.filter((s) => s !== seatId));
+  };
+
+  const handleCheckout = () => {
+    const order = { tickets, total, showtimeId }; // <-- include showtimeId
+    navigate("/checkout", { state: { order } });
+};
+
+  // Seat grid renderer
   const renderSeats = () => {
-    const seats = [];
+    const seatGrid = [];
     for (let r = 0; r < rows; r++) {
       const rowLabel = String.fromCharCode(65 + r);
       const rowSeats = [];
@@ -51,13 +104,13 @@ function SeatReservationPage() {
           </div>
         );
       }
-      seats.push(
+      seatGrid.push(
         <div key={rowLabel} className="seatRow">
           {rowSeats}
         </div>
       );
     }
-    return seats;
+    return seatGrid;
   };
 
   return (
@@ -81,9 +134,56 @@ function SeatReservationPage() {
         </div>
       </div>
 
-      <button className="reserveButton" onClick={handleReserve}>
-        Confirm Reservation
-      </button>
+      {/* Ticket Summary */}
+      {tickets.length > 0 && (
+        <div className="orderSummary">
+          <h2>Order Summary</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Seat</th>
+                <th>Age Type</th>
+                <th>Price</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {tickets.map((t) => (
+                <tr key={t.seatId}>
+                  <td>{t.seatId}</td>
+                  <td>
+                    <select
+                      value={t.ageType}
+                      onChange={(e) =>
+                        handleAgeChange(t.seatId, e.target.value)
+                      }
+                    >
+                      <option value="Child">Child</option>
+                      <option value="Adult">Adult</option>
+                      <option value="Senior">Senior</option>
+                    </select>
+                  </td>
+                  <td>${t.price}</td>
+                  <td>
+                    <button
+                      className="deleteButton"
+                      onClick={() => handleDeleteTicket(t.seatId)}
+                    >
+                      ✕
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <h3>Total: ${total}</h3>
+
+          <div className="orderActions">
+            <button onClick={() => setTickets([])}>Update Order</button>
+            <button onClick={handleCheckout}>Continue to Checkout</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
