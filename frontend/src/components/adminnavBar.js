@@ -15,10 +15,10 @@ export function adminnavBar() {
             <a href="/adminpromotions" className="buttons">
               Mange Promotions
             </a>
-            <a href="/admintheaters" className="buttons">
-              Edit Theatres
+            <a href="/adminUsers" className="buttons">
+              Edit Users
             </a>
-            <a href="/admin" className="buttons">
+            <a href="/admindashboard" className="buttons">
               Admin Dashboard
             </a>
           </div>
