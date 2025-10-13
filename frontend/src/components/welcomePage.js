@@ -15,6 +15,9 @@ Modal.setAppElement("#root");
 export default function WelcomePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [currentTrailer, setCurrentTrailer] = useState("");
+  const [showtimes, setShowtimes] = useState([]);
+
+
   const handleWatchTrailer = (url) => {
     if (url) {
       setCurrentTrailer(url);
@@ -234,16 +237,6 @@ export default function WelcomePage() {
                   for maximum comfort during your movie.
                 </p>
               </div>
-            </div>
-          </div>
-        </section>
-        <section className="bodySection">
-          <div className="bodyTextDiv">
-            <div className="primaryDiv">
-              <h2 className="headertext">Today's Showtimes</h2>
-              <p className="smallertext">
-                Select your preferred time and book instantly
-              </p>
             </div>
           </div>
         </section>
