@@ -22,6 +22,10 @@ lib-cov
 coverage
 *.lcov
 
+# Ignore a specific file
+package-lock.json
+package.json
+
 # nyc test coverage
 .nyc_output
 

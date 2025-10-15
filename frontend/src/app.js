@@ -7,6 +7,7 @@ import Register from './components/Register';
 import CongratsPage from './components/congratsPage';
 import WelcomePage from './components/welcomePage';
 import MoviesPage from './components/moviesPage';
+import MovieDescription from './components/movieDescription';
 import ShowtimesPage from './components/showtimesPage';
 import TheatersPage from './components/theatersPage';
 import NotFoundPage from './components/notFoundPage';
@@ -33,7 +34,7 @@ function App() {
           <Route path="/login" element={<SignIn />} />
           <Route path="/register" element={<Register />} />
           <Route path="/congrats" element={<CongratsPage />} />
-        
+          <Route path="/movieDescription/:id" element={<MovieDescription/>} />
           <Route path="/movies" element={<MoviesPage />} />
           <Route path="/showtimes" element={<ShowtimesPage />} />
           <Route path="/theaters" element={<TheatersPage />} />
