@@ -30,6 +30,11 @@ export default function MoviesPage() {
   const getMovieShowtimes = (movieId) =>
     showtimes.filter((s) => s.movieId === movieId);
 
+    const goToDetails = (movie) => {
+      const id = movie.movieId ?? movie.movie_id;   // handle both shapes
+      navigate(`/movieDescription/${id}`);
+    };
+
   const handleShowtimeClick = (showtimeId) => {
     navigate(`/seat-reservation/${showtimeId}`);
   };
@@ -47,10 +52,7 @@ export default function MoviesPage() {
               selectedMovie === movie.movieId ? "active" : ""
             }`}
             onClick={() =>
-              setSelectedMovie(
-                selectedMovie === movie.movieId ? null : movie.movieId
-              )
-            }
+              goToDetails(movie)}
           >
             <img
               src={movie.poster_url}
