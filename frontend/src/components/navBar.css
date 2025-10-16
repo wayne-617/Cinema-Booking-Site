@@ -29,7 +29,6 @@
 .searchInput:focus {
   border-color: var(--secondary-color);
   box-shadow: 0 0 10px var(--secondary-accent);
-  width: 260px;
   background-color: var(--primary-color);
 }
 

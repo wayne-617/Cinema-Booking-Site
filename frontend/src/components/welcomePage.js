@@ -8,7 +8,10 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { fallbackMovies } from "../data/fallbackMovies";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
+
 Modal.setAppElement("#root"); 
+
 
 
 
@@ -16,6 +19,8 @@ export default function WelcomePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [currentTrailer, setCurrentTrailer] = useState("");
   const [showtimes, setShowtimes] = useState([]);
+  const navigate = useNavigate();
+
 
 
 const handleWatchTrailer = (url) => {
@@ -96,6 +101,8 @@ const handleWatchTrailer = (url) => {
                   <img
                     className="trailerImage"
                     src={movie.trailer_picture || movie.poster_url}
+                      onClick={() => navigate(`/movieDescription/${movie.movieId}`)}
+                        style={{ cursor: "pointer" }}
                     alt={movie.title}
                   />
                   <div className="trailerOverlay">
@@ -154,13 +161,15 @@ const handleWatchTrailer = (url) => {
                 className="movieSwiper"
               >
                 {nowShowing.map((movie) => (
-                  <SwiperSlide key={movie.movie_id}>
+                  <SwiperSlide key={movie.movieId}>
                     <div className="carouselSlide">
-                      <img
-                        src={movie.poster_url}
-                        alt={movie.title}
-                        className="carouselImage"
-                      />
+                   <img
+                      src={movie.poster_url}
+                      alt={movie.title}
+                      className="carouselImage"
+                      onClick={() => navigate(`/movieDescription/${movie.movieId}`)} 
+                      style={{ cursor: "pointer" }}
+                    />
                       <h3 className="carouselTitle">{movie.title}</h3>
                     </div>
                   </SwiperSlide>
@@ -188,12 +197,14 @@ const handleWatchTrailer = (url) => {
                 className="movieSwiper"
               >
                 {comingSoon.map((movie) => (
-                  <SwiperSlide key={movie.movie_id}>
-                    <div className="carouselSlide" data-movie-id={movie.movie_id}>
+                  <SwiperSlide key={movie.movieId}>
+                    <div className="carouselSlide" data-movie-id={movie.movieId}>
                       <img
                         src={movie.poster_url}
                         alt={movie.title}
                         className="carouselImage"
+                        onClick={() => navigate(`/movieDescription/${movie.movieId}`)} 
+                        style={{ cursor: "pointer" }}
                       />
                       <h3 className="carouselTitle">{movie.title}</h3>
                     </div>
