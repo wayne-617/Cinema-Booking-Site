@@ -31,13 +31,13 @@ function LoginPage() {
               <input
                 type="email"
                 placeholder="Email"
-                className="login-input"
+                className="login-input1"
                 id = "myEmail"
               />
               <input
                 type="password"
                 placeholder="Password"
-                className="login-input"
+                className="login-input2"
                 id = "myPass"
               />
               <button className="login-button" onClick={handleRegisterClick}>Sign In</button>

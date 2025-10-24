@@ -1,0 +1,120 @@
+
+.login-title, .login-footer {
+    display: flex;
+   justify-content: center;
+}
+
+.login-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+
+/* 🌕 Search input box styling */
+.login-input1, .login-input2 {
+  padding: 0.6rem 1rem;
+  border-radius: 2rem;
+  border: 2px solid var(--secondary-accent);
+  width: 220px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all 0.25s ease-in-out;
+  outline: none;
+  box-shadow: 0 0 6px rgba(249, 212, 139, 0.3);
+}
+
+.login-button:hover, .login-button:active {
+    background-color: var(--primary-color);
+}
+
+/* 💡 Glowing animation on focus */
+
+.login-input1:focus, .login-input2:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 10px var(--secondary-accent);
+  background-color: var(--primary-color);
+}
+
+/* 📜 Dropdown results */
+/**
+.searchResults {
+  position: absolute;
+  top: 48px;
+  background-color: var(--background-color);
+  border: 1px solid var(--primary-accent);
+  border-radius: 1rem;
+  width: 260px;
+  max-height: 320px;
+  overflow-y: auto;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.4);
+  z-index: 200;
+  backdrop-filter: blur(4px);
+}
+*/
+/* 🎬 Each movie result item */
+/**
+.searchResultItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.searchResultItem:hover {
+  background-color: rgba(112, 169, 161, 0.25);
+}
+**/
+/* Poster thumbnail */
+/**
+.searchPoster {
+  width: 45px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 0.4rem;
+  border: 1px solid var(--primary-accent);
+}
+*/
+/* MPAA Rating row */
+/**
+.ratingRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.mpaaLogo {
+  width: 28px;
+  height: auto;
+  opacity: 0.85;
+}
+
+.ratingText {
+  font-size: 0.9rem;
+  color: var(--secondary-accent);
+}
+
+.logoDiv {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logoText {
+  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.logoDiv:hover .logoText {
+  color: var(--secondary-accent);
+  transition: color 0.3s ease;
+}
+*/
