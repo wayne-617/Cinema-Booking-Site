@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 
 
-function LoginPage() {
+function WrongLoginPage() {
   const navigate = useNavigate();
 
   const handleRegisterClick = async () => {
@@ -38,7 +38,6 @@ function LoginPage() {
     }).catch(err => {
      navigate("/wrongLogin"); 
     });
-
    
 
 
@@ -53,7 +52,9 @@ function LoginPage() {
             <div className="title-container">
               <h1 className="login-title">Login</h1>
             </div>
-
+            <div className="wrong">
+                Wrong user and password.
+            </div>
             <div className="login-form">
               <input
                 type="email"
@@ -82,4 +83,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default WrongLoginPage;

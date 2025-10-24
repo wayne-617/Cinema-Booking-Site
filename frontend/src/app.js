@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
 import SignIn from './components/loginPage';
+import WrongLoginPage from './components/wrongLogin';
 import Register from './components/Register';
 import CongratsPage from './components/congratsPage';
 import WelcomePage from './components/welcomePage';
@@ -22,6 +23,7 @@ import OrderSummaryPage from './components/orderSummaryPage';
 import CheckoutPage from './components/checkoutPage';
 import OrderConfirmationPage from './components/orderConfirmationPage';
 import EditProfilePage from './components/editProfilePage';
+import WrongPassPage from './components/wrongPass';
 import './app.css'; 
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<WelcomePage />} />
           <Route path="/login" element={<SignIn />} />
+          <Route path="/wrongLogin" element={<WrongLoginPage />} />
+          <Route path="/wrongPass" element={<WrongPassPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/congrats" element={<CongratsPage />} />
           <Route path="/movieDescription/:id" element={<MovieDescription/>} />
