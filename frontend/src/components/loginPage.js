@@ -4,6 +4,7 @@ import logo from "../logo512.png"; // ✅ same as register
 import { Link, useNavigate } from "react-router-dom";
 
 function LoginPage() {
+ 
   const navigate = useNavigate();
 
   const handleLoginClick = async () => {
