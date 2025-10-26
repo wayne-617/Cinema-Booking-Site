@@ -1,13 +1,13 @@
 import React from "react";
-import "./loginPage.css";
+import "./forgotPass.css";
 import logo from "../logo512.png";
 import { Link, useNavigate } from "react-router-dom";
-
+import Userfront from "@userfront/core";
 import {useState} from 'react';
 
 
 
-function LoginPage() {
+function ForgotPassword() {
  
   const navigate = useNavigate();
 
@@ -55,10 +55,12 @@ function LoginPage() {
         <section className="bodySection">
           <div className="bodyTextDiv">
             <div className="title-container">
-              <h1 className="login-title">Login</h1>
+              <h1 className="login-title">Forgot</h1>
+              <h1 className="login-title">Password</h1>
             </div>
 
             <div className="login-form">
+                <p1 className="forgot-Desc">Enter email to receive a new password reset link</p1>
               <input
                 type="email"
                 placeholder="Email"
@@ -66,20 +68,12 @@ function LoginPage() {
                 id = "myEmail"
                 
               />
-              <input
-                type="password"
-                placeholder="Password"
-                className="login-input2"
-                id = "myPass"
-              />
-              <button className="login-button" onClick={handleRegisterClick}>Sign In</button>
+              <button className="login-button" >Request</button>
             </div>
             <div className="login-footer">
               Don’t have an account? <Link to="/register">Register</Link>
             </div>
-            <div className="login-footer">
-              <Link to="/forgetPassword">Forgot Password?</Link>
-            </div>
+            
           </div>
         </section>
       </section>
@@ -87,4 +81,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default ForgotPassword;

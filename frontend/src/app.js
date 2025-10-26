@@ -25,6 +25,7 @@ import CheckoutPage from './components/checkoutPage';
 import OrderConfirmationPage from './components/orderConfirmationPage';
 import EditProfilePage from './components/editProfilePage';
 import WrongPassPage from './components/wrongPass';
+import ForgotPassword from './components/forgetPassword';
 import './app.css'; 
 
 function App() {
@@ -47,7 +48,7 @@ function App() {
           <Route path="/order-summary" element={<OrderSummaryPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
-          
+          <Route path="/forgetPassword" element={<ForgotPassword/>} />
       
 
         {<Route path="*" element={<NotFoundPage />} /> }
@@ -76,6 +77,8 @@ function App() {
           <Route path="/customer/checkout" element={<CheckoutPage />} />
             //fix order confirmation to adhere to customer view
           <Route path="/customer/order-confirmation" element={<OrderConfirmationPage />} />
+          
+
         </Route>
       </Routes>
     </div>

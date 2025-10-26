@@ -1,0 +1,50 @@
+
+.login-title, .login-footer {
+    display: flex;
+   justify-content: center;
+   color: var(--text-color);
+}
+
+.login-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+
+.forgot-Desc {
+
+    padding: 1.9rem 1.2rem;
+  
+}
+
+/* 🌕 Search input box styling */
+.login-input1, .login-input2 {
+  padding: 0.6rem 1rem;
+  border-radius: 2rem;
+  border: 2px solid var(--secondary-accent);
+  width: 220px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all 0.25s ease-in-out;
+  outline: none;
+  box-shadow: 0 0 6px rgba(249, 212, 139, 0.3);
+}
+.wrong {
+    display: flex;
+    justify-content: center;
+    color: red;
+}
+.login-button:hover, .login-button:active {
+    background-color: var(--primary-color);
+}
+
+/* 💡 Glowing animation on focus */
+
+.login-input1:focus, .login-input2:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 10px var(--secondary-accent);
+  background-color: var(--primary-color);
+}

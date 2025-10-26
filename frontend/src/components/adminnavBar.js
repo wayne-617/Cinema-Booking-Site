@@ -24,7 +24,7 @@ export function adminnavBar() {
           </div>
           <div className="navDiv">
             <a href="/" className="buttons">
-              Sign out
+              Log out
             </a>
           </div>
             <a href ="/editProfile" className="buttons">
