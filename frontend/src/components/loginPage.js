@@ -3,10 +3,12 @@ import "./loginPage.css";
 import logo from "../logo512.png";
 import { Link, useNavigate } from "react-router-dom";
 
+import {useState} from 'react';
 
 
 
 function LoginPage() {
+ 
   const navigate = useNavigate();
 
   const handleRegisterClick = async () => {
@@ -25,8 +27,10 @@ function LoginPage() {
         })
     }).then(async resp =>  {
       const data = await resp.json();
-      if(resp.ok) {
+      if(resp.ok && emailaddr.value === "admin@user.com") {
         navigate("/admindashboard");
+      } else if (resp.ok && emailaddr.value != "admin@user.com") {
+        navigate("/customer");
       } else if (!resp.ok) {
        if (data.error === "Password incorrect") {
       navigate("/wrongPass");   
@@ -42,7 +46,7 @@ function LoginPage() {
    
 
 
-
+    //navigate("/customer", {state: {user: emailaddr.value}});
   };
 
   return (
@@ -60,6 +64,7 @@ function LoginPage() {
                 placeholder="Email"
                 className="login-input1"
                 id = "myEmail"
+                
               />
               <input
                 type="password"

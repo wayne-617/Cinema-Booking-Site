@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
+import CustomerLayout from './components/customerLayout';
 import SignIn from './components/loginPage';
 import WrongLoginPage from './components/wrongLogin';
 import Register from './components/Register';
@@ -46,7 +47,7 @@ function App() {
           <Route path="/order-summary" element={<OrderSummaryPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
-          <Route path="/editProfilePage" element={<EditProfilePage />} />
+          
       
 
         {<Route path="*" element={<NotFoundPage />} /> }
@@ -58,6 +59,23 @@ function App() {
           <Route path="/adminusers" element={<AdminUsers />} />
           
           <Route path="/editProfile" element={<EditProfilePage />} />
+        </Route>
+        <Route element={<CustomerLayout/>} >
+          <Route path="/customer" element={<WelcomePage />} />
+          <Route path="/editProfilePage" element={<EditProfilePage />} />
+          //fix movie desc page to adhere to customer view
+          <Route path="/customer/movieDescription/:id" element={<MovieDescription/>} />
+          <Route path="/customer/movies" element={<MoviesPage />} />
+          <Route path="/customer/showtimes" element={<ShowtimesPage />} />
+          <Route path="/customer/theaters" element={<TheatersPage />} />
+          //fix reservation to adhere to customer view
+          <Route path="/customer/seat-reservation/:showtimeId" element={<SeatReservationPage />} />
+            //fix order summary to adhere to customer view
+          <Route path="/customer/order-summary" element={<OrderSummaryPage />} />
+            //fix checkout to adhere to customer view
+          <Route path="/customer/checkout" element={<CheckoutPage />} />
+            //fix order confirmation to adhere to customer view
+          <Route path="/customer/order-confirmation" element={<OrderConfirmationPage />} />
         </Route>
       </Routes>
     </div>
