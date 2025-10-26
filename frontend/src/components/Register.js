@@ -2,7 +2,6 @@ import React from "react";
 import "./register.css";
 import logo from "../logo512.png";
 import { Link, useNavigate } from "react-router-dom";
-//import { text } from "stream/consumers";
 
 function Register() {
   const navigate = useNavigate();
@@ -13,7 +12,6 @@ function Register() {
     const pass = document.getElementById("myPass");
     const username = document.getElementById("myName");
 
-    // Admin account check
     if (
       username.value === "admin" &&
       emailaddr.value === "admin@user.com" &&
@@ -26,51 +24,29 @@ function Register() {
     }
   };
 
-
   return (
-    <div className="bodyDiv">
-      <section className="contentSection">
-        <section className="bodySection">
-          <div className="bodyTextDiv">
-            <input
-              type="text"
-              placeholder="Name"
-              className="register-input"
-              id = "myName"
-            />
-            <input
-              type="number"
-              placeholder="Phone Number"
-              className="register-input"
-              id = "myPhone"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              className="register-input"
-              id = "myEmail"
-            />
-            <input
-              type="password"
-              placeholder="password"
-              className="register-input"
-              id = "myPass"
-            />
-            <button className="register-button" onClick={handleRegisterClick}>
-              Register
-            </button>
-          </div>
-          <div className="bodyTextDiv">
-            Already have an account? <Link to="/login">Login</Link>
-          </div>
-        </section>
-      </section>
-      <section className="bottomSection">
-        <div className="primaryDiv">
-          <footer className="mainFooter"></footer>
+    <div className="register-container">
+      <div className="register-card">
+        <img src={logo} alt="Logo" className="register-logo" />
+        <h1 className="register-title">Create Your Account</h1>
+
+        <div className="input-group">
+          <input type="text" placeholder="Full Name" id="myName" />
+          <input type="tel" placeholder="Phone Number" className="register-input" id="myPhone" />
+          <input type="email" placeholder="Email Address" className="register-input" id="myEmail" />
+          <input type="password" placeholder="Password" className="register-input" id="myPass" />
         </div>
-      </section>
+
+        <button className="register-btn" onClick={handleRegisterClick}>
+          Register
+        </button>
+
+        <p className="register-footer">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
+      </div>
     </div>
   );
 }
+
 export default Register;

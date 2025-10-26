@@ -1,0 +1,132 @@
+/* Center layout (matches login) */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background: radial-gradient(circle at top, #1e2a32, #000);
+  overflow: hidden;
+}
+
+/* Frosted glass card */
+.register-card {
+  background: rgba(64, 121, 140, 0.15);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 40px 50px;
+  width: 360px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.6s ease-in-out;
+  color: var(--text-color);
+}
+
+/* Logo (same style as login) */
+.register-logo {
+  width: 80px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.register-logo:hover {
+  transform: scale(1.1);
+}
+
+/* Title */
+.register-title {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  letter-spacing: 1px;
+}
+
+/* Input group (same as login form) */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-group input {
+  padding: 12px 15px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 1rem;
+  transition: 0.3s ease;
+}
+
+.input-group input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.input-group input:focus {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.03);
+}
+
+/* Register button (same gradient + hover as login) */
+.register-btn {
+  margin-top: 25px;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  border: none;
+  color: var(--text-color);
+  font-size: 1rem;
+  padding: 12px 0;
+  border-radius: 10px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.3);
+}
+
+.register-btn:hover {
+  background: linear-gradient(
+    90deg,
+    var(--secondary-color),
+    var(--primary-accent)
+  );
+  transform: scale(1.05);
+  box-shadow: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.4);
+  filter: brightness(1.1);
+}
+
+/* Footer links (same color and hover as login) */
+.register-footer {
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.register-footer a {
+  color: #ff9966;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.register-footer a:hover {
+  color: #ffd1b3;
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
