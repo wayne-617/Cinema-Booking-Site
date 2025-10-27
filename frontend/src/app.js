@@ -43,6 +43,7 @@ function App() {
           <Route path="/congrats" element={<CongratsPage />} />
           <Route path="/movieDescription/:id" element={<MovieDescription/>} />
           <Route path="/movies" element={<MoviesPage />} />
+          <Route path="/editProfile" element={<EditProfilePage />} />
           <Route path="/showtimes" element={<ShowtimesPage />} />
           <Route path="/theaters" element={<TheatersPage />} />
           <Route path="/seat-reservation/:showtimeId" element={<SeatReservationPage />} />
@@ -59,8 +60,6 @@ function App() {
           <Route path="/adminpromotions" element={<AdminPromotions />} />
           <Route path="/adminmovies" element={<AdminMovies />} />
           <Route path="/adminusers" element={<AdminUsers />} />
-          
-          <Route path="/editProfile" element={<EditProfilePage />} />
         </Route>
         <Route element={<CustomerLayout/>} >
           <Route path="/customer" element={<WelcomePage />} />

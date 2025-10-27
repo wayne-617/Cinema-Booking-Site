@@ -1,0 +1,98 @@
+/* Match register page background */
+.congrats-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: radial-gradient(circle at top, #1e2a32, #000);
+  overflow: hidden;
+}
+
+/* Frosted glass card */
+.congrats-card {
+  background: rgba(64, 121, 140, 0.15);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 50px;
+  width: 360px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.6s ease-in-out;
+  color: #fff;
+}
+
+/* Logo styling */
+.congrats-logo {
+  width: 80px;
+  margin-bottom: 15px;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.congrats-logo:hover {
+  transform: scale(1.1);
+}
+
+/* Title */
+.congrats-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 25px;
+}
+
+/* Popcorn image */
+.popcorn-image {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.popcorn-image:hover {
+  transform: scale(1.1);
+}
+
+/* Message text */
+.congrats-message {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 30px;
+  line-height: 1.4;
+}
+
+/* Button style */
+.congrats-button {
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  border: none;
+  color: var(--text-color);
+  font-size: 1rem;
+  padding: 12px 0;
+  border-radius: 10px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.3);
+}
+
+.congrats-button:hover {
+  background: linear-gradient(90deg, var(--secondary-color), var(--primary-accent));
+  transform: scale(1.05);
+  box-shadow: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.4);
+  filter: brightness(1.1);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

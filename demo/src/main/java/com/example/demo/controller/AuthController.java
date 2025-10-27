@@ -68,7 +68,12 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         try {
-            userService.register(request.getUsername(), request.getPassword());
+             userService.register(
+            request.getUsername(),
+            request.getPassword(),
+            request.getFullName(),  // add full name
+            request.getPhone()      // add phone number
+        );
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

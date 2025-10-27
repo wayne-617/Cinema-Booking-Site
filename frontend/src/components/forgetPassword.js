@@ -46,15 +46,6 @@ function ForgotPassword() {
     } 
   })
 
-
-   
-  
-
-  
-
-   
-
-
     //navigate("/customer", {state: {user: emailaddr.value}});
   };
 
