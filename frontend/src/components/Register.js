@@ -1,76 +1,105 @@
-import React from "react";
+import React, { useState } from "react";
 import "./register.css";
 import logo from "../logo512.png";
 import { Link, useNavigate } from "react-router-dom";
-//import { text } from "stream/consumers";
 
 function Register() {
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [shake, setShake] = useState(false);
 
-  const handleRegisterClick = () => {
-    const phone = document.getElementById("myPhone");
-    const emailaddr = document.getElementById("myEmail");
-    const pass = document.getElementById("myPass");
-    const username = document.getElementById("myName");
+  // Input states
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    // Admin account check
-    if (
-      username.value === "admin" &&
-      emailaddr.value === "admin@user.com" &&
-      phone.value === "1234567890" &&
-      pass.value === "masterkey"
-    ) {
-      navigate("/admin");
+  // Email validator
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const handleRegisterClick = (e) => {
+    e.preventDefault();
+
+    // --- Validation logic ---
+    if (!name.trim()) {
+      setErrorMessage("Name cannot be blank.");
+    } else if (!phone.trim()) {
+      setErrorMessage("Phone number cannot be blank.");
+    } else if (!email.trim()) {
+      setErrorMessage("Email address cannot be blank.");
+    } else if (!validateEmail(email)) {
+      setErrorMessage("Please enter a valid email address.");
+    } else if (!password.trim()) {
+      setErrorMessage("Password cannot be blank.");
+    } else if (password.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long.");
     } else {
-      navigate("/congrats");
+      setErrorMessage("");
+
+      // Example navigation logic (replace with backend call later)
+      if (
+        name === "admin" &&
+        email === "admin@user.com" &&
+        phone === "1234567890" &&
+        password === "masterkey"
+      ) {
+        navigate("/admin");
+      } else {
+        navigate("/congrats");
+      }
+      return;
     }
+
+    // --- Shake effect (without restarting fade) ---
+    setShake(true);
+    setTimeout(() => setShake(false), 500);
   };
 
-
   return (
-    <div className="bodyDiv">
-      <section className="contentSection">
-        <section className="bodySection">
-          <div className="bodyTextDiv">
-            <input
-              type="text"
-              placeholder="Name"
-              className="register-input"
-              id = "myName"
-            />
-            <input
-              type="number"
-              placeholder="Phone Number"
-              className="register-input"
-              id = "myPhone"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              className="register-input"
-              id = "myEmail"
-            />
-            <input
-              type="password"
-              placeholder="password"
-              className="register-input"
-              id = "myPass"
-            />
-            <button className="register-button" onClick={handleRegisterClick}>
-              Register
-            </button>
-          </div>
-          <div className="bodyTextDiv">
-            Already have an account? <Link to="/login">Login</Link>
-          </div>
-        </section>
-      </section>
-      <section className="bottomSection">
-        <div className="primaryDiv">
-          <footer className="mainFooter"></footer>
+    <div className="register-container">
+      <div className={`register-card`}>
+        <img src={logo} alt="Logo" className="register-logo" />
+        <h1 className="register-title">Create Your Account</h1>
+
+        {errorMessage && <p className="register-error">{errorMessage}</p>}
+
+        <div className={`input-group ${shake ? "shake" : ""}`}>
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
-      </section>
+
+        <button className="register-btn" onClick={handleRegisterClick}>
+          Register
+        </button>
+
+        <p className="register-footer">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
+      </div>
     </div>
   );
 }
+
 export default Register;

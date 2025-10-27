@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-
+import com.example.demo.service.ResetService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -31,10 +32,16 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    private ResetService resetService;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthenticationManager authManager;
@@ -67,6 +74,16 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+    @PostMapping("/reset")
+    public ResponseEntity<String> reset(@RequestBody Map<String, String> payload) {
+        try {
+            String email = payload.get("email");
+            resetService.handleReset(email);
+           return ResponseEntity.ok("Link sent if email exists");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Reset Failed");
+        }
+    }
 
     @GetMapping("/{email}")
     public ResponseEntity<AuthUserDTO> getUserForFrontend(@PathVariable String email) {
@@ -83,5 +100,25 @@ public class AuthController {
         dto.setPasswordLength(pw == null ? 0 : pw.length());
 
         return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<UserEntity> updatePassword(@RequestBody Map<String, String> payload) {
+         try {
+            String username = payload.get("username");
+            String password = payload.get("password");
+            UserEntity userEntity = userRepository.findByUsername(username)
+             .orElseThrow(() -> new RuntimeException("User not found"));
+            
+            
+             userEntity.setUsername(username);
+             userEntity.setPassword(passwordEncoder.encode(password));
+             userRepository.save(userEntity);
+         
+           return ResponseEntity.ok(userEntity);
+         } catch (Error e) {
+             e.printStackTrace();
+              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+         }
     }
 }

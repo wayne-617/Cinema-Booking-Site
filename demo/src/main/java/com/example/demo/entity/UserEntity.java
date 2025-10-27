@@ -2,6 +2,8 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "users")
@@ -13,6 +15,16 @@ public class UserEntity {
     @NotNull
     @Column(nullable = false, unique = true)
     private String username;
+    
+    @NotNull
+    @Size(min = 2, max = 255, message = "Full name must be between 2 and 255 characters")
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
+
+    @Pattern(regexp = "^\\+?[0-9]{7,15}$", message = "Invalid phone number format")
+    @Column(length = 20)
+    private String phone;
+    
     @NotNull
     @Column(nullable = false)
     private String password;
@@ -28,6 +40,22 @@ public class UserEntity {
     public String getUsername() {
         return username;
     }
+public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
 
     public String getPassword() {
         return password;
