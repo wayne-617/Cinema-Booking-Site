@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.config.PasswordEncoderConfig;
+import com.example.demo.entity.Role;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
 
@@ -37,7 +38,7 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public UserEntity register(String username, String password) {
+    public UserEntity register(String username, String password, String fullName, String phone) {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
@@ -46,6 +47,9 @@ public class UserService implements UserDetailsService {
         UserEntity newUser = new UserEntity();
         newUser.setUsername(username);
         newUser.setPassword(password);
+        newUser.setFullName(fullName);
+        newUser.setPhone(phone);
+        newUser.setRole(Role.CUSTOMER);
 
         return userRepository.save(newUser);
     }
