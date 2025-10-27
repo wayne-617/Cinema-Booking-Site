@@ -26,6 +26,7 @@ import OrderConfirmationPage from './components/orderConfirmationPage';
 import EditProfilePage from './components/editProfilePage';
 import WrongPassPage from './components/wrongPass';
 import ForgotPassword from './components/forgetPassword';
+import ResetPassword from './components/resetPassword'
 import './app.css'; 
 
 function App() {
@@ -49,7 +50,7 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
           <Route path="/forgetPassword" element={<ForgotPassword/>} />
-      
+          <Route path="/reset" element={<ResetPassword/>} />
 
         {<Route path="*" element={<NotFoundPage />} /> }
         </Route>

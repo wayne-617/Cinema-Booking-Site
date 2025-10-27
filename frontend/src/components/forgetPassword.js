@@ -11,37 +11,47 @@ function ForgotPassword() {
  
   const navigate = useNavigate();
 
-  const handleRegisterClick = async () => {
+  const handleRequestClick = async () => {
    
     const emailaddr = document.getElementById("myEmail");
-    const pass = document.getElementById("myPass");
+    const desc = document.getElementById("forgot-Desc");
    
-    const fetchLink = `http://localhost:9090/auth/login`;
-    // post request is made to the backend where the email and password is verified with database
-    const response = await fetch(fetchLink, {
+    const fetchLink = `http://localhost:9090/auth/reset`;
+   //make POST requst to /login to verify email exists first
+    const fetchLink2 = `http://localhost:9090/auth/login`;
+    // post request is made to the backend where the email  is verified with database
+    const response1 = await fetch(fetchLink2, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
         username: emailaddr.value,
-        password: pass.value  
         })
     }).then(async resp =>  {
       const data = await resp.json();
-      if(resp.ok && emailaddr.value === "admin@user.com") {
-        navigate("/admindashboard");
-      } else if (resp.ok && emailaddr.value != "admin@user.com") {
-        navigate("/customer");
-      } else if (!resp.ok) {
-       if (data.error === "Password incorrect") {
-      navigate("/wrongPass");   
-    } 
-    return;
+      if (!resp.ok && emailaddr.value != "admin@user.com") {
+        if (data.error === "Password incorrect") { 
+          
+          // since there is no password provided since we're only sending email, as long as data.error === incorrect password, 
+        // we can ignore and continue to sending password link
+        //if email is real then continue with initiating reset
+         const response2 = await fetch(fetchLink, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+        email: emailaddr.value,  
+        })
+    });
   }
+      } else if (!resp.ok) {
+      
+    } 
+  })
+
+
+   
+  
 
   
-    }).catch(err => {
-     navigate("/wrongLogin"); 
-    });
 
    
 
@@ -68,7 +78,7 @@ function ForgotPassword() {
                 id = "myEmail"
                 
               />
-              <button className="login-button" >Request</button>
+              <button className="login-button" onClick={handleRequestClick} >Request</button>
             </div>
             <div className="login-footer">
               Don’t have an account? <Link to="/register">Register</Link>
