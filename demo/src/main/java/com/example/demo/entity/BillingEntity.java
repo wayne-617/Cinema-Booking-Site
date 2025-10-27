@@ -48,7 +48,7 @@ public class BillingEntity {
         return email;
     }
 
-    public int getCardInfo() {
+    public int getLastFour() {
         return last_four;
     }
 
@@ -72,7 +72,7 @@ public class BillingEntity {
         this.email = email;
     }
 
-    public void setCardInfo(int last_four) {
+    public void setLastFour(int last_four) {
         this.last_four = last_four;
     }
 

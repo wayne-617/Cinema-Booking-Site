@@ -7,17 +7,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthUserDTO;
 import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.RegisterRequest;
+import com.example.demo.entity.UserEntity;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,6 +32,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private AuthenticationManager authManager;
@@ -67,8 +69,19 @@ public class AuthController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<UserDetails> getUser(@PathVariable String email) {
-        UserDetails user = userService.loadUserByUsername(email);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<AuthUserDTO> getUserForFrontend(@PathVariable String email) {
+
+        UserEntity userEntity = userRepository.findByUsername(email)
+            .orElseThrow(() -> new RuntimeException("User not found: " + email));
+
+        AuthUserDTO dto = new AuthUserDTO();
+        dto.setId(userEntity.getId());
+        dto.setUsername(userEntity.getUsername());
+        dto.setRole(userEntity.getRole().toString());
+
+        String pw = userEntity.getPassword();
+        dto.setPasswordLength(pw == null ? 0 : pw.length());
+
+        return ResponseEntity.ok(dto);
     }
 }
