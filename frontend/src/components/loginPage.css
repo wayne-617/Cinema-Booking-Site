@@ -118,6 +118,13 @@
   color: #ffd1b3;
 }
 
+.loginPage-error {
+  color: #ff4d4d;
+  font-weight: 500;
+  margin-bottom: 15px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
 /* Animation */
 @keyframes fadeIn {
   from {
