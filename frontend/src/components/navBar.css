@@ -47,7 +47,7 @@
   backdrop-filter: blur(4px);
 }
 
-/* 🎬 Each movie result item */
+/* Each movie result item */
 .searchResultItem {
   display: flex;
   align-items: center;

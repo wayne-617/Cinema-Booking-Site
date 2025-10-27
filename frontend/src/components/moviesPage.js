@@ -40,7 +40,7 @@ export default function MoviesPage() {
     showtimes.filter((s) => s.movieId === movieId);
 
     const goToDetails = (movie) => {
-      const id = movie.movieId ?? movie.movie_id;   // handle both shapes
+      const id = movie.movieId;   
       navigate(`/movieDescription/${id}`);
     };
 

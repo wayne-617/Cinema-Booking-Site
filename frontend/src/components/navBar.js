@@ -117,6 +117,8 @@ export function NavBar() {
                     onClick={() =>
                       handleSelectMovie(movie.movie_id || movie.movieId)
                     }
+                     style={{ cursor: "pointer" }}
+
                   >
                     <img
                       src={
