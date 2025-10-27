@@ -32,6 +32,8 @@ function LoginPage() {
     }
 
     if (response.ok) {
+      navigate("/customer");
+    }else if (response.ok && emailInput === "admin@user.com") {
       navigate("/admindashboard");
     } else {
       // Show cleaner feedback
