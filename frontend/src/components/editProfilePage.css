@@ -1,80 +1,61 @@
-/* Conatiners */
-
-.bodyDiv {
+/* Edit Profile Page Container */
+.editProfilePage-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 2rem 0 3rem 0;
     background: radial-gradient(
         circle at 50% 0%,
         rgba(32, 73, 83, 0.8) 0%,
         rgba(6, 22, 26, 1) 60%
     );
-    min-height: 100vh;
-  
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-  
-    padding-top: 2rem;
-    padding-bottom: 3rem;
     color: var(--text-color);
-  }
-  
-  .contentSection {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-  
-  .bodySection {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-  
-  .bodyTextDiv.profileCard {
+}
+
+/* Content Card */
+.editProfilePage-card {
     background: linear-gradient(
       to bottom right,
       rgba(15, 39, 43, 0.95) 0%,
       rgba(8, 24, 27, 0.95) 60%
     );
-  
     border: 2px solid var(--secondary-accent);
     box-shadow: 0 0 18px rgba(249, 212, 139, 0.25);
     border-radius: 0.75rem;
-  
     padding: 1.5rem 2rem 2rem;
     max-width: 900px;
     width: min(90%, 900px);
-  
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-  }
-  
-  .title-container {
+}
+
+/* Title */
+.editProfilePage-title {
     text-align: center;
-  }
-  
-  .editProfile-title {
     color: var(--secondary-accent);
     font-size: 1.6rem;
     font-weight: 600;
     letter-spacing: 0.03em;
     margin: 0;
     text-shadow: 0 0 8px rgba(249, 212, 139, 0.4);
-  }
-    
-  .sectionCard {
+}
+
+/* Section Cards */
+.editProfilePage-section {
     background-color: rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(249, 212, 139, 0.2); /* subtle yellow border */
+    border: 1px solid rgba(249, 212, 139, 0.2);
     border-radius: 0.5rem;
     padding: 1rem 1rem 1.25rem;
     box-shadow: 0 0 10px rgba(249, 212, 139, 0.12);
-  }
-  
-  .sectionHeader {
+}
+
+/* Section Headers */
+.editProfilePage-sectionHeader {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-  
     color: var(--secondary-accent);
     font-size: 1rem;
     font-weight: 600;
@@ -83,34 +64,30 @@
     text-shadow: 0 0 6px rgba(249, 212, 139, 0.4);
     border-bottom: 1px solid rgba(249, 212, 139, 0.25);
     padding-bottom: 0.4rem;
-  }
-  
-  /* ===== Form grid / groups ===== */
-  
-  .formGrid {
+}
+
+/* Form Grid */
+.editProfilePage-formGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem 1.25rem;
-  }
-  
-  .formGroup {
+}
+
+.editProfilePage-formGroup {
     display: flex;
     flex-direction: column;
-  }
-  
-  .inputLabel {
+}
+
+.editProfilePage-inputLabel {
     font-size: 0.8rem;
     color: var(--secondary-accent);
     margin-bottom: 0.4rem;
     letter-spacing: 0.03em;
     text-shadow: 0 0 4px rgba(249, 212, 139, 0.3);
-  }
-  
-  /* ===== Inputs ===== */
-  
-  /* you already had .edit defined, keeping your style but making sure it plays nice
-     inside these sections */
-  .edit {
+}
+
+/* Inputs */
+.editProfilePage-input {
     padding: 0.6rem 1rem;
     border-radius: 2rem;
     border: 2px solid var(--secondary-accent);
@@ -121,60 +98,34 @@
     transition: all 0.25s ease-in-out;
     outline: none;
     box-shadow: 0 0 6px rgba(249, 212, 139, 0.3);
-  }
-  
-  .edit:focus {
+}
+
+.editProfilePage-input:focus {
     border-color: var(--secondary-color);
     box-shadow: 0 0 10px var(--secondary-accent),
                 0 0 30px rgba(249,212,139,0.4);
     background-color: var(--primary-color);
-  }
-  
-  /* read-only inputs (email, masked password) */
-  .readOnlyInput {
+}
+
+.editProfilePage-readOnly {
     background-color: rgba(20, 28, 30, 0.6);
     color: var(--text-color);
     border: 2px solid rgba(249, 212, 139, 0.4);
     cursor: not-allowed;
     box-shadow: 0 0 4px rgba(249, 212, 139, 0.15);
-  }
-  
-  /* ===== Promotions row ===== */
-  
-  .promoRow {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    padding: 0.5rem 0 0 0;
-  }
-  
-  #promoOptInBox {
-    /* make checkbox easier to see on dark bg */
-    transform: scale(1.2);
-    accent-color: var(--secondary-accent); /* modern browsers */
-    cursor: pointer;
-  }
-  
-  .promoLabel {
-    font-size: 0.9rem;
-    line-height: 1.2rem;
-    color: var(--text-color);
-    cursor: pointer;
-    text-shadow: 0 0 4px rgba(249, 212, 139, 0.25);
-  }
-  
-  /* ===== Button row ===== */
-  
-  .buttonRow {
+}
+
+/* Button Row */
+.editProfilePage-buttonRow {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: 0.75rem;
     margin-top: 0.5rem;
-  }
-  
-  .primaryBtn,
-  .secondaryBtn {
+}
+
+.editProfilePage-buttonPrimary,
+.editProfilePage-buttonSecondary {
     min-width: 140px;
     padding: 0.6rem 1rem;
     border-radius: 2rem;
@@ -188,90 +139,37 @@
     box-shadow: 0 0 8px rgba(249,212,139,0.4);
     transition: all 0.2s ease-in-out;
     text-align: center;
-  }
-  
-  .primaryBtn:hover,
-  .primaryBtn:active {
+}
+
+.editProfilePage-buttonPrimary:hover,
+.editProfilePage-buttonPrimary:active {
     background-color: var(--secondary-accent);
     color: #000;
     box-shadow: 0 0 12px rgba(249,212,139,0.8),
                 0 0 32px rgba(249,212,139,0.5);
-  }
-  
-  .secondaryBtn {
-    border-color: rgba(249,212,139,0.4);
-    color: rgba(249,212,139,0.6);
-    box-shadow: 0 0 6px rgba(249,212,139,0.2);
-  }
-  
-  .secondaryBtn:hover,
-  .secondaryBtn:active {
+}
+
+.editProfilePage-buttonSecondary:hover,
+.editProfilePage-buttonSecondary:active {
     border-color: var(--secondary-accent);
     color: var(--secondary-accent);
     background-color: rgba(0,0,0,0.4);
     box-shadow: 0 0 10px rgba(249,212,139,0.4);
-  }
-  
-  /* ===== Responsive tweaks ===== */
-  
-  @media (max-width: 600px) {
-    .bodyTextDiv.profileCard {
-      padding: 1rem 1rem 1.5rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+    .editProfilePage-card {
+        padding: 1rem 1rem 1.5rem;
     }
-  
-    .sectionHeader {
-      font-size: 0.95rem;
+
+    .editProfilePage-sectionHeader {
+        font-size: 0.95rem;
     }
-  
-    .primaryBtn,
-    .secondaryBtn {
-      min-width: 120px;
-      font-size: 0.9rem;
+
+    .editProfilePage-buttonPrimary,
+    .editProfilePage-buttonSecondary {
+        min-width: 120px;
+        font-size: 0.9rem;
     }
-  }
-  
-
-/*
-.editProfile-title, .editProfile-footer {
-    display: flex;
-   justify-content: center;
 }
-
-.editProfile-form-email, .editProfile-form-password {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  
-}
-
-/* 🌕 Search input box styling
-.edit {
-  padding: 0.6rem 1rem;
-  border-radius: 2rem;
-  border: 2px solid var(--secondary-accent);
-  width: 220px;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  font-size: 1rem;
-  transition: all 0.25s ease-in-out;
-  outline: none;
-  box-shadow: 0 0 6px rgba(249, 212, 139, 0.3);
-}
-.wrong {
-    display: flex;
-    justify-content: center;
-    color: red;
-}
-.login-button:hover, .login-button:active {
-    background-color: var(--primary-color);
-}
-
-/* 💡 Glowing animation on focus 
-
-.login-input1:focus, .login-input2:focus {
-  border-color: var(--secondary-color);
-  box-shadow: 0 0 10px var(--secondary-accent);
-  background-color: var(--primary-color);
-}
-*/
