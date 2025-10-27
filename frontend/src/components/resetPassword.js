@@ -2,7 +2,6 @@ import React from "react";
 import "./forgotPass.css";
 import logo from "../logo512.png";
 import { Link, useNavigate } from "react-router-dom";
-import Userfront from "@userfront/core";
 import {useLocation} from 'react-router-dom';
 
 
