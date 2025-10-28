@@ -34,6 +34,8 @@ public class JwtUtil {
                 .setSubject(username)
                 .claim("userId", user.getId())
                 .claim("role", user.getRole())
+                .claim("fullName", user.getFullName())  
+                .claim("phone", user.getPhone())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSigningKey())

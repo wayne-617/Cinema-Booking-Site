@@ -1,73 +1,141 @@
 package com.example.demo.dto;
 
+// This DTO maps to the JSON payload sent by the React 'handleSave' function
+// This is the file your ProfileController is importing and using.
 public class ProfileUpdateRequestDTO {
-    private Long userId;
-    private String email;          // shouldn't change, but we get it anyway
-    private String newPassword;    // optional (null if not changing)
-    private Integer promo_opt_in;  // 1 or 0 (you'll add promo later to users)
 
-    private BillingUpdateDTO billing;
+    // From User
+    private String phone;
+    private Boolean promoOptIn;
 
-    public static class BillingUpdateDTO {
-        private String firstName;
-        private String lastName;
-        private String phone;
-        private String street;
-        private String city;
-        private String state;
-        private String zip;
-        private String cardType;
-        private String lastFour;
-        private String expMonth;
-        private String expYear;
+    // From Billing
+    private String firstName;
+    private String lastName;
 
-        public String getFirstName() { return firstName; }
-        public void setFirstName(String firstName) { this.firstName = firstName; }
+        private String billingEmail; // billing.email
+    private Integer lastFour;    // billing.last_four
 
-        public String getLastName() { return lastName; }
-        public void setLastName(String lastName) { this.lastName = lastName; }
+    // Address info
+    private String street;
+    private String city;
+    private String state;
+    private String zip;
 
-        public String getPhone() { return phone; }
-        public void setPhone(String phone) { this.phone = phone; }
+    // Payment info
+    private String cardType;
+    private Integer expMonth;
+    private Integer expYear;
 
-        public String getStreet() { return street; }
-        public void setStreet(String street) { this.street = street; }
 
-        public String getCity() { return city; }
-        public void setCity(String city) { this.city = city; }
+    // Password
+    private String currentPassword;
+    private String newPassword;
 
-        public String getState() { return state; }
-        public void setState(String state) { this.state = state; }
+    // --- Getters and Setters for all fields ---
 
-        public String getZip() { return zip; }
-        public void setZip(String zip) { this.zip = zip; }
-
-        public String getCardType() { return cardType; }
-        public void setCardType(String cardType) { this.cardType = cardType; }
-
-        public String getLastFour() { return lastFour; }
-        public void setLastFour(String lastFour) { this.lastFour = lastFour; }
-
-        public String getExpMonth() { return expMonth; }
-        public void setExpMonth(String expMonth) { this.expMonth = expMonth; }
-
-        public String getExpYear() { return expYear; }
-        public void setExpYear(String expYear) { this.expYear = expYear; }
+    public String getPhone() {
+        return phone;
     }
 
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public Boolean getPromoOptIn() {
+        return promoOptIn;
+    }
 
-    public String getNewPassword() { return newPassword; }
-    public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
+    public void setPromoOptIn(Boolean promoOptIn) {
+        this.promoOptIn = promoOptIn;
+    }
 
-    public Integer getPromo_opt_in() { return promo_opt_in; }
-    public void setPromo_opt_in(Integer promo_opt_in) { this.promo_opt_in = promo_opt_in; }
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public BillingUpdateDTO getBilling() { return billing; }
-    public void setBilling(BillingUpdateDTO billing) { this.billing = billing; }
-    
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getBillingEmail() {
+        return billingEmail;
+    }
+    public void setBillingEmail(String billingEmail) {
+        this.billingEmail = billingEmail;
+    }
+
+    public Integer getLastFour() {
+        return lastFour;
+    }
+    public void setLastFour(Integer lastFour) {
+        this.lastFour = lastFour;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+    public void setStreet(String street) {
+        this.street = street;
+    }
+    public String getCity() {
+        return city;
+    }
+    public void setCity(String city) {
+        this.city = city;
+    }
+    public String getState() {
+        return state;
+    }
+    public void setState(String state) {
+        this.state = state;
+    }
+    public String getZip() {
+        return zip;
+    }
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+    public String getCardType() {
+        return cardType;
+    }
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+    public Integer getExpMonth() {
+        return expMonth;
+    }
+    public void setExpMonth(Integer expMonth) {
+        this.expMonth = expMonth;
+    }
+    public Integer getExpYear() {
+        return expYear;
+    }
+    public void setExpYear(Integer expYear) {
+        this.expYear = expYear;
+    }
 }
+

@@ -33,6 +33,10 @@ public class UserEntity {
     @Column(nullable = false)
     private Role role = Role.CUSTOMER;
 
+    @NotNull
+    @Column(nullable = false, name = "promo_opt_in")
+    private Boolean promoOptIn = false; 
+
     public Long getId() {
         return id;
     }
@@ -79,6 +83,14 @@ public String getFullName() {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Boolean getPromoOptIn() {
+        return promoOptIn;
+    }
+
+    public void setPromoOptIn(Boolean promoOptIn) {
+        this.promoOptIn = promoOptIn;
     }
 
 }

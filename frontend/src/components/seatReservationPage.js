@@ -1,26 +1,49 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "./seatReservationPage.css";
+import "./seatReservationPage.css"; // Re-added your CSS import
 
 function SeatReservationPage() {
   const { showtimeId } = useParams();
   const navigate = useNavigate();
 
+  // --- Auth & Loading State ---
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Start in loading state
+
   const rows = 6;
   const cols = 8;
 
-  // Mock reserved seats — this could later come from your DB
   const [reservedSeats, setReservedSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [tickets, setTickets] = useState([]);
-  
 
-  // Fake "fetch" of reserved seats based on showtimeId
+  // --- Authentication Check Effect ---
+  // This runs first to check if the user is logged in
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      // Not logged in, redirect to login page
+      navigate("/login");
+    } else {
+      // User is logged in, parse their data, stop loading
+      setUser(JSON.parse(storedUser));
+      setIsLoading(false);
+    }
+  }, [navigate]);
+
+  // "Fetch" reserved seats based on showtimeId
+  useEffect(() => {
+    // Don't run this if we are still loading or haven't set the user
+    if (isLoading || !user) return;
+
     // In real app, you’d call:
-    // fetch(`/api/showtimes/${showtimeId}/reserved-seats`)
+    // const { token } = user;
+    // fetch(`/api/showtimes/${showtimeId}/reserved-seats`, {
+    //   headers: { "Authorization": `Bearer ${token}` }
+    // })
     //   .then(res => res.json())
     //   .then(data => setReservedSeats(data));
+    
     // Simulate different reserved seats for different showtimes:
     const mockData =
       showtimeId === "1"
@@ -29,7 +52,7 @@ function SeatReservationPage() {
         ? ["C5", "C6"]
         : ["D1", "E4"];
     setReservedSeats(mockData);
-  }, [showtimeId]);
+  }, [showtimeId, isLoading, user]); // Added dependencies
 
   // Handle seat selection toggle
   const toggleSeat = (seatId) => {
@@ -74,9 +97,22 @@ function SeatReservationPage() {
   };
 
   const handleCheckout = () => {
-    const order = { tickets, total, showtimeId }; // <-- include showtimeId
+    if (!user) {
+      // Use a custom modal or message component in a real app
+      console.error("Session expired. Please log in again.");
+      navigate("/login");
+      return;
+    }
+
+    const order = {
+      tickets,
+      total,
+      showtimeId,
+      userId: user.userId, // <-- Add user ID for backend
+      token: user.token, // <-- Add token for backend auth
+    };
     navigate("/checkout", { state: { order } });
-};
+  };
 
   // Seat grid renderer
   const renderSeats = () => {
@@ -92,11 +128,7 @@ function SeatReservationPage() {
           <div
             key={seatId}
             className={`seat ${
-              isReserved
-                ? "reserved"
-                : isSelected
-                ? "selected"
-                : "available"
+              isReserved ? "reserved" : isSelected ? "selected" : "available"
             }`}
             onClick={() => toggleSeat(seatId)}
           >
@@ -113,79 +145,101 @@ function SeatReservationPage() {
     return seatGrid;
   };
 
-  return (
-    <div className="seatPageContainer">
-      <h1 className="seatTitle">Seat Reservation</h1>
-      <p className="showtimeInfo">Showtime ID: {showtimeId}</p>
-
-      <div className="screen">SCREEN</div>
-
-      <div className="seatsContainer">{renderSeats()}</div>
-
-      <div className="legend">
-        <div className="legendItem">
-          <span className="seat available"></span> Available
-        </div>
-        <div className="legendItem">
-          <span className="seat selected"></span> Selected
-        </div>
-        <div className="legendItem">
-          <span className="seat reserved"></span> Unavailable
-        </div>
+  // Show a loading screen while we check auth
+  if (isLoading) {
+    return (
+      // Use your own CSS classes for centering/styling
+      <div className="seatPageContainer" style={{ justifyContent: "center" }}>
+        <h2 className="seatTitle">Loading...</h2>
       </div>
+    );
+  }
 
-      {/* Ticket Summary */}
-      {tickets.length > 0 && (
-        <div className="orderSummary">
-          <h2>Order Summary</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Seat</th>
-                <th>Age Type</th>
-                <th>Price</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {tickets.map((t) => (
-                <tr key={t.seatId}>
-                  <td>{t.seatId}</td>
-                  <td>
-                    <select
-                      value={t.ageType}
-                      onChange={(e) =>
-                        handleAgeChange(t.seatId, e.target.value)
-                      }
-                    >
-                      <option value="Child">Child</option>
-                      <option value="Adult">Adult</option>
-                      <option value="Senior">Senior</option>
-                    </select>
-                  </td>
-                  <td>${t.price}</td>
-                  <td>
-                    <button
-                      className="deleteButton"
-                      onClick={() => handleDeleteTicket(t.seatId)}
-                    >
-                      ✕
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <h3>Total: ${total}</h3>
+  // --- Main component render ---
+  // This part only renders if the user is logged in
+  return (
+    <>
+      {/* All inline styles have been removed */}
+      <div className="seatPageContainer">
+        <h1 className="seatTitle">Seat Reservation</h1>
+        <p className="showtimeInfo">
+          {/* You can now display user info if you want */}
+          {/* User: {user.firstName} | Showtime ID: {showtimeId} */}
+        </p>
 
-          <div className="orderActions">
-            <button onClick={() => setTickets([])}>Update Order</button>
-            <button onClick={handleCheckout}>Continue to Checkout</button>
+        <div className="screen">SCREEN</div>
+
+        <div className="seatsContainer">{renderSeats()}</div>
+
+        <div className="legend">
+          <div className="legendItem">
+            <span className="seat available"></span> Available
+          </div>
+          <div className="legendItem">
+            <span className="seat selected"></span> Selected
+          </div>
+          <div className="legendItem">
+            <span className="seat reserved"></span> Unavailable
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Ticket Summary */}
+        {tickets.length > 0 && (
+          <div className="orderSummary">
+            <h2>Order Summary</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Seat</th>
+                  <th>Age Type</th>
+                  <th>Price</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {tickets.map((t) => (
+                  <tr key={t.seatId}>
+                    <td>{t.seatId}</td>
+                    <td>
+                      <select
+                        value={t.ageType}
+                        onChange={(e) =>
+                          handleAgeChange(t.seatId, e.target.value)
+                        }
+                      >
+                        <option value="Child">Child</option>
+                        <option value="Adult">Adult</option>
+                        <option value="Senior">Senior</option>
+                      </select>
+                    </td>
+                    <td>${t.price}</td>
+                    <td>
+                      <button
+                        className="deleteButton"
+                        onClick={() => handleDeleteTicket(t.seatId)}
+                      >
+                        ✕
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <h3>Total: ${total}</h3>
+
+            <div className="orderActions">
+              <button onClick={() => {
+                setSelectedSeats([]);
+                setTickets([]);
+              }}>Clear Selection</button>
+              <button onClick={handleCheckout}>Continue to Checkout</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 
 export default SeatReservationPage;
+

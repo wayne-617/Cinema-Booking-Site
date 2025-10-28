@@ -44,12 +44,16 @@ function LoginPage() {
     const decoded = jwtDecode(data.token);
     console.log("Decoded token:", decoded);
 
+    const fullName = decoded.fullName || "User User";
+    const firstName = fullName.split(" ")[0]; 
     localStorage.setItem(
       "user",
       JSON.stringify({
-        fullName: decoded.fullName || "User User",
+        fullName,
+        firstName,
         username: decoded.sub,  // 'sub' is often the email/username
         role: decoded.role,
+        userId: decoded.userId,
         token: data.token,
       })
     );
