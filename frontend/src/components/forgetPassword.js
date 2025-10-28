@@ -56,34 +56,36 @@ function ForgotPassword() {
   };
 
   return (
-    <div className="bodyDiv">
-      <section className="contentSection">
-        <section className="bodySection">
-          <div className="bodyTextDiv">
-            <div className="title-container">
-              <h1 className="login-title">Forgot</h1>
-              <h1 className="login-title">Password</h1>
-            </div>
+    <div className="forgotPage-container">
+      <div className="forgotPage-card">
+        <img src={logo} alt="Logo" className="forgotPage-logo" />
+        <h1 className="forgotPage-title">Forgot Password</h1>
 
-            <div className="login-form">
-                <p1 className="forgot-Desc">Enter email to receive a new password reset link</p1>
-                {displayMessage && <p2 className="forgot-Desc">{displayMessage}</p2>}
-              <input
-                type="email"
-                placeholder="Email"
-                className="login-input1"
-                id = "myEmail"
-                
-              />
-              <button className="login-button" onClick={handleRequestClick} >Request</button>
-            </div>
-            <div className="login-footer">
-              Don’t have an account? <Link to="/register">Register</Link>
-            </div>
-            
-          </div>
-        </section>
-      </section>
+        <div className="forgotPage-form">
+          <p className="forgotPage-desc">
+            Enter email to receive a new password reset link
+          </p>
+          {displayMessage && (
+            <p className="forgotPage-message">{displayMessage}</p>
+          )}
+          <input
+            type="email"
+            placeholder="Email"
+            className="forgotPage-input"
+            id="myEmail"
+          />
+          <button
+            className="forgotPage-button"
+            onClick={handleRequestClick}
+          >
+            Request
+          </button>
+        </div>
+
+        <div className="forgotPage-footer">
+          Don’t have an account? <Link to="/register">Register</Link>
+        </div>
+      </div>
     </div>
   );
 }
