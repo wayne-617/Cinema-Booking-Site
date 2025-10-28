@@ -127,22 +127,7 @@ function EditProfilePage() {
 
     // This payload MUST match your UpdateProfileRequestDTO
     const payload = {
-      // Account Info
-      firstName,
-      lastName,
-      phone,
-      
-      // Promotions
-      promoOptIn,
-
-      // Billing Address
-      street,
-      city,
-      state: stateUS,
-      zip,
-
-      // Password (send null if empty)
-      currentPassword: currentPassword || null,
+      email,
       newPassword: newPassword || null,
 
       // Payment

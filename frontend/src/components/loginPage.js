@@ -26,7 +26,7 @@ function LoginPage() {
       password: passInput.value,
     }),
   });
-
+  
   console.log("Response status:", response.status);
 
   let text = await response.text(); // get raw response first
@@ -62,7 +62,7 @@ function LoginPage() {
     if (decoded.role === "ADMIN") {
       navigate("/admindashboard");
     } else {
-      navigate("/");
+      navigate("/customer");
     }
 
     setTimeout(() => window.location.reload(), 100);

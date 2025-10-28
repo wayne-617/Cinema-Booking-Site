@@ -9,9 +9,10 @@ import {useState} from 'react';
 function ForgotPassword() {
  
   const navigate = useNavigate();
-
+  const [displayMessage, setDisplay] = useState("") 
   const handleRequestClick = async () => {
-   
+ 
+  
     const emailaddr = document.getElementById("myEmail");
     const desc = document.getElementById("forgot-Desc");
    
@@ -28,6 +29,7 @@ function ForgotPassword() {
     }).then(async resp =>  {
       const data = await resp.json();
       if (!resp.ok && emailaddr.value != "admin@user.com") {
+        
         if (data.error === "Password incorrect") { 
           
           // since there is no password provided since we're only sending email, as long as data.error === incorrect password, 
@@ -40,10 +42,14 @@ function ForgotPassword() {
         email: emailaddr.value,  
         })
     });
+      const message = "Reset link sent";
+      setDisplay(message);
   }
+ 
       } else if (!resp.ok) {
-      
-    } 
+       
+    }
+     
   })
 
     //navigate("/customer", {state: {user: emailaddr.value}});
@@ -61,6 +67,7 @@ function ForgotPassword() {
 
             <div className="login-form">
                 <p1 className="forgot-Desc">Enter email to receive a new password reset link</p1>
+                {displayMessage && <p2 className="forgot-Desc">{displayMessage}</p2>}
               <input
                 type="email"
                 placeholder="Email"
