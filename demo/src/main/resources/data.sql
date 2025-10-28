@@ -1,9 +1,9 @@
 -- Users: id, password (BCrypt hashed), role, email
 -- admin@user.com, password: masterkey
 -- user1@user.com, password: userpassword
-INSERT INTO users (id, password, role, username, full_name, phone, promo_opt_in) VALUES 
-(1, '$2a$10$jlT2BqziFJsVMpLUIEstIuV0yMG8Yze.wjD66G4JhfLruwNYakNc.', 'ADMIN', 'admin@user.com', 'Admin User', '+15555550100', false),
-(2, '$2a$10$64tXJNgLMp5m78Krvn964uQRkuFGgLdjJZYpeQrItBzBpgLWmPZ/a', 'CUSTOMER', 'user1@user.com', 'Customer User', '+15555550101', false);
+INSERT INTO users (id, password, role, username, full_name, phone, promo_opt_in, enabled) VALUES 
+(1, '$2a$10$jlT2BqziFJsVMpLUIEstIuV0yMG8Yze.wjD66G4JhfLruwNYakNc.', 'ADMIN', 'admin@user.com', 'Admin User', '+15555550100', false, true),
+(2, '$2a$10$64tXJNgLMp5m78Krvn964uQRkuFGgLdjJZYpeQrItBzBpgLWmPZ/a', 'CUSTOMER', 'user1@user.com', 'Customer User', '+15555550101', false, true);
 
 
 
