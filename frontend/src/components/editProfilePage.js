@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./editProfilePage.css";
 import { useNavigate } from "react-router-dom";
 
+
 function EditProfilePage() {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user'));
 
   // ---------- State definitions (same as before) ----------
   const [email, setEmail] = useState("");
@@ -33,6 +35,22 @@ function EditProfilePage() {
     fetchProfile();
   }, []);
 
+  const displayCurrent = async () => {
+
+     const res = await fetch(`http://localhost:9090/auth/${user.username}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    
+    });
+    const data = await res.json();
+    setFirstName(data.name.split(" ", 1));
+    setLastName(data.name.split(" ")[1]);
+    setPhone(data.phone);
+    
+  }
+
+  
+
   const handleSave = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
@@ -41,7 +59,6 @@ function EditProfilePage() {
     }
 
     const payload = {
-      userId,
       email,
       newPassword: newPassword || null,
       promo_opt_in: promoOptIn ? 1 : 0,
@@ -69,9 +86,9 @@ function EditProfilePage() {
 
     alert(res.ok ? "Profile updated!" : "Failed to update profile.");
   };
-
+  window.onload = displayCurrent;
   return (
-    <div className="editProfilePage-container">
+    <div className="editProfilePage-container" onLoad={displayCurrent}>
       <div className="editProfilePage-card">
         <h1 className="editProfilePage-title">Edit Profile</h1>
 
@@ -81,23 +98,23 @@ function EditProfilePage() {
           <div className="editProfilePage-formGrid">
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel">Email (cannot be changed)</label>
-              <input className="editProfilePage-input editProfilePage-readOnly" value={email} disabled />
+              <input className="editProfilePage-input editProfilePage-readOnly" value={email} placeholder={user.username} disabled />
             </div>
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel">Current Password (hidden)</label>
-              <input className="editProfilePage-input editProfilePage-readOnly" value={maskedPassword} disabled />
+              <input className="editProfilePage-input editProfilePage-readOnly" value={maskedPassword} placeholder={user.password}disabled />
             </div>
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel">First Name</label>
-              <input className="editProfilePage-input" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="First name"/>
+              <input className="editProfilePage-input" value={firstName}  placeholder={firstName} onChange={e => setFirstName(e.target.value)}/>
             </div>
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel">Last Name</label>
-              <input className="editProfilePage-input" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Last name"/>
+              <input className="editProfilePage-input" value={lastName}  placeholder={lastName} onChange={e => setLastName(e.target.value)}/>
             </div>
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel">Phone Number</label>
-              <input className="editProfilePage-input" value={phone} onChange={e => setPhone(e.target.value)} placeholder="1234567890"/>
+              <input className="editProfilePage-input" value={phone} onChange={e => setPhone(e.target.value)} placeholder={phone}  />
             </div>
           </div>
         </div>
@@ -131,7 +148,7 @@ function EditProfilePage() {
           <div className="editProfilePage-formGrid">
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel">Current Password</label>
-              <input className="editProfilePage-input" type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} placeholder="Enter current password"/>
+              <input className="editProfilePage-input" type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} placeholder="current password"/>
             </div>
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel">New Password</label>

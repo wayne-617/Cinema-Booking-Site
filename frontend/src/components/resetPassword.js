@@ -25,7 +25,7 @@ function ResetPassword() {
         method: "PUT",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-        username: "erich.hutchison@gmail.com",
+        username: userEmail,
         password: pass.value
         })
        

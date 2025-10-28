@@ -26,7 +26,7 @@ function LoginPage() {
       password: passInput.value,
     }),
   });
-
+  
   console.log("Response status:", response.status);
 
   let text = await response.text(); // get raw response first
@@ -50,7 +50,8 @@ function LoginPage() {
         fullName: decoded.fullName || "User User",
         username: decoded.sub,  // 'sub' is often the email/username
         role: decoded.role,
-        token: data.token,
+        token: data.token
+        
       })
     );
 

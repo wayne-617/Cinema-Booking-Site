@@ -150,7 +150,7 @@ export function NavBar() {
                 className={`userButton ${isDropdownOpen ? "menu-open" : ""}`}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                <span>{user.fullName.split(" ")[0]}</span>
+                <span>{user.fullName}</span>
                 <div className="hamburger-icon">
                   <span></span>
                 </div>
