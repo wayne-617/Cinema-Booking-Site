@@ -11,8 +11,22 @@ public class ProfileResponseDTO {
     // from billing table
     private String firstName;
     private String lastName;
-    private String billingEmail; // billing.email
+        private String billingEmail; // billing.email
     private Integer lastFour;    // billing.last_four
+
+    // Address info
+    private String street;
+    private String city;
+    private String state;
+    private String zip;
+
+    // Payment info
+    private String cardType;
+    private Integer expMonth;
+    private Integer expYear;
+
+    private String phone;        // users.phone
+    private Boolean promoOptIn;  // users.promo_opt_in
 
     // NOTE:
     // You don't yet have phone, street, city, state, zip, expMonth, expYear, cardType
@@ -38,6 +52,20 @@ public class ProfileResponseDTO {
     }
     public void setRole(String role) {
         this.role = role;
+    }
+
+     public String getPhone() {
+        return phone;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Boolean getPromoOptIn() {
+        return promoOptIn;
+    }
+    public void setPromoOptIn(Boolean promoOptIn) {
+        this.promoOptIn = promoOptIn;
     }
 
     public String getFirstName() {
@@ -67,5 +95,51 @@ public class ProfileResponseDTO {
     public void setLastFour(Integer lastFour) {
         this.lastFour = lastFour;
     }
+
+    public String getStreet() {
+        return street;
+    }
+    public void setStreet(String street) {
+        this.street = street;
+    }
+    public String getCity() {
+        return city;
+    }
+    public void setCity(String city) {
+        this.city = city;
+    }
+    public String getState() {
+        return state;
+    }
+    public void setState(String state) {
+        this.state = state;
+    }
+    public String getZip() {
+        return zip;
+    }
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+    public String getCardType() {
+        return cardType;
+    }
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+    public Integer getExpMonth() {
+        return expMonth;
+    }
+    public void setExpMonth(Integer expMonth) {
+        this.expMonth = expMonth;
+    }
+    public Integer getExpYear() {
+        return expYear;
+    }
+    public void setExpYear(Integer expYear) {
+        this.expYear = expYear;
+    }
+
+    
+
     
 }

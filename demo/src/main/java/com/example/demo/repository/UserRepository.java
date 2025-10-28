@@ -9,4 +9,5 @@ import com.example.demo.entity.UserEntity;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByUsername(String username);
+    Optional<UserEntity> findByVerificationToken(String token);
 }

@@ -26,7 +26,7 @@ function LoginPage() {
       password: passInput.value,
     }),
   });
-
+  
   console.log("Response status:", response.status);
 
   let text = await response.text(); // get raw response first
@@ -44,12 +44,16 @@ function LoginPage() {
     const decoded = jwtDecode(data.token);
     console.log("Decoded token:", decoded);
 
+    const fullName = decoded.fullName || "User User";
+    const firstName = fullName.split(" ")[0]; 
     localStorage.setItem(
       "user",
       JSON.stringify({
-        fullName: decoded.fullName || "User User",
+        fullName,
+        firstName,
         username: decoded.sub,  // 'sub' is often the email/username
         role: decoded.role,
+        userId: decoded.userId,
         token: data.token,
       })
     );
@@ -66,7 +70,7 @@ function LoginPage() {
       const message =
         data.error === "Password incorrect"
           ? "Incorrect password."
-          : "Incorrect username or password.";
+          : data.error;
       setErrorMessage(message);
       setShake(true);
       setTimeout(() => setShake(false), 500);

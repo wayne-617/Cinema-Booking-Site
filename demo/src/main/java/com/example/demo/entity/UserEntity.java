@@ -28,10 +28,19 @@ public class UserEntity {
     @NotNull
     @Column(nullable = false)
     private String password;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role = Role.CUSTOMER;
+
+    @Column(nullable = false)
+    private Boolean enabled = false;
+
+    private String verificationToken;
+
+    @Column(name = "promo_opt_in", nullable = false)
+    private Boolean promoOptIn = false;
 
     public Long getId() {
         return id;
@@ -40,7 +49,7 @@ public class UserEntity {
     public String getUsername() {
         return username;
     }
-public String getFullName() {
+    public String getFullName() {
         return fullName;
     }
 
@@ -79,6 +88,32 @@ public String getFullName() {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+    
+    public Boolean getPromoOptIn() {
+        return promoOptIn;
+    }
+
+    public void setPromoOptIn(Boolean promoOptIn) {
+        this.promoOptIn = promoOptIn;
+    }
+
+    
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
     }
 
 }

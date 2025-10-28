@@ -38,13 +38,11 @@ export function NavBar() {
     navigate("/");
   };
 
-  // ✅ THIS IS THE NEW FUNCTION TO HANDLE "ENTER"
   const handleSearchSubmit = (e) => {
     if (e.key === "Enter") {
     e.preventDefault();
     const trimmed = query.trim();
 
-    // If blank → go to all movies, otherwise → filtered movies
     if (trimmed === "") {
       navigate("/movies");
     } else {
@@ -150,8 +148,8 @@ export function NavBar() {
                 className={`userButton ${isDropdownOpen ? "menu-open" : ""}`}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                <span>{user.fullName.split(" ")[0]}</span>
-                <div className="hamburger-icon">
+              <span>{user.firstName}</span>               
+              <div className="hamburger-icon">
                   <span></span>
                 </div>
               </button>
