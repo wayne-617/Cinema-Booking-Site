@@ -27,6 +27,7 @@ import EditProfilePage from './components/editProfilePage';
 import WrongPassPage from './components/wrongPass';
 import ForgotPassword from './components/forgetPassword';
 import ResetPassword from './components/resetPassword'
+import Verify from './components/Verify';
 import './app.css'; 
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
          //checkout and order confirmation removed because regular users aren't allowed to get that far without logging in
           <Route path="/forgetPassword" element={<ForgotPassword/>} />
           <Route path="/reset" element={<ResetPassword/>} />
+          <Route path="/verify" element={<Verify/>} />
 
         {<Route path="*" element={<NotFoundPage />} /> }
         </Route>

@@ -66,7 +66,7 @@ function LoginPage() {
       const message =
         data.error === "Password incorrect"
           ? "Incorrect password."
-          : "Incorrect username or password.";
+          : data.error;
       setErrorMessage(message);
       setShake(true);
       setTimeout(() => setShake(false), 500);

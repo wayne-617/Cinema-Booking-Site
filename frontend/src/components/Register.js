@@ -17,7 +17,7 @@ function Register() {
   // Email validator
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const handleRegisterClick = (e) => {
+  const handleRegisterClick = async (e) => {
     e.preventDefault();
 
     // --- Validation logic ---
@@ -45,7 +45,34 @@ function Register() {
       ) {
         navigate("/admin");
       } else {
-        navigate("/congrats");
+        try {
+          const response = await fetch("http://localhost:9090/auth/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: email,
+              password: password,
+              fullName: name,
+              phone: phone,
+            }),
+          });
+
+          if (response.ok) {
+            navigate("/verify", {
+              state: {
+                email: email,
+                message: "Registration successful! A verification code has been sent to your email.",
+              }
+            });
+          } else {
+            const data = await response.json();
+            setErrorMessage(data.error || "Registration failed");
+          }
+        } catch (error) {
+          setErrorMessage("An error occurred");
+        }
       }
       return;
     }
