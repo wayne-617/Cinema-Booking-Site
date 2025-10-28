@@ -60,6 +60,7 @@ function EditProfilePage() {
 
       setUserId(currentUserId);
       setEmail(email);
+      
       try {
         const res = await fetch(`http://localhost:9090/auth/${userData.username}`, {
           method: "GET",
@@ -83,6 +84,22 @@ function EditProfilePage() {
         
         // Set Promotions
         setPromoOptIn(data.promoOptIn || false);
+          try {
+            const res = await fetch(`http://localhost:9090/billing/get/${currentUserId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+          
+        if (!res.ok) {
+          throw new Error("Failed to fetch profile data.");
+        }
+
+        const data = await res.json(); // This is your full ProfileResponseDTO
+        console.log("data: ", data);
+
 
         // Set Billing Address
         setStreet(data.street || "");
@@ -102,7 +119,28 @@ function EditProfilePage() {
       } finally {
         setIsLoading(false);
       }
+    
+
+
+        // Set Billing Address
+        
+
+        // Set Payment
+        
+
+
+      } catch (error) {
+        setMessage({ text: error.message, type: "error" });
+      } finally {
+        setIsLoading(false);
+      }
+    
+      
+
+    
     }
+
+
 
     fetchProfile();
   }, [navigate]);
@@ -116,6 +154,10 @@ function EditProfilePage() {
     }
 
     const storedUser = localStorage.getItem("user");
+    const userData = JSON.parse(storedUser);
+    const { userId: currentUserId, username: email } = userData;
+    setUserId(currentUserId);
+
     if (!storedUser) {
       setMessage({ text: "Authentication error. Please log in again.", type: "error" });
       return;
@@ -127,20 +169,31 @@ function EditProfilePage() {
 
     // This payload MUST match your UpdateProfileRequestDTO
     const payload = {
-      email,
-      newPassword: newPassword || null,
-
-      // Payment
+      
+      uid: currentUserId,
+      email: email,
       cardType,
       lastFour: cardLast4 ? parseInt(cardLast4, 10) : null,
       expMonth: expMonth ? parseInt(expMonth, 10) : null,
       expYear: expYear ? parseInt(expYear, 10) : null,
+      //address
+      street,
+      zip,
+      city,
+      stateUS
+    };
+
+    const payload2 = {
+      username: email,
+      phone,
+      fullName: firstName + lastName
+      
     };
 
     console.log("Submitting profile update payload:", payload);
-
+    console.log("Submitting profile update 2nd payload:", payload2);
     try {
-      const res = await fetch(`http://localhost:9090/auth/${email}`, {
+      const res = await fetch(`http://localhost:9090/billing/submit`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -151,7 +204,7 @@ function EditProfilePage() {
 
       if (!res.ok) {
         // Try to parse error from backend
-        let errorMsg = "Failed to update profile.";
+        let errorMsg = "Failed to update profile. Billing info error";
         try {
           const errorData = await res.json();
           errorMsg = errorData.message || errorMsg;
@@ -160,7 +213,32 @@ function EditProfilePage() {
         }
         throw new Error(errorMsg);
       }
-      
+      try {
+      const res1 = await fetch(`http://localhost:9090/auth/update`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload2),
+      });
+
+      if (!res1.ok) {
+        // Try to parse error from backend
+        let errorMsg = "Failed to update profile. User info error";
+        try {
+          const errorData = await res1.json();
+          errorMsg = errorData.message || errorMsg;
+        } catch (parseError) {
+          // Keep default error message
+        }
+        throw new Error(errorMsg);
+      }
+        } catch (error) {
+      setMessage({ text: error.message, type: "error" });
+    } finally {
+      setIsLoading(false);
+    }
       setMessage({ text: "Profile updated successfully!", type: "success" });
       
       // Clear password fields
@@ -222,12 +300,12 @@ function EditProfilePage() {
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="firstName">First Name</label>
-              <input id="firstName" className="editProfilePage-input" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder={firstName}/>
+              <input id="firstName" className="editProfilePage-input" value={firstName} onChange={e => setFirstName(e.target.value.split(" ")[1])} placeholder={firstName}/>
             </div>
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="lastName">Last Name</label>
-              <input id="lastName" className="editProfilePage-input" value={lastName} onChange={e => setLastName(e.target.value)} placeholder={lastName}/>
+              <input id="lastName" className="editProfilePage-input" value={lastName} onChange={e => setLastName(e.target.value.split(" ")[2])} placeholder={lastName}/>
             </div>
           </div>
         </fieldset>
@@ -239,22 +317,22 @@ function EditProfilePage() {
             
             <div className="editProfilePage-formGroup formGroup-span2">
               <label className="editProfilePage-inputLabel" htmlFor="street">Street</label>
-              <input id="street" className="editProfilePage-input" value={street} onChange={e => setStreet(e.target.value)} placeholder="123 Main St"/>
+              <input id="street" className="editProfilePage-input" value={street} onChange={e => setStreet(e.target.value)} placeholder={street}/>
             </div>
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="city">City</label>
-              <input id="city" className="editProfilePage-input" value={city} onChange={e => setCity(e.target.value)} placeholder="Athens"/>
+              <input id="city" className="editProfilePage-input" value={city} onChange={e => setCity(e.target.value)} placeholder={city}/>
             </div>
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="state">State</label>
-              <input id="state" className="editProfilePage-input" value={stateUS} onChange={e => setStateUS(e.target.value)} placeholder="GA" maxLength="2"/>
+              <input id="state" className="editProfilePage-input" value={stateUS} onChange={e => setStateUS(e.target.value)} placeholder={stateUS} />
             </div>
 
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="zip">ZIP</label>
-              <input id="zip" className="editProfilePage-input" value={zip} onChange={e => setZip(e.target.value)} placeholder="30601" maxLength="5"/>
+              <input id="zip" className="editProfilePage-input" value={zip} onChange={e => setZip(e.target.value)} placeholder={zip}maxLength="5"/>
             </div>
           </div>
         </fieldset>
@@ -288,22 +366,22 @@ function EditProfilePage() {
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="cardType">Card Type</label>
-              <input id="cardType" className="editProfilePage-input" value={cardType} onChange={e => setCardType(e.target.value)} placeholder="Visa / MasterCard"/>
+              <input id="cardType" className="editProfilePage-input" value={cardType} onChange={e => setCardType(e.target.value)} placeholder={cardType}/>
             </div>
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="cardLast4">Card Ending In</label>
-              <input id="cardLast4" className="editProfilePage-input" value={cardLast4} onChange={e => setCardLast4(e.target.value)} placeholder="1234" maxLength="4"/>
+              <input id="cardLast4" className="editProfilePage-input" value={cardLast4} onChange={e => setCardLast4(e.target.value)} placeholder={cardLast4} maxLength="4"/>
             </div>
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="expMonth">Exp. Month</label>
-              <input id="expMonth" className="editProfilePage-input" value={expMonth} onChange={e => setExpMonth(e.target.value)} placeholder="MM" maxLength="2"/>
+              <input id="expMonth" className="editProfilePage-input" value={expMonth} onChange={e => setExpMonth(e.target.value)}placeholder={expMonth} maxLength="2"/>
             </div>
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="expYear">Exp. Year</label>
-              <input id="expYear" className="editProfilePage-input" value={expYear} onChange={e => setExpYear(e.target.value)} placeholder="YY" maxLength="2"/>
+              <input id="expYear" className="editProfilePage-input" value={expYear} onChange={e => setExpYear(e.target.value)} placeholder={expYear} maxLength="2"/>
             </div>
           </div>
         </fieldset>

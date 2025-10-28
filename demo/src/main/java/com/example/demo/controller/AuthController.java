@@ -125,12 +125,23 @@ public class AuthController {
          try {
             String username = payload.get("username");
             String password = payload.get("password");
+            String phone = payload.get("phone");
+            String name = payload.get("fullName");
             UserEntity userEntity = userRepository.findByUsername(username)
              .orElseThrow(() -> new RuntimeException("User not found"));
             
             
              userEntity.setUsername(username);
+             if (payload.get("password") != null && !payload.get("password").isEmpty()) {
              userEntity.setPassword(passwordEncoder.encode(password));
+             }
+             if (payload.get("phone") != null && !payload.get("phone").isEmpty()) {
+             userEntity.setPhone(phone);
+             }
+
+             if (payload.get("fullName") != null && !payload.get("fullName").isEmpty()) {
+             userEntity.setFullName(name);
+             }
              userRepository.save(userEntity);
          
            return ResponseEntity.ok(userEntity);

@@ -94,67 +94,67 @@ function AdminMovies() {
              <h1>Add a New Movie</h1>
             <div className="movie-input">
               <form id="Mform">
-              <input
+              <textarea
                 type="text"
                 placeholder="Title"
                 className="login-input"
                 id = "movieTitle"
               />
-              <input
+              <textarea
                 type="text"
                 placeholder="Director"
                 className="login-input"
                 id = "movieDirector"
               />
-               <input
+               <textarea
                 type="text"
                 placeholder="Producer"
                 className="login-input"
                 id = "movieProducer"
               />
-              <input
+              <textarea
                 type="text"
                 placeholder="Synopsis"
                 className="login-input"
                 id = "movieSynopsis"
               />
-               <input
+               <textarea
                 type="test"
                 placeholder="Movie Review"
                 className="login-input"
                 id = "movieReview"
               />
-              <input
+              <textarea
                 type="url"
                 placeholder="Movie Poster"
                 className="login-input"
                 id = "moviePoster"
               />
-               <input
+               <textarea
                 type="url"
                 placeholder="Trailer Video"
                 className="login-input"
                 id = "trailerVideo"
               />
-              <input
+              <textarea
                 type="text"
                 placeholder="Rating"
                 className="login-input"
                 id = "movieRating"
               />
-              <input
+              <textarea
                 type="datetime-local"
                 placeholder="Showtime"
                 className="login-input"
                 id = "movieShowtime"
               />
-              <input 
+              <textarea 
                 type="text"
                 placeholder="Cast"
                 className="movie-input"
                 id = "movieCast"
               />
-              <input 
+              <textarea 
                 type="text"
                 placeholder="Catergory"
                 className="movie-input"
@@ -174,79 +174,79 @@ function AdminMovies() {
         {movies.map((movie) => (
             <div className="movieEditItem" key={movie.movieId}>
               <form id="editMovie">
-              <input
+              <textarea
                 type="text"
                 value={movie.title}
                 className="movieEdit"
                 id = "movieName"
               />
-              <input
+              <textarea
                 type="text"
                 value={movie.category}
                 className="movieEdit"
                 id = "movieCategory"
               />
-               <input
+               <textarea
                 type="text"
                 value={movie.director}
                 className="movieEdit"
                 id = "movieDirector"
               />
-               <input
+               <textarea
                 type="text"
                 value={movie.producer}
                 className="movieEdit"
                 id = "movieProducer"
               />
-               <input
+               <textarea
                 type="text"
                 value={movie.castMembers}
                 className="movieEdit"
                 id = "castMembers"
               />
-               <input
+               <textarea
                 type="text"
                 value={movie.synopsis}
                 className="movieEdit"
                 id = "movieSynopsis"
               />
-               <input
+               <textarea
                 type="text"
                 value={movie.reviews}
                 className="movieEdit"
                 id = "movieReviews"
               />
-               <input
+               <textarea
                 type="text"
                 value={movie.trailer_picture}
                 className="movieEdit"
                 id = "movieTrailerPicture"
               />
-               <input
+               <textarea
                 type="text"
                 value={movie.trailer_video}
                 className="movieEdit"
                 id = "movieTrailerVideo"
               />
-               <input
+               <textarea
                 type="text"
                 value={movie.mpaaRating}
                 className="movieEdit"
                 id = "movieRating"
               />
-               <input
+               <textarea
                 type="text"
                 value={movie.showtime}
                 className="movieEdit"
                 id = "movieShowtime"
               />
-               <input
+               <textarea
                 type="text"
                 value={movie.poster_url}
                 className="movieEdit"
                 id = "moviePoster"
               />
-               <input
+               <textarea
                 type="text"
                 value={movie.status
                 }
