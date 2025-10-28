@@ -49,7 +49,7 @@ function EditProfilePage() {
       }
 
       const userData = JSON.parse(storedUser);
-      const { token, userId: currentUserId } = userData;
+      const { token, userId: currentUserId, username: email } = userData;
 
       if (!token || !currentUserId) {
         setMessage({ text: "Invalid authentication. Please log in again.", type: "error" });
@@ -59,9 +59,9 @@ function EditProfilePage() {
       }
 
       setUserId(currentUserId);
-
+      setEmail(email);
       try {
-        const res = await fetch(`http://localhost:9090/api/profile/${currentUserId}`, {
+        const res = await fetch(`http://localhost:9090/auth/${userData.username}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -76,9 +76,9 @@ function EditProfilePage() {
         const data = await res.json(); // This is your full ProfileResponseDTO
 
         // Set Account Info
-        setEmail(data.email || "");
-        setFirstName(data.firstName || "");
-        setLastName(data.lastName || "");
+        //setEmail(data.email);
+        setFirstName(data.name.split(" ")[0] || "");
+        setLastName(data.name.split(" ")[1] || "");
         setPhone(data.phone || "");
         
         // Set Promotions
@@ -140,7 +140,7 @@ function EditProfilePage() {
     console.log("Submitting profile update payload:", payload);
 
     try {
-      const res = await fetch(`http://localhost:9090/api/profile/${userId}`, {
+      const res = await fetch(`http://localhost:9090/auth/${email}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -211,23 +211,23 @@ function EditProfilePage() {
           <div className="editProfilePage-formGrid">
             
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="email">Email (cannot be changed)</label>
-              <input id="email" className="editProfilePage-input editProfilePage-readOnly" value={email} disabled />
+              <label className="editProfilePage-inputLabel" htmlFor="email">Email (cannot be changed) </label>
+              <input id="email" className="editProfilePage-input editProfilePage-readOnly" value={email} placeholder={email}disabled />
             </div>
 
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="phone">Phone Number</label>
-              <input id="phone" className="editProfilePage-input" value={phone} onChange={e => setPhone(e.target.value)} placeholder="123-456-7890"/>
+              <input id="phone" className="editProfilePage-input" value={phone} onChange={e => setPhone(e.target.value)} placeholder={phone}/>
             </div>
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="firstName">First Name</label>
-              <input id="firstName" className="editProfilePage-input" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="First name"/>
+              <input id="firstName" className="editProfilePage-input" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder={firstName}/>
             </div>
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="lastName">Last Name</label>
-              <input id="lastName" className="editProfilePage-input" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Last name"/>
+              <input id="lastName" className="editProfilePage-input" value={lastName} onChange={e => setLastName(e.target.value)} placeholder={lastName}/>
             </div>
           </div>
         </fieldset>

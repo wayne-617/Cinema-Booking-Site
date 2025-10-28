@@ -5,6 +5,7 @@ INSERT INTO users (id, password, role, username, full_name, phone, promo_opt_in,
 (1, '$2a$10$jlT2BqziFJsVMpLUIEstIuV0yMG8Yze.wjD66G4JhfLruwNYakNc.', 'ADMIN', 'admin@user.com', 'Admin User', '+15555550100', false, true),
 (2, '$2a$10$64tXJNgLMp5m78Krvn964uQRkuFGgLdjJZYpeQrItBzBpgLWmPZ/a', 'CUSTOMER', 'user1@user.com', 'Customer User', '+15555550101', false, true);
 
+ALTER TABLE users MODIFY enabled BOOLEAN NOT NULL DEFAULT TRUE;
 
 
 INSERT INTO billing (user_id, first_name, last_name, email, last_four, street, city, state, zip, card_type, exp_month, exp_year) VALUES
