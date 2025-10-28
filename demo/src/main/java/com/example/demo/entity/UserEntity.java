@@ -39,6 +39,9 @@ public class UserEntity {
 
     private String verificationToken;
 
+    @Column(name = "promo_opt_in", nullable = false)
+    private Boolean promoOptIn = false;
+
     public Long getId() {
         return id;
     }
@@ -94,6 +97,16 @@ public class UserEntity {
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
+    
+    public Boolean getPromoOptIn() {
+        return promoOptIn;
+    }
+
+    public void setPromoOptIn(Boolean promoOptIn) {
+        this.promoOptIn = promoOptIn;
+    }
+
+    
 
     public String getVerificationToken() {
         return verificationToken;

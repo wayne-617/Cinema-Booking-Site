@@ -62,7 +62,7 @@ function LoginPage() {
     if (decoded.role === "ADMIN") {
       navigate("/admindashboard");
     } else {
-      navigate("/customer");
+      navigate("/");
     }
 
     setTimeout(() => window.location.reload(), 100);
