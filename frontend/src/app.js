@@ -48,8 +48,10 @@ function App() {
           <Route path="/showtimes" element={<ShowtimesPage />} />
           <Route path="/theaters" element={<TheatersPage />} />
           <Route path="/seat-reservation/:showtimeId" element={<SeatReservationPage />} />
-     
-         //checkout and order confirmation removed because regular users aren't allowed to get that far without logging in
+          // fix order summary & checkout to adhere to general view that logged out users cant see
+          <Route path="/order-summary" element={<OrderSummaryPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
           <Route path="/forgetPassword" element={<ForgotPassword/>} />
           <Route path="/reset" element={<ResetPassword/>} />
           <Route path="/verify" element={<Verify/>} />
