@@ -46,7 +46,7 @@ public class UserEntity {
     public String getUsername() {
         return username;
     }
-public String getFullName() {
+    public String getFullName() {
         return fullName;
     }
 

@@ -106,8 +106,13 @@ public class AuthController {
 
         AuthUserDTO dto = new AuthUserDTO();
         dto.setId(userEntity.getId());
+        dto.setPhone(userEntity.getPhone().toString());
+        dto.setName(userEntity.getFullName().toString());
+        dto.setPassword(userEntity.getPassword().toString());
         dto.setUsername(userEntity.getUsername());
         dto.setRole(userEntity.getRole().toString());
+       
+        
 
         String pw = userEntity.getPassword();
         dto.setPasswordLength(pw == null ? 0 : pw.length());
