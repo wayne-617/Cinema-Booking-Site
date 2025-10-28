@@ -13,7 +13,14 @@ function Register() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [stateUS, setStateUS] = useState("");
+  const [zip, setZip] = useState("");
+  const [cardType, setCardType] = useState("");
+  const [cardLast4, setCardLast4] = useState("");
+  const [expMonth, setExpMonth] = useState("");
+  const [expYear, setExpYear] = useState("");
   // Email validator
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -74,6 +81,8 @@ function Register() {
           setErrorMessage("An error occurred");
         }
       }
+     
+
       return;
     }
 
@@ -114,6 +123,54 @@ function Register() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+          <input
+            type="street"
+            placeholder="Street"
+            value={street}
+            onChange={(e) => setStreet(e.target.value)}
+          />
+          <input
+            type="city"
+            placeholder="city"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
+          <input
+            type="state"
+            placeholder="state"
+            value={stateUS}
+            onChange={(e) => setStateUS(e.target.value)}
+          />
+          <input
+            type="zip"
+            placeholder="Zip"
+            value={zip}
+            onChange={(e) => setZip(e.target.value)}
+          />
+          <input
+            type="card type"
+            placeholder="card type"
+            value={cardType}
+            onChange={(e) => setCardType(e.target.value)}
+          />
+          <input
+            type="card last"
+            placeholder="card last 4 digits"
+            value={cardLast4}
+            onChange={(e) => setCardLast4(e.target.value)}
+          />
+          <input
+            type="expMonth"
+            placeholder="Exp-Month"
+            value={expMonth}
+            onChange={(e) => setExpMonth(e.target.value)}
+          />
+          <input
+            type="expYear"
+            placeholder="Exp-Year"
+            value={expYear}
+            onChange={(e) => setExpYear(e.target.value)}
           />
         </div>
 
