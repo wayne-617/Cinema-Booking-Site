@@ -14,6 +14,10 @@ import com.example.demo.config.PasswordEncoderConfig;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.MailException;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.Random;
 
 
 @Service
@@ -24,6 +28,9 @@ public class UserService implements UserDetailsService {
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -50,9 +57,38 @@ public class UserService implements UserDetailsService {
         newUser.setFullName(fullName);
         newUser.setPhone(phone);
         newUser.setRole(Role.CUSTOMER);
+        newUser.setEnabled(false);
+        String verificationToken = String.format("%06d", new Random().nextInt(999999));
+        newUser.setVerificationToken(verificationToken);
 
-        return userRepository.save(newUser);
+        UserEntity savedUser = userRepository.save(newUser);
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(username);
+            message.setSubject("Email Verification");
+            message.setText("Your verification code is: " + verificationToken);
+            mailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return savedUser;
     }
 
+    @Transactional
+    public UserEntity verify(String email, String token) {
+        UserEntity user = userRepository.findByUsername(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getVerificationToken().equals(token)) {
+            user.setEnabled(true);
+            user.setVerificationToken(null);
+            userRepository.save(user);
+            return user;
+        } else {
+            throw new RuntimeException("Invalid verification token");
+        }
+    }
     
 }
