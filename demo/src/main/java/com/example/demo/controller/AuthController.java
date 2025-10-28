@@ -80,7 +80,8 @@ public class AuthController {
             request.getUsername(),
             request.getPassword(),
             request.getFullName(),  // add full name
-            request.getPhone()      // add phone number
+            request.getPhone(),      // add phone number
+            request.getPromoOptIn()
         );
             return ResponseEntity.status(HttpStatus.CREATED).body("Verification email sent");
         } catch (Exception e) {

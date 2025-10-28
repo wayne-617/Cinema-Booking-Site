@@ -21,6 +21,7 @@ function Register() {
   const [cardLast4, setCardLast4] = useState("");
   const [expMonth, setExpMonth] = useState("");
   const [expYear, setExpYear] = useState("");
+  const [promoOptIn, setPromoOptIn] = useState(false);
 
   // State for collapsible sections
   const [isAddressOpen, setIsAddressOpen] = useState(false);
@@ -55,6 +56,7 @@ function Register() {
         password: password,
         fullName: name,
         phone: phone,
+        promoOptIn: promoOptIn,
       };
 
       // Conditionally add address if any field is filled
@@ -247,6 +249,16 @@ function Register() {
               />
             </div>
           )}
+
+          <div className="checkbox-group">
+            <input
+              type="checkbox"
+              id="promoOptIn"
+              checked={promoOptIn}
+              onChange={(e) => setPromoOptIn(e.target.checked)}
+            />
+            <label htmlFor="promoOptIn">Yes, I want to receive promotional emails and offers.</label>
+          </div>
 
           {/* --- Submit Button --- */}
           <button type="submit" className="register-btn">

@@ -45,7 +45,7 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public UserEntity register(String username, String password, String fullName, String phone) {
+    public UserEntity register(String username, String password, String fullName, String phone, Boolean promoOptIn) {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
@@ -60,6 +60,7 @@ public class UserService implements UserDetailsService {
         newUser.setEnabled(false);
         String verificationToken = String.format("%06d", new Random().nextInt(999999));
         newUser.setVerificationToken(verificationToken);
+        newUser.setPromoOptIn(promoOptIn);
 
         UserEntity savedUser = userRepository.save(newUser);
 
