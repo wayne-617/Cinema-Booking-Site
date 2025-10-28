@@ -50,9 +50,17 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
             System.out.println("Attempting to authenticate user: " + request.getUsername());
+
             Authentication auth = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
+
+            UserEntity userEntity = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+            if (!userEntity.getEnabled()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "User not verified"));
+            }
 
             String jwt = jwtUtil.generateToken(request.getUsername());
             return ResponseEntity.ok(new JwtResponse(jwt));
@@ -63,7 +71,7 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
         }
-        }
+    }
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
@@ -74,7 +82,7 @@ public class AuthController {
             request.getFullName(),  // add full name
             request.getPhone()      // add phone number
         );
-            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Verification email sent");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -130,5 +138,15 @@ public class AuthController {
              e.printStackTrace();
               return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
          }
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<String> verify(@RequestParam("email") String email, @RequestParam("token") String token) {
+        try {
+            userService.verify(email, token); 
+            return ResponseEntity.ok("User verified successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

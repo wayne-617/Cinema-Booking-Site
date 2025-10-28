@@ -1,9 +1,9 @@
 -- Users: id, password (BCrypt hashed), role, email
 -- admin@user.com, password: masterkey
 -- user1@user.com, password: userpassword
-INSERT INTO users (id, password, role, username, full_name, phone) VALUES
-(1, '$2a$10$jlT2BqziFJsVMpLUIEstIuV0yMG8Yze.wjD66G4JhfLruwNYakNc.', 'ADMIN', 'admin@user.com', 'Admin User', '+15555550100'),
-(2, '$2a$10$64tXJNgLMp5m78Krvn964uQRkuFGgLdjJZYpeQrItBzBpgLWmPZ/a', 'CUSTOMER', 'user1@user.com', 'Customer User', '+15555550101');
+INSERT INTO users (id, password, role, username, full_name, phone, enabled) VALUES
+(1, '$2a$10$jlT2BqziFJsVMpLUIEstIuV0yMG8Yze.wjD66G4JhfLruwNYakNc.', 'ADMIN', 'admin@user.com', 'Admin User', '+15555550100', TRUE),
+(2, '$2a$10$64tXJNgLMp5m78Krvn964uQRkuFGgLdjJZYpeQrItBzBpgLWmPZ/a', 'CUSTOMER', 'user1@user.com', 'Customer User', '+15555550101', TRUE);
 
 -- Movies: title, cast, director, producer, synopsis, poster_url, reviews, category, mpaa_rating, showtime, status, trailer_picture, trailer_video
 INSERT INTO movie (title, cast, director, producer, synopsis, poster_url, reviews, category, mpaa_rating, showtime, status, trailer_picture, trailer_video) VALUES
