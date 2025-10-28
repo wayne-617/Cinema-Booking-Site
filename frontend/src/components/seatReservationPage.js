@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./seatReservationPage.css";
 
+
 function SeatReservationPage() {
   const { showtimeId } = useParams();
   const navigate = useNavigate();
@@ -74,8 +75,16 @@ function SeatReservationPage() {
   };
 
   const handleCheckout = () => {
+   
+    
+   
+    
     const order = { tickets, total, showtimeId }; // <-- include showtimeId
-    navigate("/checkout", { state: { order } });
+    if (window.location.pathname.includes('/customer')) {
+      navigate("/customer/checkout", { state: { order } });
+    } else {
+      navigate("/login");
+    }
 };
 
   // Seat grid renderer

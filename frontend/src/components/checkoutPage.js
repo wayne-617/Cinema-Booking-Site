@@ -38,14 +38,16 @@ export default function CheckoutPage() {
     }
 
     localStorage.setItem("checkoutInfo", JSON.stringify(formData));
-    navigate("/order-confirmation", { state: { order, formData } });
+    navigate("/customer/order-confirmation", { state: { order, formData } });
   };
 
   const handleCancel = () => {
     if (!order?.showtimeId) {
       navigate("/movies");
     } else {
-      navigate(`/seat-reservation/${order.showtimeId}`);
+      if (window.location.pathname.includes("/customer")) {
+      navigate(`/customer/seat-reservation/${order.showtimeId}`);
+      }
     }
   };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useState} from "react";
 import "./forgotPass.css";
 import logo from "../logo512.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,11 +7,13 @@ import {useLocation} from 'react-router-dom';
 
 
 function ResetPassword() {
- 
+ const message = "Password reset";
   const navigate = useNavigate();
   const location = useLocation();
   const param = new URLSearchParams(location.search);
   const userEmail = param.get("email");
+
+  const [displayMessage, setDisplay] = useState("");
 
   const handleRequestClick = async () => {
    if (!userEmail) {
@@ -33,7 +35,9 @@ function ResetPassword() {
      if (!response.ok) {
         const err = await response.text();
             console.error("update failed", err);
+            
         } else {
+            setDisplay(message);
             navigate("/login");
         }
     } catch (err) {
@@ -61,10 +65,12 @@ function ResetPassword() {
             <div className="title-container">
               <h1 className="login-title">Forgot</h1>
               <h1 className="login-title">Password</h1>
+             
             </div>
 
             <div className="login-form">
                 <p1 className="forgot-Desc">Create new password</p1>
+                 {displayMessage && <p1 className="forgot-Desc">{displayMessage}</p1>}
               <input
                 type="password"
                 placeholder="New Password"
