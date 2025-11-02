@@ -5,6 +5,7 @@ public class RegisterRequest {
     private String password;
     private String fullName;
     private String phone;
+    private Boolean promoOptIn = false;
 
     public String getUsername() {
         return username;
@@ -22,5 +23,8 @@ public class RegisterRequest {
         return phone;
     }
 
+    public Boolean getPromoOptIn() {
+        return promoOptIn;
+    }
 
 }

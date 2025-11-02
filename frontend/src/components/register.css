@@ -1,32 +1,37 @@
-/* Center layout (matches login) */
+/* --- STYLES ADAPTED FROM loginPage.css ---
+*/
+
+/* Center page content */
 .register-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100vh;
+  min-height: 100vh; /* Use min-height to handle content overflow */
+  padding: 40px 0; /* Add some padding for smaller screens */
   background: radial-gradient(circle at top, #1e2a32, #000);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
-/* Frosted glass card */
+/* Glass card */
 .register-card {
   background: rgba(64, 121, 140, 0.15);
   backdrop-filter: blur(20px);
   border-radius: 20px;
-  padding: 40px 50px;
-  width: 360px;
+  padding: 40px 40px;
+  width: 90%; /* Responsive width */
+  max-width: 440px; /* Wider than login for more fields */
+  max-height: 90vh; /* Max height to prevent page scrolling */
+  overflow-y: auto; /* Allow card to scroll internally */
   text-align: center;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   animation: fadeIn 0.6s ease-in-out;
-  color: var(--text-color);
+  color: #fff;
 }
 
-/* Logo (same style as login) */
+/* Logo styling */
 .register-logo {
-  width: 80px;
+  width: 140px; /* Slightly smaller logo */
   margin-bottom: 20px;
-  border-radius: 50%;
   transition: transform 0.3s ease;
 }
 
@@ -36,21 +41,21 @@
 
 /* Title */
 .register-title {
-  color: #fff;
   font-size: 1.8rem;
   font-weight: 600;
   margin-bottom: 30px;
   letter-spacing: 1px;
 }
 
-/* Input group (same as login form) */
-.input-group {
+/* Form layout */
+.register-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px; /* Increased gap to space out sections */
 }
 
-.input-group input {
+/* Input fields */
+.register-input {
   padding: 12px 15px;
   border: none;
   border-radius: 10px;
@@ -58,28 +63,67 @@
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
   font-size: 1rem;
-  transition: 0.3s ease;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box; /* Include padding in width */
 }
 
-.input-group input::placeholder {
+.register-input::placeholder {
   color: rgba(255, 255, 255, 0.7);
 }
 
-.input-group input:focus {
+.register-input:focus {
   background: rgba(255, 255, 255, 0.3);
   transform: scale(1.03);
 }
 
-/* Register button (same gradient + hover as login) */
+/* --- Collapsible Section Styles --- */
+.collapsible-btn {
+  padding: 12px 15px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.collapsible-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.collapsible-btn span {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.collapsible-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Gap between inputs inside collapsible */
+  animation: fadeIn 0.4s ease; /* Simple fade-in for content */
+}
+
+
+/* --- Button --- */
 .register-btn {
-  margin-top: 25px;
+  margin-top: 20px; /* Adjusted margin */
   background: linear-gradient(
     90deg,
     var(--primary-color),
     var(--secondary-color)
   );
   border: none;
-  color: var(--text-color);
+  color: #fff;
   font-size: 1rem;
   padding: 12px 0;
   border-radius: 10px;
@@ -94,17 +138,17 @@
 .register-btn:hover {
   background: linear-gradient(
     90deg,
-    var(--secondary-color),
-    var(--primary-accent)
+    var(--primary-color),
+    var(--secondary-color)
   );
   transform: scale(1.05);
   box-shadow: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.4);
   filter: brightness(1.1);
 }
 
-/* Footer links (same color and hover as login) */
+/* Footer links */
 .register-footer {
-  margin-top: 20px;
+  margin-top: 25px; /* Increased margin */
   color: rgba(255, 255, 255, 0.85);
 }
 
@@ -119,11 +163,20 @@
   color: #ffd1b3;
 }
 
-/* Smooth fade-in animation */
+/* Error message */
+.register-error {
+  color: #ff4d4d;
+  font-weight: 500;
+  margin-bottom: 15px;
+  animation: fadeIn 0.3s ease-in-out;
+  min-height: 1.2em; /* Reserve space to prevent layout jump */
+}
+
+/* Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px); /* Adjusted transform */
   }
   to {
     opacity: 1;
@@ -131,26 +184,15 @@
   }
 }
 
-.register-error {
-  color: #ff4d4d;
-  font-size: 0.95rem;
-  margin-bottom: 10px;
-  animation: fadeInError 0.3s ease-in;
-}
-
-/* Shake animation for wrong password */
-.shake {
-  animation: shake 0.4s ease;
-}
-
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-6px); }
-  40%, 80% { transform: translateX(6px); }
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
 }
 
-/* Fade-in for error only (so it doesn’t restart fade-in of card) */
-@keyframes fadeInError {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+.shake {
+  animation: shake 0.5s ease;
 }
