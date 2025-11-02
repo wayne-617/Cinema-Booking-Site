@@ -23,18 +23,18 @@ function SeatReservationPage() {
     const storedUser = localStorage.getItem("user");
     if (!storedUser) {
       // Not logged in, redirect to login page
-      navigate("/login");
+     
     } else {
       // User is logged in, parse their data, stop loading
       setUser(JSON.parse(storedUser));
-      setIsLoading(false);
+     
     }
   }, [navigate]);
 
   // "Fetch" reserved seats based on showtimeId
   useEffect(() => {
     // Don't run this if we are still loading or haven't set the user
-    if (isLoading || !user) return;
+    
 
     // In real app, you’d call:
     // const { token } = user;
@@ -146,14 +146,7 @@ function SeatReservationPage() {
   };
 
   // Show a loading screen while we check auth
-  if (isLoading) {
-    return (
-      // Use your own CSS classes for centering/styling
-      <div className="seatPageContainer" style={{ justifyContent: "center" }}>
-        <h2 className="seatTitle">Loading...</h2>
-      </div>
-    );
-  }
+  
 
   // --- Main component render ---
   // This part only renders if the user is logged in

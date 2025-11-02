@@ -300,12 +300,12 @@ function EditProfilePage() {
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="firstName">First Name</label>
-              <input id="firstName" className="editProfilePage-input" value={firstName} onChange={e => setFirstName(e.target.value.split(" ")[1])} placeholder={firstName}/>
+              <input id="firstName" className="editProfilePage-input" value={firstName} onChange={e => setFirstName(e.target.value.split(" ")[1]) } placeholder={firstName}/>
             </div>
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="lastName">Last Name</label>
-              <input id="lastName" className="editProfilePage-input" value={lastName} onChange={e => setLastName(e.target.value.split(" ")[2])} placeholder={lastName}/>
+              <input id="lastName" className="editProfilePage-input" value={lastName} onChange={e => setLastName(e.target.value.split(" ")[2])} placeholder={lastName} />
             </div>
           </div>
         </fieldset>
