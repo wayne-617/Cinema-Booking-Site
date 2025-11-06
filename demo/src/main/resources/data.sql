@@ -1,16 +1,16 @@
 -- Users: id, password (BCrypt hashed), role, email
 -- admin@user.com, password: masterkey
 -- user1@user.com, password: userpassword
-INSERT INTO users (id, password, role, username, full_name, phone, promo_opt_in, enabled) VALUES 
-(1, '$2a$10$jlT2BqziFJsVMpLUIEstIuV0yMG8Yze.wjD66G4JhfLruwNYakNc.', 'ADMIN', 'admin@user.com', 'Admin User', '+15555550100', false, true),
-(2, '$2a$10$64tXJNgLMp5m78Krvn964uQRkuFGgLdjJZYpeQrItBzBpgLWmPZ/a', 'CUSTOMER', 'user1@user.com', 'Customer User', '+15555550101', false, true);
+INSERT INTO users (id, password, role, username, full_name, phone, promo_opt_in, enabled, home_address) VALUES 
+(1, '$2a$10$jlT2BqziFJsVMpLUIEstIuV0yMG8Yze.wjD66G4JhfLruwNYakNc.', 'ADMIN', 'admin@user.com', 'Admin User', '+15555550100', false, true, '123 Admin Lane, Server City, GA 30303'),
+(2, '$2a$10$64tXJNgLMp5m78Krvn964uQRkuFGgLdjJZYpeQrItBzBpgLWmPZ/a', 'CUSTOMER', 'user1@user.com', 'Customer User', '+15555550101', false, true, '456 Homewood Dr, Athens, GA 30605');
 
 ALTER TABLE users MODIFY enabled BOOLEAN NOT NULL DEFAULT TRUE;
 
 
-INSERT INTO billing (user_id, first_name, last_name, email, last_four, street, city, state, zip, card_type, exp_month, exp_year) VALUES
-(1, 'Admin', 'User', 'admin@user.com', 1234, '123 Admin Way', 'Server City', 'GA', '30303', 'Visa', 12, 28),
-(2, 'Customer', 'User', 'user1@user.com', 5678, '456 Main St', 'Athens', 'GA', '30605', 'Mastercard', 6, 27);
+INSERT INTO billing (user_id, first_name, last_name, email, card_number, street, city, state, zip, card_type, exp_month, exp_year) VALUES
+(1, 'Admin', 'User', 'admin@user.com', '4111111111111234', '123 Admin Way', 'Server City', 'GA', '30303', 'Visa', 12, 28),
+(2, 'Customer', 'User', 'user1@user.com', '5500000000005678', '456 Main St', 'Athens', 'GA', '30605', 'Mastercard', 6, 27);
 
 -- Movies: title, cast, director, producer, synopsis, poster_url, reviews, category, mpaa_rating, showtime, status, trailer_picture, trailer_video
 INSERT INTO movie (title, cast, director, producer, synopsis, poster_url, reviews, category, mpaa_rating, showtime, status, trailer_picture, trailer_video) VALUES

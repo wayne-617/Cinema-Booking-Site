@@ -11,11 +11,13 @@ import org.springframework.security.core.Authentication;
 
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtUtil;
+import com.example.demo.repository.BillingRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthUserDTO;
 import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.RegisterRequest;
+import com.example.demo.entity.BillingEntity;
 import com.example.demo.entity.UserEntity;
 
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,7 @@ public class AuthController {
 
     @Autowired
     UserRepository userRepository;
+
 
     @Autowired
     private ResetService resetService;
@@ -74,20 +77,69 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        try {
-             userService.register(
-            request.getUsername(),
-            request.getPassword(),
-            request.getFullName(),  // add full name
-            request.getPhone(),      // add phone number
-            request.getPromoOptIn()
+    public ResponseEntity<String> register(@RequestBody Map<String, Object> requestBody) {
+    try {
+        // 1️⃣ Extract user info
+        String username = (String) requestBody.get("username");
+        String password = (String) requestBody.get("password");
+        String fullName = (String) requestBody.get("fullName");
+        String phone = (String) requestBody.get("phone");
+        Boolean promoOptIn = (Boolean) requestBody.getOrDefault("promoOptIn", false);
+        String homeAddress = (String) requestBody.get("homeAddress");
+        
+
+        // 2️⃣ Register user first
+          Map<String, Object> address = (Map<String, Object>) requestBody.get("address");
+        Map<String, Object> paymentInfo = (Map<String, Object>) requestBody.get("paymentInfo");
+
+        String street = address != null ? (String) address.get("street") : null;
+        String city = address != null ? (String) address.get("city") : null;
+        String state = address != null ? (String) address.get("state") : null;
+        String zip = address != null ? (String) address.get("zip") : null;
+
+        String cardType = paymentInfo != null ? (String) paymentInfo.get("cardType") : null;
+        String cardNumber = paymentInfo != null ? (String) paymentInfo.get("cardNumber") : null;
+        Integer expMonth = paymentInfo != null ? parseIntOrNull(paymentInfo.get("expMonth")) : null;
+        Integer expYear = paymentInfo != null ? parseIntOrNull(paymentInfo.get("expYear")) : null;
+        
+         userService.register(
+            username,
+            password,
+            fullName,
+            phone,
+            promoOptIn,
+            homeAddress,
+            street,
+            city,
+            state,
+            zip,
+            cardType,
+            cardNumber,
+            expMonth,
+            expYear
         );
-            return ResponseEntity.status(HttpStatus.CREATED).body("Verification email sent");
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Verification email sent. Please check your inbox.");
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Registration failed: " + e.getMessage());
         }
     }
+
+    private Integer parseIntOrNull(Object value) {
+        if (value == null) return null;
+        try {
+            return Integer.parseInt(value.toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+   
+
     @PostMapping("/reset")
     public ResponseEntity<String> reset(@RequestBody Map<String, String> payload) {
         try {
@@ -122,34 +174,46 @@ public class AuthController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UserEntity> updatePassword(@RequestBody Map<String, String> payload) {
-         try {
+    public ResponseEntity<?> updateUser(@RequestBody Map<String, String> payload) {
+        try {
             String username = payload.get("username");
-            String password = payload.get("password");
+            String currentPassword = payload.get("currentPassword");
+            String newPassword = payload.get("newPassword");
             String phone = payload.get("phone");
             String name = payload.get("fullName");
-            UserEntity userEntity = userRepository.findByUsername(username)
-             .orElseThrow(() -> new RuntimeException("User not found"));
-            
-            
-             userEntity.setUsername(username);
-             if (payload.get("password") != null && !payload.get("password").isEmpty()) {
-             userEntity.setPassword(passwordEncoder.encode(password));
-             }
-             if (payload.get("phone") != null && !payload.get("phone").isEmpty()) {
-             userEntity.setPhone(phone);
-             }
 
-             if (payload.get("fullName") != null && !payload.get("fullName").isEmpty()) {
-             userEntity.setFullName(name);
-             }
-             userRepository.save(userEntity);
-         
-           return ResponseEntity.ok(userEntity);
-         } catch (Error e) {
-             e.printStackTrace();
-              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-         }
+            UserEntity userEntity = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // ✅ If changing password, validate the current one
+            if (currentPassword != null && newPassword != null &&
+                !currentPassword.isEmpty() && !newPassword.isEmpty()) {
+
+                if (!passwordEncoder.matches(currentPassword, userEntity.getPassword())) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("error", "Current password is incorrect"));
+                }
+
+                userEntity.setPassword(passwordEncoder.encode(newPassword));
+            }
+
+            if (phone != null && !phone.isEmpty()) {
+                userEntity.setPhone(phone);
+            }
+
+            if (name != null && !name.isEmpty()) {
+                userEntity.setFullName(name);
+            }
+
+            userRepository.save(userEntity);
+
+            return ResponseEntity.ok(Map.of("message", "User updated successfully"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to update user"));
+        }
     }
 
     @GetMapping("/verify")

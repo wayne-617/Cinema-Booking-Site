@@ -12,8 +12,8 @@ public class ProfileUpdateRequestDTO {
     private String firstName;
     private String lastName;
 
-        private String billingEmail; // billing.email
-    private Integer lastFour;    // billing.last_four
+    private String billingEmail; // billing.email
+    private String cardNumber;    // billing.last_four
 
     // Address info
     private String street;
@@ -30,6 +30,7 @@ public class ProfileUpdateRequestDTO {
     // Password
     private String currentPassword;
     private String newPassword;
+       private String homeAddress;
 
     // --- Getters and Setters for all fields ---
 
@@ -88,11 +89,11 @@ public class ProfileUpdateRequestDTO {
         this.billingEmail = billingEmail;
     }
 
-    public Integer getLastFour() {
-        return lastFour;
+    public String getCardNumber() {
+        return cardNumber;
     }
-    public void setLastFour(Integer lastFour) {
-        this.lastFour = lastFour;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
     public String getStreet() {
@@ -136,6 +137,15 @@ public class ProfileUpdateRequestDTO {
     }
     public void setExpYear(Integer expYear) {
         this.expYear = expYear;
+    }
+ 
+
+    public String getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(String homeAddress) {
+        this.homeAddress = homeAddress;
     }
 }
 

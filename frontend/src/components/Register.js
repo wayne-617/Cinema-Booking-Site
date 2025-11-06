@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./register.css"; // Use the new CSS file
+import "./register.css";
 import logo from "../logo512.png";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -13,33 +13,33 @@ function Register() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [homeAddress, setHomeAddress] = useState(""); // ✅ new field
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [stateUS, setStateUS] = useState("");
   const [zip, setZip] = useState("");
   const [cardType, setCardType] = useState("");
-  const [cardLast4, setCardLast4] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
   const [expMonth, setExpMonth] = useState("");
   const [expYear, setExpYear] = useState("");
   const [promoOptIn, setPromoOptIn] = useState(false);
 
-  // State for collapsible sections
+  // Collapsible sectionsfin
   const [isAddressOpen, setIsAddressOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
-  // Email validator
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleRegisterClick = async (e) => {
     e.preventDefault();
 
-    // --- Validation logic ---
+    // --- Validation ---
     if (!name.trim()) {
       setErrorMessage("Name cannot be blank.");
     } else if (!phone.trim()) {
       setErrorMessage("Phone number cannot be blank.");
     } else if (!email.trim()) {
-      setErrorMessage("Email address cannot be blank.");
+      setErrorMessage("Email cannot be blank.");
     } else if (!validateEmail(email)) {
       setErrorMessage("Please enter a valid email address.");
     } else if (!password.trim()) {
@@ -49,37 +49,35 @@ function Register() {
     } else {
       setErrorMessage("");
 
-      // --- Prepare Payload ---
-      // Start with required fields
+      // --- Build payload ---
       const payload = {
         username: email,
         password: password,
         fullName: name,
         phone: phone,
         promoOptIn: promoOptIn,
+        homeAddress: homeAddress, // ✅ send to backend
       };
 
-      // Conditionally add address if any field is filled
       if (street || city || stateUS || zip) {
         payload.address = {
-          street: street,
-          city: city,
+          street,
+          city,
           state: stateUS,
-          zip: zip,
+          zip
         };
       }
 
-      // Conditionally add payment info if any field is filled
-      if (cardType || cardLast4 || expMonth || expYear) {
+      if (cardType || cardNumber || expMonth || expYear) {
         payload.paymentInfo = {
-          cardType: cardType,
-          cardLast4: cardLast4,
-          expMonth: expMonth,
-          expYear: expYear,
+          cardType,
+          cardNumber,
+          expMonth: expMonth ? parseInt(expMonth, 10) : null,
+          expYear: expYear ? parseInt(expYear, 10) : null
         };
       }
-      
-      // --- Admin Check (Example) ---
+
+      // Optional: Admin shortcut
       if (
         name === "admin" &&
         email === "admin@user.com" &&
@@ -94,47 +92,43 @@ function Register() {
       try {
         const response = await fetch("http://localhost:9090/auth/register", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload), // Send the dynamic payload
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
         });
 
         if (response.ok) {
           navigate("/verify", {
             state: {
               email: email,
-              message: "Registration successful! A verification code has been sent to your email.",
-            }
+              message:
+                "Registration successful! A verification code has been sent to your email.",
+            },
           });
         } else {
           const data = await response.json();
           setErrorMessage(data.error || "Registration failed");
         }
-      } catch (error) {
+      } catch (err) {
         setErrorMessage("An error occurred. Please try again later.");
       }
-      
+
       return;
     }
 
-    // --- Shake effect on validation fail ---
     setShake(true);
     setTimeout(() => setShake(false), 500);
   };
 
   return (
     <div className="register-container">
-      {/* Card is now scrollable internally if content overflows */}
       <div className="register-card">
         <img src={logo} alt="Logo" className="register-logo" />
         <h1 className="register-title">Create Your Account</h1>
 
         {errorMessage && <p className="register-error">{errorMessage}</p>}
 
-        {/* Use a <form> element for better accessibility and semantics */}
         <form className={`register-form ${shake ? "shake" : ""}`} onSubmit={handleRegisterClick}>
-          {/* --- Required Fields --- */}
+          {/* --- Basic Info --- */}
           <input
             type="text"
             placeholder="Full Name"
@@ -164,16 +158,25 @@ function Register() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
+          {/* ✅ New Home Address Field */}
+          <input
+            type="text"
+            placeholder="Home Address (e.g., 123 Main St, City, State ZIP)"
+            className="register-input"
+            value={homeAddress}
+            onChange={(e) => setHomeAddress(e.target.value)}
+          />
+
           {/* --- Collapsible Address Section --- */}
-          <button 
-            type="button" 
-            className="collapsible-btn" 
+          <button
+            type="button"
+            className="collapsible-btn"
             onClick={() => setIsAddressOpen(!isAddressOpen)}
           >
             Billing Address (Optional)
-            <span>{isAddressOpen ? '−' : '+'}</span>
+            <span>{isAddressOpen ? "−" : "+"}</span>
           </button>
-          
+
           {isAddressOpen && (
             <div className="collapsible-content">
               <input
@@ -208,13 +211,13 @@ function Register() {
           )}
 
           {/* --- Collapsible Payment Section --- */}
-          <button 
-            type="button" 
-            className="collapsible-btn" 
+          <button
+            type="button"
+            className="collapsible-btn"
             onClick={() => setIsPaymentOpen(!isPaymentOpen)}
           >
             Payment Details (Optional)
-            <span>{isPaymentOpen ? '−' : '+'}</span>
+            <span>{isPaymentOpen ? "−" : "+"}</span>
           </button>
 
           {isPaymentOpen && (
@@ -228,10 +231,11 @@ function Register() {
               />
               <input
                 type="text"
-                placeholder="Card Last 4 Digits"
+                placeholder="Card Number"
                 className="register-input"
-                value={cardLast4}
-                onChange={(e) => setCardLast4(e.target.value)}
+                maxLength="19"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, ""))}
               />
               <input
                 type="text"
@@ -257,10 +261,11 @@ function Register() {
               checked={promoOptIn}
               onChange={(e) => setPromoOptIn(e.target.checked)}
             />
-            <label htmlFor="promoOptIn">Yes, I want to receive promotional emails and offers.</label>
+            <label htmlFor="promoOptIn">
+              Yes, I want to receive promotional emails and offers.
+            </label>
           </div>
 
-          {/* --- Submit Button --- */}
           <button type="submit" className="register-btn">
             Register
           </button>

@@ -11,8 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.config.PasswordEncoderConfig;
+import com.example.demo.entity.BillingEntity;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.repository.BillingRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.MailException;
@@ -30,6 +32,9 @@ public class UserService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private BillingRepository billingRepository;
+
+    @Autowired
     private JavaMailSender mailSender;
 
     @Override
@@ -45,7 +50,22 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public UserEntity register(String username, String password, String fullName, String phone, Boolean promoOptIn) {
+        public UserEntity register(
+            String username,
+            String password,
+            String fullName,
+            String phone,
+            Boolean promoOptIn,
+            String homeAddress,
+            String street,
+            String city,
+            String state,
+            String zip,
+            String cardType,
+            String cardNumber,
+            Integer expMonth,
+            Integer expYear
+        ) {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
@@ -61,8 +81,36 @@ public class UserService implements UserDetailsService {
         String verificationToken = String.format("%06d", new Random().nextInt(999999));
         newUser.setVerificationToken(verificationToken);
         newUser.setPromoOptIn(promoOptIn);
+        newUser.setHomeAddress(homeAddress);
 
         UserEntity savedUser = userRepository.save(newUser);
+
+            // --- 2️⃣ Create Billing record (AFTER user is saved) ---
+        BillingEntity billing = new BillingEntity();
+        billing.setUser(savedUser);
+
+        // Split name for convenience
+        String[] nameParts = fullName.trim().split(" ", 2);
+        billing.setFirstName(nameParts[0]);
+        billing.setLastName(nameParts.length > 1 ? nameParts[1] : "");
+
+        // Email for reference
+        billing.setEmail(username);
+
+        // Address info
+        billing.setStreet(street);
+        billing.setCity(city);
+        billing.setState(state);
+        billing.setZip(zip);
+
+        // Payment info
+        billing.setCardType(cardType);
+        billing.setCardNumber(cardNumber); // full number (not last four)
+        billing.setExpMonth(expMonth);
+        billing.setExpYear(expYear);
+
+        billingRepository.save(billing);
+
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -73,8 +121,9 @@ public class UserService implements UserDetailsService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
         return savedUser;
+
     }
 
     @Transactional

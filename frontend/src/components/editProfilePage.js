@@ -28,7 +28,7 @@ function EditProfilePage() {
 
   // Payment
   const [cardType, setCardType] = useState("");
-  const [cardLast4, setCardLast4] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
   const [expMonth, setExpMonth] = useState("");
   const [expYear, setExpYear] = useState("");
 
@@ -109,7 +109,7 @@ function EditProfilePage() {
 
         // Set Payment
         setCardType(data.cardType || "");
-        setCardLast4(data.lastFour ? data.lastFour.toString() : "");
+        setCardNumber(data.cardNumber ? data.cardNumber.toString() : "");
         setExpMonth(data.expMonth ? data.expMonth.toString() : "");
         setExpYear(data.expYear ? data.expYear.toString() : "");
 
@@ -168,19 +168,16 @@ function EditProfilePage() {
     setMessage({ text: "", type: "" }); // Clear old messages
 
     // This payload MUST match your UpdateProfileRequestDTO
-    const payload = {
-      
-      uid: currentUserId,
-      email: email,
+   const billingPayload = {
+      userId: currentUserId,
       cardType,
-      lastFour: cardLast4 ? parseInt(cardLast4, 10) : null,
+      cardNumber: cardNumber, // or full number if using full now
       expMonth: expMonth ? parseInt(expMonth, 10) : null,
       expYear: expYear ? parseInt(expYear, 10) : null,
-      //address
       street,
-      zip,
       city,
-      stateUS
+      state: stateUS,
+      zip
     };
 
     const payload2 = {
@@ -190,7 +187,12 @@ function EditProfilePage() {
       
     };
 
-    console.log("Submitting profile update payload:", payload);
+    if (newPassword && currentPassword) {
+      payload2.currentPassword = currentPassword;
+     payload2.newPassword = newPassword;
+  }
+
+    console.log("Submitting profile update payload:", billingPayload);
     console.log("Submitting profile update 2nd payload:", payload2);
     try {
       const res = await fetch(`http://localhost:9090/billing/submit`, {
@@ -199,11 +201,12 @@ function EditProfilePage() {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(billingPayload),
       });
 
       if (!res.ok) {
         // Try to parse error from backend
+        
         let errorMsg = "Failed to update profile. Billing info error";
         try {
           const errorData = await res.json();
@@ -239,26 +242,38 @@ function EditProfilePage() {
     } finally {
       setIsLoading(false);
     }
-      setMessage({ text: "Profile updated successfully!", type: "success" });
-      
-      // Clear password fields
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      if (newPassword && currentPassword) {
+  setMessage({ text: "Password updated successfully!", type: "success" });
 
-      // --- Update localStorage to keep NavBar in sync ---
-      const oldUserData = JSON.parse(localStorage.getItem("user"));
-      const newUserData = {
-        ...oldUserData,
-        fullName: `${firstName} ${lastName}`,
-        firstName: firstName,
-      };
-      localStorage.setItem("user", JSON.stringify(newUserData));
+  // 🔒 Optional: Log the user out after password change (for security)
+  setTimeout(() => {
+    localStorage.removeItem("user");
+    navigate("/login");
+  }, 2000);
 
-      // Reload to reflect changes (optional, but good for NavBar)
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000); // 1-second delay to let user read success message
+  return; // Stop further execution (don’t reload the page)
+  } else {
+    setMessage({ text: "Profile updated successfully!", type: "success" });
+  }
+
+  // ✅ Clear password fields
+  setCurrentPassword("");
+  setNewPassword("");
+  setConfirmPassword("");
+
+  // ✅ Update localStorage to keep NavBar in sync
+  const oldUserData = JSON.parse(localStorage.getItem("user"));
+  const newUserData = {
+    ...oldUserData,
+    fullName: `${firstName} ${lastName}`,
+    firstName: firstName,
+  };
+  localStorage.setItem("user", JSON.stringify(newUserData));
+
+  // ✅ Reload only for non-password updates
+  setTimeout(() => {
+    window.location.reload();
+  }, 1000);
 
 
     } catch (error) {
@@ -300,12 +315,12 @@ function EditProfilePage() {
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="firstName">First Name</label>
-              <input id="firstName" className="editProfilePage-input" value={firstName} onChange={e => setFirstName(e.target.value.split(" ")[1]) } placeholder={firstName}/>
+              <input id="firstName" className="editProfilePage-input" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder={firstName}/>
             </div>
             
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="lastName">Last Name</label>
-              <input id="lastName" className="editProfilePage-input" value={lastName} onChange={e => setLastName(e.target.value.split(" ")[2])} placeholder={lastName} />
+              <input id="lastName" className="editProfilePage-input" value={lastName} onChange={e => setLastName(e.target.value)} placeholder={lastName} />
             </div>
           </div>
         </fieldset>
@@ -370,8 +385,8 @@ function EditProfilePage() {
             </div>
             
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="cardLast4">Card Ending In</label>
-              <input id="cardLast4" className="editProfilePage-input" value={cardLast4} onChange={e => setCardLast4(e.target.value)} placeholder={cardLast4} maxLength="4"/>
+              <label className="editProfilePage-inputLabel" htmlFor="cardNumber">Card Ending In</label>
+              <input id="cardNumber" className="editProfilePage-input" value={cardNumber} onChange={e => setCardNumber(e.target.value)} placeholder={cardNumber} maxLength="4"/>
             </div>
             
             <div className="editProfilePage-formGroup">

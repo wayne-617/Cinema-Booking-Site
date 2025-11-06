@@ -33,53 +33,52 @@ public class BillingController {
     UserRepository userRepository;
     
     @PutMapping("/submit")
-
     public ResponseEntity<String> submitBilling(@RequestBody BillingRequest request) {
-       try {
-        Optional<BillingEntity> billingOpt = billingRepository.findById(request.getUid());
+        try {
+            // Find user by ID first
+            var user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found for ID: " + request.getUserId()));
 
-        BillingEntity billing = billingOpt.orElseGet(BillingEntity::new);
+            // Find existing billing record or create new
+            Optional<BillingEntity> billingOpt = billingRepository.findByUser_Id(request.getUserId());
+            BillingEntity billing = billingOpt.orElseGet(BillingEntity::new);
 
-        billing.setExpMonth(request.getExpMonth());
-        billing.setExpYear(request.getExpYear());
-        billing.setUid(request.getUid());
-        billing.setCardType(request.getCardType());
-        billing.setLastFour(request.getLastFour());
-        billing.setStreet(request.getStreet());
-        billing.setCity(request.getCity());
-        billing.setZip(request.getZip());
+            billing.setUser(user);
+            billing.setCardType(request.getCardType());
+            billing.setCardNumber(request.getCardNumber());
+            billing.setExpMonth(request.getExpMonth());
+            billing.setExpYear(request.getExpYear());
+            billing.setStreet(request.getStreet());
+            billing.setCity(request.getCity());
+            billing.setState(request.getState());
+            billing.setZip(request.getZip());
 
-        billingRepository.save(billing);
-        return ResponseEntity.ok("billing saved");
-       } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-       }
-        
-        
+            billingRepository.save(billing);
+            return ResponseEntity.ok("Billing saved successfully");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error saving billing: " + e.getMessage());
+        }
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<BillingRequest> getBilling(@PathVariable long id) {
-
-        BillingEntity billingEnt = billingRepository.findByUser_Id(id)
-            .orElseThrow(() -> new RuntimeException("billing not found: " + id));
+    // ✅ Get billing by user ID
+    @GetMapping("/get/{userId}")
+    public ResponseEntity<BillingRequest> getBilling(@PathVariable long userId) {
+        BillingEntity billingEnt = billingRepository.findByUser_Id(userId)
+            .orElseThrow(() -> new RuntimeException("Billing not found for userId: " + userId));
 
         BillingRequest req = new BillingRequest();
-
+        req.setUserId(userId);
+        req.setCardType(billingEnt.getCardType());
+        req.setCardNumber(billingEnt.getCardNumber());
         req.setExpMonth(billingEnt.getExpMonth());
         req.setExpYear(billingEnt.getExpYear());
-        req.setUid(billingEnt.getUid());
-        req.setCardType(billingEnt.getCardType());
-        req.setLastFour(billingEnt.getLastFour());
         req.setStreet(billingEnt.getStreet());
         req.setCity(billingEnt.getCity());
+        req.setState(billingEnt.getState());
         req.setZip(billingEnt.getZip());
-        
-
-        
 
         return ResponseEntity.ok(req);
     }
-    
 
 }

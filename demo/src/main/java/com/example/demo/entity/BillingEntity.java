@@ -23,9 +23,8 @@ public class BillingEntity {
     @Column(nullable = false)
     private String email;
 
-    @NotNull
-    @Column(nullable = false)
-    private int last_four;
+   @Column(name = "card_number")
+    private String cardNumber;
 
     // --- NEW ADDRESS FIELDS ---
     @Column(name = "street")
@@ -88,12 +87,12 @@ public class BillingEntity {
         this.email = email;
     }
 
-    public int getLastFour() {
-        return last_four;
+    public String getCardNumber() {
+        return cardNumber;
     }
 
-    public void setLastFour(int last_four) {
-        this.last_four = last_four;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
     public UserEntity getUser() {

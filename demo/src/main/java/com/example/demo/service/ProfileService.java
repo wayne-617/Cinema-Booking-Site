@@ -44,13 +44,13 @@ public class ProfileService {
         dto.setRole(userEntity.getRole().toString());
         dto.setPhone(userEntity.getPhone());
         dto.setPromoOptIn(userEntity.getPromoOptIn());
+        dto.setHomeAddress(userEntity.getHomeAddress());    
 
         // --- Set Billing fields ---
         dto.setFirstName(billingEntity.getFirstName());
         dto.setLastName(billingEntity.getLastName());
         dto.setBillingEmail(billingEntity.getEmail()); // Billing email, not user email
-        dto.setLastFour(billingEntity.getLastFour());
-
+        dto.setCardNumber(billingEntity.getCardNumber());
         // --- SET NEW ADDRESS & PAYMENT FIELDS ---
         dto.setStreet(billingEntity.getStreet());
         dto.setCity(billingEntity.getCity());
@@ -89,6 +89,7 @@ public class ProfileService {
         userEntity.setPromoOptIn(dto.getPromoOptIn());
         // Also update fullName to stay in sync
         userEntity.setFullName(dto.getFirstName() + " " + dto.getLastName());
+        userEntity.setHomeAddress(dto.getHomeAddress());
 
         userRepository.save(userEntity);
 
@@ -104,7 +105,7 @@ public class ProfileService {
 
         // Update new payment fields
         billingEntity.setCardType(dto.getCardType());
-        billingEntity.setLastFour(dto.getLastFour());
+        billingEntity.setCardNumber(dto.getCardNumber());
         billingEntity.setExpMonth(dto.getExpMonth());
         billingEntity.setExpYear(dto.getExpYear());
 

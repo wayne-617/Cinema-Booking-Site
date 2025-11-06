@@ -1,96 +1,41 @@
 package com.example.demo.dto;
 
 public class BillingRequest {
-    private int exp_month;
-    private int exp_year;
-    private int last_four;
-    private long uid;
+    private Long userId;
     private String cardType;
-    private String city;
-    private String email;
-    private String state;
+    private String cardNumber;
+    private Integer expMonth;
+    private Integer expYear;
     private String street;
+    private String city;
+    private String state;
     private String zip;
 
-    public int getExpMonth() {
-        return exp_month;
-    }
+    // --- Getters & Setters ---
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
-    public void setExpMonth(int exp_month) {
-        this.exp_month = exp_month;
-    }
+    public String getCardType() { return cardType; }
+    public void setCardType(String cardType) { this.cardType = cardType; }
 
-     public int getExpYear() {
-        return exp_year;
-    }
+    public String getCardNumber() { return cardNumber; }
+    public void setCardNumber(String cardNumber) { this.cardNumber = cardNumber; }
 
-    public void setExpYear(int exp_year) {
-        this.exp_year = exp_year;
-    }
+    public Integer getExpMonth() { return expMonth; }
+    public void setExpMonth(Integer expMonth) { this.expMonth = expMonth; }
 
-     public int getLastFour() {
-        return last_four;
-    }
+    public Integer getExpYear() { return expYear; }
+    public void setExpYear(Integer expYear) { this.expYear = expYear; }
 
-    public void setLastFour(int last_four) {
-        this.last_four = last_four;
-    }
+    public String getStreet() { return street; }
+    public void setStreet(String street) { this.street = street; }
 
-     public long getUid() {
-        return uid;
-    }
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
 
-    public void setUid(long uid) {
-        this.uid = uid;
-    }
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
 
-     public String getCardType() {
-        return cardType;
-    }
-
-    public void setCardType(String cardType) {
-        this.cardType = cardType;
-    }
-
-     public  String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-     public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getStreet() {
-        return state;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip( String zip) {
-        this.zip = zip;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity( String city) {
-        this.city = city;
-    }
-
+    public String getZip() { return zip; }
+    public void setZip(String zip) { this.zip = zip; }
 }
-

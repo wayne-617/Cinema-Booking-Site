@@ -42,6 +42,9 @@ public class UserEntity {
     @Column(name = "promo_opt_in", nullable = false)
     private Boolean promoOptIn = false;
 
+    @Column(name = "home_address") 
+    private String homeAddress;
+
     public Long getId() {
         return id;
     }
@@ -116,4 +119,11 @@ public class UserEntity {
         this.verificationToken = verificationToken;
     }
 
-}
+    public String getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(String homeAddress) {
+        this.homeAddress = homeAddress;
+    }
+}   

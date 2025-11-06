@@ -11,8 +11,8 @@ public class ProfileResponseDTO {
     // from billing table
     private String firstName;
     private String lastName;
-        private String billingEmail; // billing.email
-    private Integer lastFour;    // billing.last_four
+    private String billingEmail; // billing.email
+    private String cardNumber;    // billing.last_four
 
     // Address info
     private String street;
@@ -27,6 +27,8 @@ public class ProfileResponseDTO {
 
     private String phone;        // users.phone
     private Boolean promoOptIn;  // users.promo_opt_in
+    private String homeAddress;
+
 
     // NOTE:
     // You don't yet have phone, street, city, state, zip, expMonth, expYear, cardType
@@ -89,11 +91,11 @@ public class ProfileResponseDTO {
         this.billingEmail = billingEmail;
     }
 
-    public Integer getLastFour() {
-        return lastFour;
+    public String getCardNumber() {
+        return cardNumber;
     }
-    public void setLastFour(Integer lastFour) {
-        this.lastFour = lastFour;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
     public String getStreet() {
@@ -139,7 +141,15 @@ public class ProfileResponseDTO {
         this.expYear = expYear;
     }
 
-    
+    public String getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(String homeAddress) {
+        this.homeAddress = homeAddress;
+    }
+
 
     
+
 }
