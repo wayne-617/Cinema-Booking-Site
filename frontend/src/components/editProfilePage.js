@@ -38,112 +38,66 @@ function EditProfilePage() {
 
   // --- Fetch profile data on mount ---
   useEffect(() => {
-    async function fetchProfile() {
-      // Get user info from localStorage (set during login)
-      const storedUser = localStorage.getItem("user");
-      if (!storedUser) {
-        setMessage({ text: "You must be logged in.", type: "error" });
-        setIsLoading(false);
-        navigate("/login");
-        return;
-      }
-
-      const userData = JSON.parse(storedUser);
-      const { token, userId: currentUserId, username: email } = userData;
-
-      if (!token || !currentUserId) {
-        setMessage({ text: "Invalid authentication. Please log in again.", type: "error" });
-        setIsLoading(false);
-        navigate("/login");
-        return;
-      }
-
-      setUserId(currentUserId);
-      setEmail(email);
-      
-      try {
-        const res = await fetch(`http://localhost:9090/auth/${userData.username}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch profile data.");
-        }
-
-        const data = await res.json(); // This is your full ProfileResponseDTO
-
-        // Set Account Info
-        //setEmail(data.email);
-        setFirstName(data.name.split(" ")[0] || "");
-        setLastName(data.name.split(" ")[1] || "");
-        setPhone(data.phone || "");
-        
-        // Set Promotions
-        setPromoOptIn(data.promoOptIn || false);
-          try {
-            const res = await fetch(`http://localhost:9090/billing/get/${currentUserId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-          
-        if (!res.ok) {
-          throw new Error("Failed to fetch profile data.");
-        }
-
-        const data = await res.json(); // This is your full ProfileResponseDTO
-        console.log("data: ", data);
-
-
-        // Set Billing Address
-        setStreet(data.street || "");
-        setCity(data.city || "");
-        setStateUS(data.state || "");
-        setZip(data.zip || "");
-
-        // Set Payment
-        setCardType(data.cardType || "");
-        setCardNumber(data.cardNumber ? data.cardNumber.toString() : "");
-        setExpMonth(data.expMonth ? data.expMonth.toString() : "");
-        setExpYear(data.expYear ? data.expYear.toString() : "");
-
-
-      } catch (error) {
-        setMessage({ text: error.message, type: "error" });
-      } finally {
-        setIsLoading(false);
-      }
-    
-
-
-        // Set Billing Address
-        
-
-        // Set Payment
-        
-
-
-      } catch (error) {
-        setMessage({ text: error.message, type: "error" });
-      } finally {
-        setIsLoading(false);
-      }
-    
-      
-
-    
+  async function fetchProfile() {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      setMessage({ text: "You must be logged in.", type: "error" });
+      navigate("/login");
+      return;
     }
 
+    const userData = JSON.parse(storedUser);
+    const { token, userId: currentUserId } = userData;
+    setUserId(currentUserId);
+
+    try {
+      const res = await fetch(`http://localhost:9090/api/profile/${currentUserId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch profile data");
+
+      const profileData = await res.json(); // ✅ single unified object
+      console.log("Profile data:", profileData);
+
+      // --- Account Info ---
+      setEmail(profileData.email || "");
+      setFirstName(profileData.firstName || "");
+      setLastName(profileData.lastName || "");
+      setPhone(profileData.phone || "");
+
+      // --- Billing Address ---
+      setStreet(profileData.street || "");
+      setCity(profileData.city || "");
+      setStateUS(profileData.state || "");
+      setZip(profileData.zip || "");
+
+      // --- Payment Info ---
+      setCardType(profileData.cardType || "");
+      setCardNumber(profileData.cardNumber || "");
+      setExpMonth(profileData.expMonth ? profileData.expMonth.toString() : "");
+      setExpYear(profileData.expYear ? profileData.expYear.toString() : "");
+
+      // --- Promo ---
+      setPromoOptIn(profileData.promoOptIn || false);
+
+    } catch (err) {
+      setMessage({ text: err.message, type: "error" });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  fetchProfile();
+}, [navigate]);
 
 
-    fetchProfile();
-  }, [navigate]);
+
+
 
   // --- Handle Save Changes ---
   const handleSave = async (e) => {
@@ -168,10 +122,15 @@ function EditProfilePage() {
     setMessage({ text: "", type: "" }); // Clear old messages
 
     // This payload MUST match your UpdateProfileRequestDTO
-   const billingPayload = {
+    let cleanedCardNumber = cardNumber;
+    if (cardNumber && cardNumber.startsWith("****")) {
+      cleanedCardNumber = null; // don't send masked number back to backend
+    }
+
+    const billingPayload = {
       userId: currentUserId,
       cardType,
-      cardNumber: cardNumber, // or full number if using full now
+      cardNumber: cleanedCardNumber,
       expMonth: expMonth ? parseInt(expMonth, 10) : null,
       expYear: expYear ? parseInt(expYear, 10) : null,
       street,
@@ -385,10 +344,27 @@ function EditProfilePage() {
             </div>
             
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="cardNumber">Card Ending In</label>
-              <input id="cardNumber" className="editProfilePage-input" value={cardNumber} onChange={e => setCardNumber(e.target.value)} placeholder={cardNumber} maxLength="4"/>
+              <label className="editProfilePage-inputLabel" htmlFor="cardNumber">Card Number</label>
+              <input
+                id="cardNumber"
+                className="editProfilePage-input"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+                placeholder={cardNumber || "Enter card number"}
+                maxLength="19"
+                readOnly={cardNumber.startsWith("****")}
+              />
+              {cardNumber.startsWith("****") && (
+                <button
+                  type="button"
+                  className="editProfilePage-buttonSecondary small-btn"
+                  onClick={() => setCardNumber("")}
+                >
+                  Update Card Info
+                </button>
+              )}
             </div>
-            
+                      
             <div className="editProfilePage-formGroup">
               <label className="editProfilePage-inputLabel" htmlFor="expMonth">Exp. Month</label>
               <input id="expMonth" className="editProfilePage-input" value={expMonth} onChange={e => setExpMonth(e.target.value)}placeholder={expMonth} maxLength="2"/>

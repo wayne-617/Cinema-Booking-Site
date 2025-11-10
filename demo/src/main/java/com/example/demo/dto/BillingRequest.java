@@ -11,7 +11,6 @@ public class BillingRequest {
     private String state;
     private String zip;
 
-    // --- Getters & Setters ---
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
 

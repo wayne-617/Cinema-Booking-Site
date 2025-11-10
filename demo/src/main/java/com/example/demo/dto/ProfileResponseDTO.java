@@ -12,7 +12,7 @@ public class ProfileResponseDTO {
     private String firstName;
     private String lastName;
     private String billingEmail; // billing.email
-    private String cardNumber;    // billing.last_four
+    private String cardNumber;    
 
     // Address info
     private String street;

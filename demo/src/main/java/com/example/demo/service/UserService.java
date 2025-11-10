@@ -26,13 +26,15 @@ import java.util.Random;
 public class UserService implements UserDetailsService {
 
     @Autowired
+    private BillingService billingService;
+
+    @Autowired
     private UserRepository userRepository;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private BillingRepository billingRepository;
+
 
     @Autowired
     private JavaMailSender mailSender;
@@ -109,7 +111,8 @@ public class UserService implements UserDetailsService {
         billing.setExpMonth(expMonth);
         billing.setExpYear(expYear);
 
-        billingRepository.save(billing);
+        billingService.saveBilling(billing);
+
 
 
         try {
