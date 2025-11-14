@@ -64,7 +64,7 @@ function Register() {
           street,
           city,
           state: stateUS,
-          zip
+          zip,
         };
       }
 
@@ -73,19 +73,8 @@ function Register() {
           cardType,
           cardNumber,
           expMonth: expMonth ? parseInt(expMonth, 10) : null,
-          expYear: expYear ? parseInt(expYear, 10) : null
+          expYear: expYear ? parseInt(expYear, 10) : null,
         };
-      }
-
-      // Optional: Admin shortcut
-      if (
-        name === "admin" &&
-        email === "admin@user.com" &&
-        phone === "1234567890" &&
-        password === "masterkey"
-      ) {
-        navigate("/admin");
-        return;
       }
 
       // --- API Call ---
@@ -127,7 +116,10 @@ function Register() {
 
         {errorMessage && <p className="register-error">{errorMessage}</p>}
 
-        <form className={`register-form ${shake ? "shake" : ""}`} onSubmit={handleRegisterClick}>
+        <form
+          className={`register-form ${shake ? "shake" : ""}`}
+          onSubmit={handleRegisterClick}
+        >
           {/* --- Basic Info --- */}
           <input
             type="text"
@@ -235,7 +227,9 @@ function Register() {
                 className="register-input"
                 maxLength="19"
                 value={cardNumber}
-                onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, ""))}
+                onChange={(e) =>
+                  setCardNumber(e.target.value.replace(/\D/g, ""))
+                }
               />
               <input
                 type="text"

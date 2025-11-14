@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"; 
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./orderConfirmation.css";
 
@@ -11,10 +11,12 @@ export default function OrderConfirmationPage() {
 
   useEffect(() => {
     const stateOrder = location.state?.order;
-    const storedOrder = stateOrder || JSON.parse(localStorage.getItem("order")) || { tickets: [], total: 0 };
+    const storedOrder = stateOrder ||
+      JSON.parse(localStorage.getItem("order")) || { tickets: [], total: 0 };
     setOrder(storedOrder);
 
-    const storedInfo = location.state?.formData || JSON.parse(localStorage.getItem("checkoutInfo")) || { name: "" };
+    const storedInfo = location.state?.formData ||
+      JSON.parse(localStorage.getItem("checkoutInfo")) || { name: "" };
     setInfo(storedInfo);
   }, [location.state]);
 

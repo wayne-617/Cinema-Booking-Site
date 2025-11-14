@@ -59,7 +59,9 @@ export default function OrderSummaryPage() {
       <h2>Total: ${order.total.toFixed(2)}</h2>
 
       <div className="buttons">
-        <button onClick={() => navigate("/checkout")}>Continue to Checkout</button>
+        <button onClick={() => navigate("/checkout")}>
+          Continue to Checkout
+        </button>
         <button onClick={() => navigate("/showtimes")}>Cancel</button>
       </div>
     </div>

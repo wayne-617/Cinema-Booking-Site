@@ -64,7 +64,11 @@
 
 /* Button style */
 .congrats-button {
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
   border: none;
   color: var(--text-color);
   font-size: 1rem;
@@ -79,7 +83,11 @@
 }
 
 .congrats-button:hover {
-  background: linear-gradient(90deg, var(--secondary-color), var(--primary-accent));
+  background: linear-gradient(
+    90deg,
+    var(--secondary-color),
+    var(--primary-accent)
+  );
   transform: scale(1.05);
   box-shadow: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.4);
   filter: brightness(1.1);

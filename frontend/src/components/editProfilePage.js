@@ -38,72 +38,75 @@ function EditProfilePage() {
 
   // --- Fetch profile data on mount ---
   useEffect(() => {
-  async function fetchProfile() {
-    const storedUser = localStorage.getItem("user");
-    if (!storedUser) {
-      setMessage({ text: "You must be logged in.", type: "error" });
-      navigate("/login");
-      return;
+    async function fetchProfile() {
+      const storedUser = localStorage.getItem("user");
+      if (!storedUser) {
+        setMessage({ text: "You must be logged in.", type: "error" });
+        navigate("/login");
+        return;
+      }
+
+      const userData = JSON.parse(storedUser);
+      const { token, userId: currentUserId } = userData;
+      setUserId(currentUserId);
+
+      try {
+        const res = await fetch(
+          `http://localhost:9090/api/profile/${currentUserId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!res.ok) throw new Error("Failed to fetch profile data");
+
+        const profileData = await res.json(); // ✅ single unified object
+        console.log("Profile data:", profileData);
+
+        // --- Account Info ---
+        setEmail(profileData.email || "");
+        setFirstName(profileData.firstName.split(" ")[0] || "");
+        setLastName(profileData.lastName.split(" ")[1] || "");
+        setPhone(profileData.phone || "");
+
+        // --- Billing Address ---
+        setStreet(profileData.street || "");
+        setCity(profileData.city || "");
+        setStateUS(profileData.state || "");
+        setZip(profileData.zip || "");
+
+        // --- Payment Info ---
+        setCardType(profileData.cardType || "");
+        setCardNumber(profileData.cardNumber || "");
+        setExpMonth(
+          profileData.expMonth ? profileData.expMonth.toString() : ""
+        );
+        setExpYear(profileData.expYear ? profileData.expYear.toString() : "");
+
+        // --- Promo ---
+        setPromoOptIn(profileData.promoOptIn || false);
+      } catch (err) {
+        setMessage({ text: err.message, type: "error" });
+      } finally {
+        setIsLoading(false);
+      }
     }
 
-    const userData = JSON.parse(storedUser);
-    const { token, userId: currentUserId } = userData;
-    setUserId(currentUserId);
-
-    try {
-      const res = await fetch(`http://localhost:9090/api/profile/${currentUserId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch profile data");
-
-      const profileData = await res.json(); // ✅ single unified object
-      console.log("Profile data:", profileData);
-
-      // --- Account Info ---
-      setEmail(profileData.email || "");
-      setFirstName(profileData.firstName.split(" ")[0] || "");
-      setLastName(profileData.lastName.split(" ")[1] || "");
-      setPhone(profileData.phone || "");
-
-      // --- Billing Address ---
-      setStreet(profileData.street || "");
-      setCity(profileData.city || "");
-      setStateUS(profileData.state || "");
-      setZip(profileData.zip || "");
-
-      // --- Payment Info ---
-      setCardType(profileData.cardType || "");
-      setCardNumber(profileData.cardNumber || "");
-      setExpMonth(profileData.expMonth ? profileData.expMonth.toString() : "");
-      setExpYear(profileData.expYear ? profileData.expYear.toString() : "");
-
-      // --- Promo ---
-      setPromoOptIn(profileData.promoOptIn || false);
-
-    } catch (err) {
-      setMessage({ text: err.message, type: "error" });
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  fetchProfile();
-}, [navigate]);
-
-
-
-
+    fetchProfile();
+  }, [navigate]);
 
   // --- Handle Save Changes ---
   const handleSave = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setMessage({ text: "New password and confirmation do not match.", type: "error" });
+      setMessage({
+        text: "New password and confirmation do not match.",
+        type: "error",
+      });
       return;
     }
 
@@ -113,7 +116,10 @@ function EditProfilePage() {
     setUserId(currentUserId);
 
     if (!storedUser) {
-      setMessage({ text: "Authentication error. Please log in again.", type: "error" });
+      setMessage({
+        text: "Authentication error. Please log in again.",
+        type: "error",
+      });
       return;
     }
     const { token } = JSON.parse(storedUser);
@@ -138,7 +144,7 @@ function EditProfilePage() {
       street,
       city,
       state: stateUS,
-      zip
+      zip,
     };
 
     const payload2 = {
@@ -150,8 +156,8 @@ function EditProfilePage() {
 
     if (newPassword && currentPassword) {
       payload2.currentPassword = currentPassword;
-     payload2.newPassword = newPassword;
-  }
+      payload2.newPassword = newPassword;
+    }
 
     console.log("Submitting profile update payload:", billingPayload);
     console.log("Submitting profile update 2nd payload:", payload2);
@@ -160,14 +166,14 @@ function EditProfilePage() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(billingPayload),
       });
 
       if (!res.ok) {
         // Try to parse error from backend
-        
+
         let errorMsg = "Failed to update profile. Billing info error";
         try {
           const errorData = await res.json();
@@ -178,65 +184,63 @@ function EditProfilePage() {
         throw new Error(errorMsg);
       }
       try {
-      const res1 = await fetch(`http://localhost:9090/auth/update`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload2),
-      });
+        const res1 = await fetch(`http://localhost:9090/auth/update`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload2),
+        });
 
-      if (!res1.ok) {
-        // Try to parse error from backend
-        let errorMsg = "Failed to update profile. User info error";
-        try {
-          const errorData = await res1.json();
-          errorMsg = errorData.message || errorMsg;
-        } catch (parseError) {
-          // Keep default error message
+        if (!res1.ok) {
+          // Try to parse error from backend
+          let errorMsg = "Failed to update profile. User info error";
+          try {
+            const errorData = await res1.json();
+            errorMsg = errorData.message || errorMsg;
+          } catch (parseError) {
+            // Keep default error message
+          }
+          throw new Error(errorMsg);
         }
-        throw new Error(errorMsg);
+      } catch (error) {
+        setMessage({ text: error.message, type: "error" });
+      } finally {
+        setIsLoading(false);
       }
-        } catch (error) {
-      setMessage({ text: error.message, type: "error" });
-    } finally {
-      setIsLoading(false);
-    }
       if (newPassword && currentPassword) {
-  setMessage({ text: "Password updated successfully!", type: "success" });
+        setMessage({ text: "Password updated successfully!", type: "success" });
 
-  // 🔒 Optional: Log the user out after password change (for security)
-  setTimeout(() => {
-    localStorage.removeItem("user");
-    navigate("/login");
-  }, 2000);
+        // 🔒 Optional: Log the user out after password change (for security)
+        setTimeout(() => {
+          localStorage.removeItem("user");
+          navigate("/login");
+        }, 2000);
 
-  return; // Stop further execution (don’t reload the page)
-  } else {
-    setMessage({ text: "Profile updated successfully!", type: "success" });
-  }
+        return; // Stop further execution (don’t reload the page)
+      } else {
+        setMessage({ text: "Profile updated successfully!", type: "success" });
+      }
 
-  // ✅ Clear password fields
-  setCurrentPassword("");
-  setNewPassword("");
-  setConfirmPassword("");
+      // ✅ Clear password fields
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
 
-  // ✅ Update localStorage to keep NavBar in sync
-  const oldUserData = JSON.parse(localStorage.getItem("user"));
-  const newUserData = {
-    ...oldUserData,
-    fullName: `${firstName} ${lastName}`,
-    firstName: firstName,
-  };
-  localStorage.setItem("user", JSON.stringify(newUserData));
+      // ✅ Update localStorage to keep NavBar in sync
+      const oldUserData = JSON.parse(localStorage.getItem("user"));
+      const newUserData = {
+        ...oldUserData,
+        fullName: `${firstName} ${lastName}`,
+        firstName: firstName,
+      };
+      localStorage.setItem("user", JSON.stringify(newUserData));
 
-  // ✅ Reload only for non-password updates
-  setTimeout(() => {
-    window.location.reload();
-  }, 1000);
-
-
+      // ✅ Reload only for non-password updates
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       setMessage({ text: error.message, type: "error" });
     } finally {
@@ -263,25 +267,56 @@ function EditProfilePage() {
         <fieldset disabled={isLoading} className="editProfilePage-section">
           <h2 className="editProfilePage-sectionHeader">Account Information</h2>
           <div className="editProfilePage-formGrid">
-            
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="email">Email (cannot be changed) </label>
-              <input id="email" className="editProfilePage-input editProfilePage-readOnly" value={email} placeholder={email}disabled />
+              <label className="editProfilePage-inputLabel" htmlFor="email">
+                Email (cannot be changed){" "}
+              </label>
+              <input
+                id="email"
+                className="editProfilePage-input editProfilePage-readOnly"
+                value={email}
+                placeholder={email}
+                disabled
+              />
             </div>
 
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="phone">Phone Number</label>
-              <input id="phone" className="editProfilePage-input" value={phone} onChange={e => setPhone(e.target.value)} placeholder={phone}/>
+              <label className="editProfilePage-inputLabel" htmlFor="phone">
+                Phone Number
+              </label>
+              <input
+                id="phone"
+                className="editProfilePage-input"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder={phone}
+              />
             </div>
-            
+
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="firstName">First Name</label>
-              <input id="firstName" className="editProfilePage-input" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder={firstName}/>
+              <label className="editProfilePage-inputLabel" htmlFor="firstName">
+                First Name
+              </label>
+              <input
+                id="firstName"
+                className="editProfilePage-input"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder={firstName}
+              />
             </div>
-            
+
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="lastName">Last Name</label>
-              <input id="lastName" className="editProfilePage-input" value={lastName} onChange={e => setLastName(e.target.value)} placeholder={lastName} />
+              <label className="editProfilePage-inputLabel" htmlFor="lastName">
+                Last Name
+              </label>
+              <input
+                id="lastName"
+                className="editProfilePage-input"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder={lastName}
+              />
             </div>
           </div>
         </fieldset>
@@ -290,25 +325,57 @@ function EditProfilePage() {
         <fieldset disabled={isLoading} className="editProfilePage-section">
           <h2 className="editProfilePage-sectionHeader">Billing Address</h2>
           <div className="editProfilePage-formGrid">
-            
             <div className="editProfilePage-formGroup formGroup-span2">
-              <label className="editProfilePage-inputLabel" htmlFor="street">Street</label>
-              <input id="street" className="editProfilePage-input" value={street} onChange={e => setStreet(e.target.value)} placeholder={street}/>
-            </div>
-            
-            <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="city">City</label>
-              <input id="city" className="editProfilePage-input" value={city} onChange={e => setCity(e.target.value)} placeholder={city}/>
-            </div>
-            
-            <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="state">State</label>
-              <input id="state" className="editProfilePage-input" value={stateUS} onChange={e => setStateUS(e.target.value)} placeholder={stateUS} />
+              <label className="editProfilePage-inputLabel" htmlFor="street">
+                Street
+              </label>
+              <input
+                id="street"
+                className="editProfilePage-input"
+                value={street}
+                onChange={(e) => setStreet(e.target.value)}
+                placeholder={street}
+              />
             </div>
 
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="zip">ZIP</label>
-              <input id="zip" className="editProfilePage-input" value={zip} onChange={e => setZip(e.target.value)} placeholder={zip}maxLength="5"/>
+              <label className="editProfilePage-inputLabel" htmlFor="city">
+                City
+              </label>
+              <input
+                id="city"
+                className="editProfilePage-input"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder={city}
+              />
+            </div>
+
+            <div className="editProfilePage-formGroup">
+              <label className="editProfilePage-inputLabel" htmlFor="state">
+                State
+              </label>
+              <input
+                id="state"
+                className="editProfilePage-input"
+                value={stateUS}
+                onChange={(e) => setStateUS(e.target.value)}
+                placeholder={stateUS}
+              />
+            </div>
+
+            <div className="editProfilePage-formGroup">
+              <label className="editProfilePage-inputLabel" htmlFor="zip">
+                ZIP
+              </label>
+              <input
+                id="zip"
+                className="editProfilePage-input"
+                value={zip}
+                onChange={(e) => setZip(e.target.value)}
+                placeholder={zip}
+                maxLength="5"
+              />
             </div>
           </div>
         </fieldset>
@@ -316,21 +383,56 @@ function EditProfilePage() {
         {/* ===== Change Password ===== */}
         <fieldset disabled={isLoading} className="editProfilePage-section">
           <h2 className="editProfilePage-sectionHeader">Change Password</h2>
-          <div className="editProfilePage-formGrid grid-cols-3"> {/* Special grid for 3 items */}
-            
+          <div className="editProfilePage-formGrid grid-cols-3">
+            {" "}
+            {/* Special grid for 3 items */}
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="currentPassword">Current Password</label>
-              <input id="currentPassword" className="editProfilePage-input" type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} placeholder="Enter current password"/>
+              <label
+                className="editProfilePage-inputLabel"
+                htmlFor="currentPassword"
+              >
+                Current Password
+              </label>
+              <input
+                id="currentPassword"
+                className="editProfilePage-input"
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="Enter current password"
+              />
             </div>
-            
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="newPassword">New Password</label>
-              <input id="newPassword" className="editProfilePage-input" type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="Enter new password"/>
+              <label
+                className="editProfilePage-inputLabel"
+                htmlFor="newPassword"
+              >
+                New Password
+              </label>
+              <input
+                id="newPassword"
+                className="editProfilePage-input"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter new password"
+              />
             </div>
-            
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="confirmPassword">Confirm New Password</label>
-              <input id="confirmPassword" className="editProfilePage-input" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Re-enter new password"/>
+              <label
+                className="editProfilePage-inputLabel"
+                htmlFor="confirmPassword"
+              >
+                Confirm New Password
+              </label>
+              <input
+                id="confirmPassword"
+                className="editProfilePage-input"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Re-enter new password"
+              />
             </div>
           </div>
         </fieldset>
@@ -338,15 +440,28 @@ function EditProfilePage() {
         {/* ===== Payment Method ===== */}
         <fieldset disabled={isLoading} className="editProfilePage-section">
           <h2 className="editProfilePage-sectionHeader">Payment Method</h2>
-          <div className="editProfilePage-formGrid grid-cols-4"> {/* Special grid for 4 items */}
-            
+          <div className="editProfilePage-formGrid grid-cols-4">
+            {" "}
+            {/* Special grid for 4 items */}
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="cardType">Card Type</label>
-              <input id="cardType" className="editProfilePage-input" value={cardType} onChange={e => setCardType(e.target.value)} placeholder={cardType}/>
+              <label className="editProfilePage-inputLabel" htmlFor="cardType">
+                Card Type
+              </label>
+              <input
+                id="cardType"
+                className="editProfilePage-input"
+                value={cardType}
+                onChange={(e) => setCardType(e.target.value)}
+                placeholder={cardType}
+              />
             </div>
-            
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="cardNumber">Card Number</label>
+              <label
+                className="editProfilePage-inputLabel"
+                htmlFor="cardNumber"
+              >
+                Card Number
+              </label>
               <input
                 id="cardNumber"
                 className="editProfilePage-input"
@@ -366,15 +481,31 @@ function EditProfilePage() {
                 </button>
               )}
             </div>
-                      
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="expMonth">Exp. Month</label>
-              <input id="expMonth" className="editProfilePage-input" value={expMonth} onChange={e => setExpMonth(e.target.value)}placeholder={expMonth} maxLength="2"/>
+              <label className="editProfilePage-inputLabel" htmlFor="expMonth">
+                Exp. Month
+              </label>
+              <input
+                id="expMonth"
+                className="editProfilePage-input"
+                value={expMonth}
+                onChange={(e) => setExpMonth(e.target.value)}
+                placeholder={expMonth}
+                maxLength="2"
+              />
             </div>
-            
             <div className="editProfilePage-formGroup">
-              <label className="editProfilePage-inputLabel" htmlFor="expYear">Exp. Year</label>
-              <input id="expYear" className="editProfilePage-input" value={expYear} onChange={e => setExpYear(e.target.value)} placeholder={expYear} maxLength="2"/>
+              <label className="editProfilePage-inputLabel" htmlFor="expYear">
+                Exp. Year
+              </label>
+              <input
+                id="expYear"
+                className="editProfilePage-input"
+                value={expYear}
+                onChange={(e) => setExpYear(e.target.value)}
+                placeholder={expYear}
+                maxLength="2"
+              />
             </div>
           </div>
         </fieldset>
@@ -382,15 +513,20 @@ function EditProfilePage() {
         {/* ===== Promotions ===== */}
         <fieldset disabled={isLoading} className="editProfilePage-section">
           <h2 className="editProfilePage-sectionHeader">Promotions & Offers</h2>
-          <div className="editProfilePage-formGroup-promo"> {/* Using your CSS class */}
-            <input 
-              id="promoOptInBox" 
-              type="checkbox" 
+          <div className="editProfilePage-formGroup-promo">
+            {" "}
+            {/* Using your CSS class */}
+            <input
+              id="promoOptInBox"
+              type="checkbox"
               className="promo-checkbox" // Added a class for easier selection
-              checked={promoOptIn} 
-              onChange={e => setPromoOptIn(e.target.checked)}
+              checked={promoOptIn}
+              onChange={(e) => setPromoOptIn(e.target.checked)}
             />
-            <label htmlFor="promoOptInBox" className="editProfilePage-inputLabel promo-label">
+            <label
+              htmlFor="promoOptInBox"
+              className="editProfilePage-inputLabel promo-label"
+            >
               Email me promotions, special offers, and early screenings.
             </label>
           </div>
@@ -398,10 +534,19 @@ function EditProfilePage() {
 
         {/* ===== Action Buttons ===== */}
         <div className="editProfilePage-buttonRow">
-          <button type="button" className="editProfilePage-buttonSecondary" onClick={() => navigate(-1)} disabled={isLoading}>
+          <button
+            type="button"
+            className="editProfilePage-buttonSecondary"
+            onClick={() => navigate(-1)}
+            disabled={isLoading}
+          >
             Cancel
           </button>
-          <button type="submit" className="editProfilePage-buttonPrimary" disabled={isLoading}>
+          <button
+            type="submit"
+            className="editProfilePage-buttonPrimary"
+            disabled={isLoading}
+          >
             {isLoading ? "Saving..." : "Save Changes"}
           </button>
         </div>
@@ -411,5 +556,3 @@ function EditProfilePage() {
 }
 
 export default EditProfilePage;
-
-

@@ -48,7 +48,9 @@ function Verify() {
     // --- API Call to /auth/verify with URL Parameters ---
     try {
       // Construct the URL with query parameters
-      const verificationUrl = `${API_BASE_URL}/auth/verify?email=${encodeURIComponent(userEmail)}&token=${encodeURIComponent(code)}`;
+      const verificationUrl = `${API_BASE_URL}/auth/verify?email=${encodeURIComponent(
+        userEmail
+      )}&token=${encodeURIComponent(code)}`;
 
       const response = await fetch(verificationUrl, {
         method: "GET", // Matches the recommended @GetMapping approach
@@ -79,13 +81,13 @@ function Verify() {
       <div className="verify-card">
         <img src={logo} alt="Logo" className="verify-logo" />
         <h1 className="verify-title">Verify Your Account</h1>
-        
+
         {/* Display initial success/info message */}
         {message && <p className="verify-info">{message}</p>}
-        
+
         {/* Display the email the user needs to check */}
         <p className="verify-email-display">
-            Code sent to: **{userEmail || "N/A"}**
+          Code sent to: **{userEmail || "N/A"}**
         </p>
 
         <form onSubmit={handleVerify}>
@@ -95,7 +97,7 @@ function Verify() {
               placeholder="Enter 6-Digit Code"
               maxLength="6"
               value={code}
-              onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ''))} // Only allow numbers
+              onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ""))} // Only allow numbers
               disabled={loading}
               required
             />

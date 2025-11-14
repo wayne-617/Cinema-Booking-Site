@@ -1,14 +1,17 @@
-import React from 'react';
-import NavBar from './navBar';
-import { Outlet } from 'react-router-dom';
+import React from "react";
+import NavBar from "./navBar";
+import { Outlet } from "react-router-dom";
+import { AuthProvider } from "../AuthContext";
 
 export default function PageLayout() {
   return (
     <>
-      <NavBar />
-      <main>
-        <Outlet />
-      </main>
+      <AuthProvider>
+        <NavBar />
+        <main>
+          <Outlet />
+        </main>
+      </AuthProvider>
     </>
   );
 }

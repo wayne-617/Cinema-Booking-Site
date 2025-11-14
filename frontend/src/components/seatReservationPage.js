@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 import "./seatReservationPage.css"; // Re-added your CSS import
 
 function SeatReservationPage() {
@@ -7,7 +8,7 @@ function SeatReservationPage() {
   const navigate = useNavigate();
 
   // --- Auth & Loading State ---
-  const [user, setUser] = useState(null);
+  const { currentUser, isLoggedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(true); // Start in loading state
 
   const rows = 6;
@@ -20,21 +21,14 @@ function SeatReservationPage() {
   // --- Authentication Check Effect ---
   // This runs first to check if the user is logged in
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (!storedUser) {
-      // Not logged in, redirect to login page
-     
+    if (!isLoggedIn) {
     } else {
-      // User is logged in, parse their data, stop loading
-      setUser(JSON.parse(storedUser));
-     
     }
   }, [navigate]);
 
   // "Fetch" reserved seats based on showtimeId
   useEffect(() => {
     // Don't run this if we are still loading or haven't set the user
-    
 
     // In real app, you’d call:
     // const { token } = user;
@@ -43,7 +37,7 @@ function SeatReservationPage() {
     // })
     //   .then(res => res.json())
     //   .then(data => setReservedSeats(data));
-    
+
     // Simulate different reserved seats for different showtimes:
     const mockData =
       showtimeId === "1"
@@ -146,7 +140,6 @@ function SeatReservationPage() {
   };
 
   // Show a loading screen while we check auth
-  
 
   // --- Main component render ---
   // This part only renders if the user is logged in
@@ -221,10 +214,14 @@ function SeatReservationPage() {
             <h3>Total: ${total}</h3>
 
             <div className="orderActions">
-              <button onClick={() => {
-                setSelectedSeats([]);
-                setTickets([]);
-              }}>Clear Selection</button>
+              <button
+                onClick={() => {
+                  setSelectedSeats([]);
+                  setTickets([]);
+                }}
+              >
+                Clear Selection
+              </button>
               <button onClick={handleCheckout}>Continue to Checkout</button>
             </div>
           </div>
@@ -235,4 +232,3 @@ function SeatReservationPage() {
 }
 
 export default SeatReservationPage;
-

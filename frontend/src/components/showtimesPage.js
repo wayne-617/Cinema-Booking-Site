@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./showtimesPage.css";
 
-
 function ShowtimesPage() {
   const [showtimes, setShowtimes] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -39,11 +38,9 @@ function ShowtimesPage() {
   // When user clicks a showtime card
   const handleShowtimeClick = (showtimeId) => {
     if (window.location.pathname.includes("/customer")) {
-
-    
-    navigate(`/customer/seat-reservation/${showtimeId}`);
+      navigate(`/customer/seat-reservation/${showtimeId}`);
     } else {
-       navigate(`/seat-reservation/${showtimeId}`);
+      navigate(`/seat-reservation/${showtimeId}`);
     }
   };
 
@@ -77,11 +74,7 @@ function ShowtimesPage() {
               className="movie-card"
               onClick={() => handleShowtimeClick(st.showtimeId)}
             >
-              <img
-                src={st.posterUrl}
-                alt={st.title}
-                className="movie-poster"
-              />
+              <img src={st.posterUrl} alt={st.title} className="movie-poster" />
               <h3>{st.title}</h3>
               <p className="time-text">{formatTime(st.showTime)}</p>
               <p className="click-text">🎟 Click to reserve seats</p>
