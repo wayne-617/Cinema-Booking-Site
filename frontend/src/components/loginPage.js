@@ -62,6 +62,7 @@ function LoginPage() {
     if (decoded.role === "ADMIN") {
       navigate("/admindashboard");
     } else {
+      <userAuth.Provider value="USER"></userAuth.Provider>
       navigate("/customer");
     }
 

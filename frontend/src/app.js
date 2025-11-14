@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from "./AuthContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
 import CustomerLayout from './components/customerLayout';
@@ -30,10 +31,14 @@ import ResetPassword from './components/resetPassword'
 import Verify from './components/Verify';
 import './app.css'; 
 
+const isLoggedIn = createContext(false);
+const currentUser = createContext(null);
+const userAuth = createContext(null);
+
 function App() {
   return (
     <div className="App">
-
+      <AuthProvider>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<WelcomePage />} />
@@ -82,6 +87,7 @@ function App() {
 
         </Route>
       </Routes>
+      </AuthProvider>
     </div>
   );
 }
