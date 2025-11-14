@@ -4,8 +4,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.MailException;
 import com.example.demo.dto.BillingRequest;
 import com.example.demo.entity.BillingEntity;
 import com.example.demo.repository.UserRepository;
@@ -15,6 +18,9 @@ import com.example.demo.service.BillingService;
 @RequestMapping("/billing")
 public class BillingController {
 
+    @Autowired
+    private JavaMailSender mailSender;
+    
     @Autowired
     private BillingService billingService;
 
@@ -41,9 +47,21 @@ public class BillingController {
             billing.setCity(request.getCity());
             billing.setState(request.getState());
             billing.setZip(request.getZip());
-
+           
             billingService.saveBilling(billing); // 🔒 this will now always run
 
+            if (user != null) {
+
+                 try {
+                     SimpleMailMessage message = new SimpleMailMessage();
+                    message.setTo(user.getUsername());
+                    message.setSubject("Profile info changed");
+                    message.setText("Your billing info under Edit Profile has been changed.");
+                    mailSender.send(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                 }
+            }
             return ResponseEntity.ok("Billing saved successfully (encrypted).");
 
         } catch (Exception e) {

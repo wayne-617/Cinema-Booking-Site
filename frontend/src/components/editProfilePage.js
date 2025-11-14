@@ -66,8 +66,8 @@ function EditProfilePage() {
 
       // --- Account Info ---
       setEmail(profileData.email || "");
-      setFirstName(profileData.firstName || "");
-      setLastName(profileData.lastName || "");
+      setFirstName(profileData.firstName.split(" ")[0] || "");
+      setLastName(profileData.lastName.split(" ")[1] || "");
       setPhone(profileData.phone || "");
 
       // --- Billing Address ---
@@ -128,6 +128,8 @@ function EditProfilePage() {
     }
 
     const billingPayload = {
+      first_name: firstName,
+      last_name: lastName,
       userId: currentUserId,
       cardType,
       cardNumber: cleanedCardNumber,
@@ -142,7 +144,7 @@ function EditProfilePage() {
     const payload2 = {
       username: email,
       phone,
-      fullName: firstName + lastName
+      fullName: firstName + " " + lastName
       
     };
 
