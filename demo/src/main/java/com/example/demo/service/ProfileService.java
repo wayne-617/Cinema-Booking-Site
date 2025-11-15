@@ -46,10 +46,10 @@ public class ProfileService {
         dto.setPhone(userEntity.getPhone());
         dto.setPromoOptIn(userEntity.getPromoOptIn());
         dto.setHomeAddress(userEntity.getHomeAddress());
-
+        
         // --- Billing info ---
-        dto.setFirstName(billingEntity.getFirstName());
-        dto.setLastName(billingEntity.getLastName());
+        dto.setFirstName(userEntity.getFullName());
+        dto.setLastName(userEntity.getFullName());
         dto.setBillingEmail(billingEntity.getEmail());
         dto.setCardNumber(billingEntity.getCardNumber()); // ✅ already masked (**** **** **** 1234)
         dto.setStreet(billingEntity.getStreet());
@@ -90,7 +90,7 @@ public class ProfileService {
         userRepository.save(userEntity);
 
         // --- Update Billing Entity ---
-       billingEntity.setFirstName(dto.getFirstName());
+        billingEntity.setFirstName(dto.getFirstName());
         billingEntity.setLastName(dto.getLastName());
         billingEntity.setStreet(dto.getStreet());
         billingEntity.setCity(dto.getCity());

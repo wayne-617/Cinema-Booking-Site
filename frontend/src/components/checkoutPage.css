@@ -92,8 +92,6 @@
   transform: scale(1.03);
 }
 
-
-
 /* Responsive for small screens */
 @media (max-width: 600px) {
   .row {
@@ -105,4 +103,3 @@
     padding: 2rem;
   }
 }
-

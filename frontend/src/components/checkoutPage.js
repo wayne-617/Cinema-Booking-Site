@@ -12,8 +12,7 @@ export default function CheckoutPage() {
   const [message, setMessage] = useState({ text: "", isError: false });
 
   // 1️⃣ Receive order from navigation state or fallback to localStorage
-  const initialOrder =
-    location.state?.order ||
+  const initialOrder = location.state?.order ||
     JSON.parse(localStorage.getItem("order")) || {
       tickets: [],
       total: 0,
@@ -61,13 +60,25 @@ export default function CheckoutPage() {
 
   const handleConfirm = async (e) => {
     e.preventDefault(); // It's a form, prevent default
-    
-    if (!formData.name || !formData.email || !formData.card || !formData.expiry || !formData.cvv) {
-      setMessage({ text: "Please fill all required payment fields.", isError: true });
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.card ||
+      !formData.expiry ||
+      !formData.cvv
+    ) {
+      setMessage({
+        text: "Please fill all required payment fields.",
+        isError: true,
+      });
       return;
     }
     if (!user) {
-      setMessage({ text: "Authentication error. Please log in again.", isError: true });
+      setMessage({
+        text: "Authentication error. Please log in again.",
+        isError: true,
+      });
       return;
     }
 
@@ -80,7 +91,8 @@ export default function CheckoutPage() {
       showtimeId: order.showtimeId,
       tickets: order.tickets,
       total: order.total,
-      paymentInfo: { // This info should be sent to a payment gateway (like Stripe), NOT your server
+      paymentInfo: {
+        // This info should be sent to a payment gateway (like Stripe), NOT your server
         name: formData.name,
         card: formData.card,
         expiry: formData.expiry,
@@ -94,10 +106,10 @@ export default function CheckoutPage() {
     // Simulating a 1-second network delay
     setTimeout(() => {
       // In a real app, you'd navigate only on a successful API response
-      
+
       // Clear the temporary order from localStorage
-      localStorage.removeItem("order"); 
-      
+      localStorage.removeItem("order");
+
       // Navigate to confirmation page
       navigate("/order-confirmation", { state: { order, formData } });
     }, 1000);
@@ -120,7 +132,10 @@ export default function CheckoutPage() {
   if (isLoading) {
     return (
       // Using classes from your CSS file
-      <div className="checkout-container" style={{ justifyContent: "center", alignItems: "center" }}>
+      <div
+        className="checkout-container"
+        style={{ justifyContent: "center", alignItems: "center" }}
+      >
         <h1>Loading...</h1>
       </div>
     );
@@ -134,9 +149,7 @@ export default function CheckoutPage() {
       {/* JSX updated to use new class names */}
       <div className="checkout-container">
         <h1>💳 Checkout</h1>
-        <div className="checkout-summary">
-            Your total: ${total.toFixed(2)}
-        </div>
+        <div className="checkout-summary">Your total: ${total.toFixed(2)}</div>
 
         <table className="checkout-table">
           <thead>
@@ -166,11 +179,13 @@ export default function CheckoutPage() {
         <form className="checkout-form" onSubmit={handleConfirm}>
           {/* --- Message Bar --- */}
           {message.text && (
-            <div className={`message-bar ${message.isError ? 'error' : 'success'}`}>
+            <div
+              className={`message-bar ${message.isError ? "error" : "success"}`}
+            >
               {message.text}
             </div>
           )}
-          
+
           <input
             name="name"
             placeholder="Full Name"
@@ -216,7 +231,9 @@ export default function CheckoutPage() {
               ❌ Cancel
             </button>
             <button type="submit" className="confirm-btn">
-              {message.text === "Processing your order..." ? "Processing..." : "✅ Confirm Order"}
+              {message.text === "Processing your order..."
+                ? "Processing..."
+                : "✅ Confirm Order"}
             </button>
           </div>
         </form>
@@ -224,4 +241,3 @@ export default function CheckoutPage() {
     </>
   );
 }
-

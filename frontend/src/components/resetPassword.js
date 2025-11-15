@@ -1,13 +1,11 @@
-import {React, useState} from "react";
+import { React, useState } from "react";
 import "./forgotPass.css";
 import logo from "../logo512.png";
 import { Link, useNavigate } from "react-router-dom";
-import {useLocation} from 'react-router-dom';
-
-
+import { useLocation } from "react-router-dom";
 
 function ResetPassword() {
- const message = "Password reset";
+  const message = "Password reset";
   const navigate = useNavigate();
   const location = useLocation();
   const param = new URLSearchParams(location.search);
@@ -16,43 +14,29 @@ function ResetPassword() {
   const [displayMessage, setDisplay] = useState("");
 
   const handleRequestClick = async () => {
-   if (!userEmail) {
-    alert("missing email");
-   }
+    if (!userEmail) {
+      alert("missing email");
+    }
     const pass = document.getElementById("myPass");
-   try{
+    try {
       const response = await fetch("http://localhost:9090/auth/update", {
         method: "PUT",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-        username: userEmail,
-        password: pass.value
-        })
-       
-    }
-    
-)
-     if (!response.ok) {
+          username: userEmail,
+          password: pass.value,
+        }),
+      });
+      if (!response.ok) {
         const err = await response.text();
-            console.error("update failed", err);
-            
-        } else {
-            setDisplay(message);
-            navigate("/login");
-        }
+        console.error("update failed", err);
+      } else {
+        setDisplay(message);
+        navigate("/login");
+      }
     } catch (err) {
-        console.error("Request error", err);
+      console.error("Request error", err);
     }
-
-   
-
-   
-  
-
-  
-
-   
-
 
     //navigate("/customer", {state: {user: emailaddr.value}});
   };
@@ -65,25 +49,26 @@ function ResetPassword() {
             <div className="title-container">
               <h1 className="login-title">Forgot</h1>
               <h1 className="login-title">Password</h1>
-             
             </div>
 
             <div className="login-form">
-                <p1 className="forgot-Desc">Create new password</p1>
-                 {displayMessage && <p1 className="forgot-Desc">{displayMessage}</p1>}
+              <p1 className="forgot-Desc">Create new password</p1>
+              {displayMessage && (
+                <p1 className="forgot-Desc">{displayMessage}</p1>
+              )}
               <input
                 type="password"
                 placeholder="New Password"
                 className="login-input1"
-                id = "myPass"
-                
+                id="myPass"
               />
-              <button className="login-button" onClick={handleRequestClick}>Request</button>
+              <button className="login-button" onClick={handleRequestClick}>
+                Request
+              </button>
             </div>
             <div className="login-footer">
               Don’t have an account? <Link to="/register">Reset</Link>
             </div>
-            
           </div>
         </section>
       </section>

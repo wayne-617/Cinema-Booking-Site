@@ -9,8 +9,10 @@ export function notFoundPage() {
       <section className="contentSection">
         <section className="bodySection">
           <div className="bodyTextDiv">
-            <h1 className="headerText">The page you are looking for does not exist!</h1>
-            <img src={cinema} alt="Absoulute Cinema"/>
+            <h1 className="headerText">
+              The page you are looking for does not exist!
+            </h1>
+            <img src={cinema} alt="Absoulute Cinema" />
           </div>
         </section>
       </section>

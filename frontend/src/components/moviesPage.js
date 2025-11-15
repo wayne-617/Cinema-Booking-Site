@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import "./moviesPage.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
-
-
 export default function MoviesPage() {
-  
   function useQuery() {
     return new URLSearchParams(useLocation().search);
   }
-  
+
   const [movies, setMovies] = useState([]);
   const [showtimes, setShowtimes] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -17,7 +14,6 @@ export default function MoviesPage() {
   const query = useQuery();
 
   const searchTerm = query.get("search")?.toLowerCase() || "";
-
 
   // Fetch movies
   useEffect(() => {
@@ -39,19 +35,16 @@ export default function MoviesPage() {
   const getMovieShowtimes = (movieId) =>
     showtimes.filter((s) => s.movieId === movieId);
 
-    const goToDetails = (movie) => {
-      const id = movie.movieId;   
-      navigate(`/movieDescription/${id}`);
-    };
+  const goToDetails = (movie) => {
+    const id = movie.movieId;
+    navigate(`/movieDescription/${id}`);
+  };
 
-      const filteredMovies = searchTerm
-    ? movies.filter((m) =>
-        m.title.toLowerCase().includes(searchTerm)
-      )
+  const filteredMovies = searchTerm
+    ? movies.filter((m) => m.title.toLowerCase().includes(searchTerm))
     : movies;
-  
 
-    return (
+  return (
     <div className="moviesPageContainer">
       <h1 className="moviesHeader">🎬 Now Showing</h1>
       <p className="moviesSubheader">
@@ -61,9 +54,7 @@ export default function MoviesPage() {
       </p>
 
       {filteredMovies.length === 0 ? (
-        <p className="noResultsText">
-          No movies found matching "{searchTerm}"
-        </p>
+        <p className="noResultsText">No movies found matching "{searchTerm}"</p>
       ) : (
         <div className="movieGrid">
           {filteredMovies.map((movie) => (

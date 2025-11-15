@@ -1,8 +1,17 @@
 import React from "react";
 import logo from "../logo512.png";
-import "./dashboardPage.css";
+import { useAuth } from "../AuthContext";
+import { useEffect } from "react";
 
 export function dashboardPage() {
+  const { currentUser, userAuth, setUser, setAuth } = useAuth();
+  useEffect(() => {
+    if (userAuth == "ADMIN") {
+      return;
+    } else {
+      navigate("/login");
+    }
+  }, [navigate]);
   return (
     <div className="bodyDiv">
       <section className="contentSection">
