@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
+import com.example.demo.adapter.FormatAdapter;
+import com.example.demo.adapter.MovieDescription;
 import com.example.demo.entity.Movie;
 import com.example.demo.repository.MovieRepository;
 
@@ -16,6 +17,9 @@ public class MovieService  {
     @Autowired
     private MovieRepository movieRepository;
     
+    public MovieService(MovieRepository movieRepository) {
+        this.movieRepository = movieRepository;
+    }
 
     public Movie createMovie(String title, String director, Long movieId, String poster_url, String cast, String genre, String producer, String rating, String reviews, String synopsis){
         Movie movie = new Movie();
@@ -55,6 +59,36 @@ public class MovieService  {
         
     }
 
+    public Movie save(Movie movie) {
+        return movieRepository.save(movie);              // from JpaRepository
+    }
+
+    public List<Movie> findAll() {
+        return movieRepository.findAll();                // from JpaRepository
+    }
+
+    public Movie findById(Long id) {
+        return movieRepository.findById(id).orElse(null); // from JpaRepository
+    }
+
+    public List<Movie> searchMovies(String query) {
+        // custom query you defined
+        return movieRepository.findByTitleContainingIgnoreCase(query);
+    }
+
+    public String getMovieDetailsFormatted(Long id) {
+        Movie movie = movieRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Movie not found: " + id));
+
+        // Adaptee MovieReview implements JSONable
+        MovieDescription description = new MovieDescription(movie);
+
+        // Adapter hides how JSON is produced
+        FormatAdapter adapter = new FormatAdapter(description);
+
+        return adapter.returnDetails();
+    }
+
     public List<Movie> getAllMovies() {
         return movieRepository.findAll();
     }
@@ -81,4 +115,5 @@ public class MovieService  {
     public void deleteMovie(String title) {
         movieRepository.deleteAll();
     }
+
 }
