@@ -48,8 +48,8 @@ public class ProfileService {
         dto.setHomeAddress(userEntity.getHomeAddress());
 
         // --- Billing info ---
-        dto.setFirstName(billingEntity.getFirstName());
-        dto.setLastName(billingEntity.getLastName());
+        dto.setFirstName(userEntity.getFullName());
+        dto.setLastName(userEntity.getFullName());
         dto.setBillingEmail(billingEntity.getEmail());
         dto.setCardNumber(billingEntity.getCardNumber()); // ✅ already masked (**** **** **** 1234)
         dto.setStreet(billingEntity.getStreet());
@@ -66,11 +66,9 @@ public class ProfileService {
     @Transactional
     public void updateProfile(Long userId, ProfileUpdateRequestDTO dto) {
 
-        // 1️⃣ Get user
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
 
-        // 2️⃣ Get billing
         BillingEntity billingEntity = billingRepository.findByUser_Id(userId)
                 .orElseThrow(() -> new RuntimeException("Billing not found for user id " + userId));
 
@@ -98,7 +96,6 @@ public class ProfileService {
         billingEntity.setZip(dto.getZip());
         billingEntity.setCardType(dto.getCardType());
 
-        // ✅ Only encrypt if card number looks real (not masked)
         String card = dto.getCardNumber();
         if (card != null && !card.isBlank()) {
             if (!card.startsWith("****")) {
@@ -111,8 +108,6 @@ public class ProfileService {
 
         billingEntity.setExpMonth(dto.getExpMonth());
         billingEntity.setExpYear(dto.getExpYear());
-
-        // ✅ Always save via BillingService for encryption
         billingService.saveBilling(billingEntity);
     }
 }

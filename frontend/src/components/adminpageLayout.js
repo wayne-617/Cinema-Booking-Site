@@ -1,14 +1,12 @@
-import React from 'react';
-import Navbar from './adminnavBar';
-import { Outlet } from 'react-router-dom';
+import React from "react";
+import { Outlet } from "react-router-dom";
+import AdminNavBar from "./adminnavBar";  // FIXED EXACT filename
 
-export default function pageLayout() {
+export default function AdminLayout() {
   return (
     <>
-      <Navbar />
-      <main>
-        <Outlet />  {}
-      </main>
+      <AdminNavBar />
+      <Outlet />
     </>
   );
 }

@@ -126,4 +126,13 @@ public class UserEntity {
     public void setHomeAddress(String homeAddress) {
         this.homeAddress = homeAddress;
     }
-}   
+
+    public UserEntity() {
+    // required by JPA  
+    }
+
+    public UserEntity(Long id) {
+        this.id = id;
+    }
+    
+}

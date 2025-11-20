@@ -11,77 +11,78 @@ function LoginPage() {
   const [shake, setShake] = useState(false);
 
   const handleLoginClick = async () => {
-    
     const emailInput = document.getElementById("myEmail");
     const passInput = document.getElementById("myPass");
 
     const fetchLink = `http://localhost:9090/auth/login`;
 
     try {
-  const response = await fetch(fetchLink, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: emailInput.value,
-      password: passInput.value,
-    }),
-  });
-  
-  console.log("Response status:", response.status);
+      const response = await fetch(fetchLink, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: emailInput.value,
+          password: passInput.value,
+        }),
+      });
 
-  let text = await response.text(); // get raw response first
-  console.log("Raw response text:", text);
+      const text = await response.text();
+      let data = {};
 
-  let data = {};
-  try {
+      try {
         data = JSON.parse(text);
-        console.log("Parsed JSON data:", data);
       } catch (err) {
-        console.error("Failed to parse JSON:", err);
+        console.error("Could not parse JSON:", err);
       }
 
-      if (response.ok) {
-    const decoded = jwtDecode(data.token);
-    console.log("Decoded token:", decoded);
+      if (!response.ok) {
+        const message =
+          data.error === "Password incorrect"
+            ? "Incorrect password."
+            : data.error;
+        setErrorMessage(message);
+        setShake(true);
+        setTimeout(() => setShake(false), 500);
+        return;
+      }
 
-    const fullName = decoded.fullName || "User User";
-    const firstName = fullName.split(" ")[0]; 
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        fullName,
-        firstName,
-        username: decoded.sub,  // 'sub' is often the email/username
-        role: decoded.role,
-        userId: decoded.userId,
-        token: data.token,
-      })
-    );
+      // ✅ decode JWT
+      const decoded = jwtDecode(data.token);
 
-    // Redirect based on role
-    if (decoded.role === "ADMIN") {
-      navigate("/admindashboard");
-    } else {
-      navigate("/customer");
-    }
+    
 
-    setTimeout(() => window.location.reload(), 100);
-    } else {
-      const message =
-        data.error === "Password incorrect"
-          ? "Incorrect password."
-          : data.error;
-      setErrorMessage(message);
+      // 🔥 Also save user object
+      const fullName = decoded.fullName || "User User";
+      const firstName = fullName.split(" ")[0];
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          fullName,
+          firstName,
+          username: decoded.sub,
+          role: decoded.role,
+          userId: decoded.userId,
+          token: data.token // ✅ ADD THIS
+        })
+      );
+
+      // 🧭 Redirect based on role
+      if (decoded.role === "ADMIN") {
+        navigate("/admindashboard");
+      } else {
+        navigate("/customer");
+      }
+
+      // refresh UI
+      setTimeout(() => window.location.reload(), 100);
+
+    } catch (err) {
+      console.error("Network/server error:", err);
+      setErrorMessage("Server unavailable. Try again later.");
       setShake(true);
       setTimeout(() => setShake(false), 500);
     }
-  } catch (error) {
-    console.error("Network or server error:", error);
-    setErrorMessage("Server unavailable. Please try again later.");
-    setShake(true);
-    setTimeout(() => setShake(false), 500);
-  }
-
   };
 
   return (

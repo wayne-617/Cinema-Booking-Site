@@ -40,10 +40,11 @@ function ShowtimesPage() {
   const handleShowtimeClick = (showtimeId) => {
     if (window.location.pathname.includes("/customer")) {
 
-    
-    navigate(`/customer/seat-reservation/${showtimeId}`);
+
+
+    navigate(`/customer/seat-selection/${showtimeId}`);
     } else {
-       navigate(`/seat-reservation/${showtimeId}`);
+       navigate(`/seat-selection/${showtimeId}`);
     }
   };
 

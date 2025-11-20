@@ -339,32 +339,39 @@
 /* --- (Your existing dropdown styles are unchanged) --- */
 .dropdownMenu {
   position: absolute;
-  top: calc(100% + 8px); /* sits neatly below button */
-  left: 50%; /* center horizontally relative to button */
-  transform: translateX(-50%); /* exact centering */
+  top: calc(100% + 8px);
+  right: 0;
+  left: auto;
+
   background-color: var(--background-color);
   border: 1px solid var(--secondary-accent);
   border-radius: 0.8rem;
   box-shadow: 0 4px 10px rgba(0,0,0,0.4);
   backdrop-filter: blur(4px);
+
   min-width: 180px;
   overflow: hidden;
   z-index: 300;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+
   opacity: 0;
   visibility: hidden;
-  transform-origin: top center;
-  transform: translate(-50%, -10px) scale(0.95);
-  transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s;
+
+  transform-origin: top right;
+  transform: translateY(-10px) scale(0.95);
+
+  transition: opacity 0.2s ease-out,
+              transform 0.2s ease-out,
+              visibility 0.2s;
 }
 
 .dropdownMenu.show {
   opacity: 1;
   visibility: visible;
-  transform: translate(-50%, 0) scale(1);
+  transform: translateY(0) scale(1);
 }
+
 
 
 .dropdownItem {

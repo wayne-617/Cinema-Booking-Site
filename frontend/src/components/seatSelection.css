@@ -1,0 +1,122 @@
+/* ===== MAIN CONTAINER ===== */
+.seat-container {
+  text-align: center;
+  color: #ffd85a;
+  background-color: #000;
+  min-height: 100vh;
+  padding: 40px 0;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ===== SCREEN ===== */
+.screen-section {
+  margin-bottom: 40px;
+}
+
+.screen {
+  width: 80%;
+  height: 10px;
+  background: linear-gradient(to right, #eee, #fff, #eee);
+  margin: 0 auto 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 20px 5px #fff;
+  text-align: center;
+  color: white;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+/* ===== SEAT LAYOUT ===== */
+.seat-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px; /* vertical spacing between rows */
+  margin-top: 20px;
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* horizontal spacing between seats */
+  height: 50px; /* ensures row has height */
+}
+
+.row-label {
+  width: 25px;
+  margin-right: 10px;
+  color: #ffd85a;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* ===== IMAGES ===== */
+.seat-img {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.seat-img:hover {
+  transform: scale(1.1);
+}
+
+.seat-img.booked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Optional: aisle gap after 6th seat */
+.seat-row img:nth-child(7) {
+  margin-left: 25px;
+}
+
+/* ===== LEGEND ===== */
+.legend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin: 40px 0 20px;
+}
+
+.legend div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #eaeaea;
+  font-size: 15px;
+}
+
+.legend img {
+  width: 22px;
+  height: 22px;
+}
+
+/* ===== BUTTON ===== */
+button {
+  background-color: #a47a2d;
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  background-color: #b88c3e;
+  transform: scale(1.03);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.seat-row { background: rgba(255,255,255,0.05); }

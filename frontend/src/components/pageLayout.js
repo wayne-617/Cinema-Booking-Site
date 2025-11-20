@@ -1,14 +1,12 @@
-import React from 'react';
-import NavBar from './navBar';
-import { Outlet } from 'react-router-dom';
+import React from "react";
+import NavBar from "./navBar";
+import { Outlet } from "react-router-dom";
 
-export default function PageLayout() {
+export default function Layout() {
   return (
     <>
       <NavBar />
-      <main>
-        <Outlet />
-      </main>
+      <Outlet />
     </>
   );
 }

@@ -54,6 +54,7 @@ public class AuthController {
         try {
             System.out.println("Attempting to authenticate user: " + request.getUsername());
 
+            // Authenticate user
             Authentication auth = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
@@ -61,17 +62,37 @@ public class AuthController {
             UserEntity userEntity = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+            // If not verified, stop here
             if (!userEntity.getEnabled()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "User not verified"));
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "User not verified"));
             }
 
+            // Generate JWT
             String jwt = jwtUtil.generateToken(request.getUsername());
-            return ResponseEntity.ok(new JwtResponse(jwt));
+
+            // FRONTEND NEEDS THIS STRUCTURE
+            Map<String, Object> response = Map.of(
+                "token", jwt,
+                "user", Map.of(
+                    "id", userEntity.getId(),
+                    "username", userEntity.getUsername(),
+                    "firstName", userEntity.getFullName(),
+                    "fullName", userEntity.getFullName(),
+                    "phone", userEntity.getPhone(),
+                    "role", userEntity.getRole(),
+                    "enabled", userEntity.getEnabled()
+                )
+            );
+
+            return ResponseEntity.ok(response);
+
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Password incorrect"));
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Username not found"));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
         }
     }

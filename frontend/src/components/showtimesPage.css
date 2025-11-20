@@ -1,66 +1,75 @@
 .showtimes-container {
   padding: 2rem;
+  min-height: 100vh;
   background: var(--background-color);
   color: var(--text-color);
   text-align: center;
-  min-height: 100vh;
   box-sizing: border-box;
 }
 
+/* Title */
 .showtimes-container h1 {
-  font-size: 2.5rem;
+  font-size: 2.3rem;
   color: var(--secondary-color);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.8rem;
 }
 
+/* Days Layout */
 .day-selector {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 0.8rem;
-  margin-bottom: 2rem;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  max-width: 900px;
+  margin-inline: auto;
 }
 
 .day-btn {
-  background-color: var(--primary-color);
+  flex: 1 1 120px;        /* All buttons become equal width */
+  max-width: 140px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: var(--primary-color);
   color: var(--text-color);
   border: none;
   border-radius: 0.6rem;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  font-weight: bold;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: 0.25s;
 }
 
 .day-btn:hover,
 .day-btn.active {
   background-color: var(--secondary-color);
   color: var(--background-color);
-  transform: scale(1.05);
+  transform: translateY(-2px);
 }
 
+/* Grid of Movies */
 .times-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 2rem;
+  align-items: stretch;
   justify-items: center;
-  align-items: start;
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 .movie-card {
+  width: 100%;
+  max-width: 260px;
   background-color: var(--primary-color);
   border-radius: 1rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
   overflow: hidden;
-  width: 230px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transition: 0.25s ease;
 }
 
 .movie-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0.8rem 1.5rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
 }
 
 .movie-card img {
@@ -70,7 +79,7 @@
 }
 
 .movie-card h3 {
-  margin: 0.75rem 0 0.25rem;
+  margin: 0.8rem 0;
   font-size: 1.1rem;
   color: var(--secondary-accent);
 }
@@ -78,11 +87,18 @@
 .time-text {
   font-size: 1rem;
   font-weight: 500;
-  color: var(--text-color);
   margin-bottom: 1rem;
+  color: var(--text-color);
 }
+
+/* Mobile */
 @media (max-width: 600px) {
-  .movie-card {
-    width: 100%;
+  .day-btn {
+    flex: 1 1 45%;
+    max-width: none;
+  }
+
+  .movie-card img {
+    height: 240px;
   }
 }

@@ -1,3 +1,4 @@
+// src/components/navBar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import logo from "../logo512.png";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -9,79 +10,99 @@ export function NavBar() {
   const [results, setResults] = useState([]);
   const [user, setUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
-  // Load user info on mount
+  // Load user + token
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      try {
+        setUser(JSON.parse(stored));
+      } catch (err) {
+        console.error("Failed to parse user:", err);
+      }
+    }
   }, []);
 
-  // Effect to handle clicking outside the dropdown
+  const token = user?.token;
+
+  // CUSTOMER → /customer
+  // ADMIN → public routes (AdminNavBar should be used instead anyway)
+  const prefix =
+    user?.role === "CUSTOMER"
+      ? "/customer"
+      : "";
+
+  // Close dropdown on outside click
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false); // Close menu
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownRef]);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
-    setIsDropdownOpen(false); // Close menu on logout
     navigate("/");
   };
 
+  // SEARCH submit
   const handleSearchSubmit = (e) => {
     if (e.key === "Enter") {
-    e.preventDefault();
-    const trimmed = query.trim();
-
-    if (trimmed === "") {
-      navigate("/movies");
-    } else {
-      navigate(`/movies?search=${trimmed}`);
+      e.preventDefault();
+      const trimmed = query.trim();
+      navigate(
+        trimmed === ""
+          ? `${prefix}/movies`
+          : `${prefix}/movies?search=${encodeURIComponent(trimmed)}`
+      );
+      setResults([]);
     }
-
-    setResults([]); // Clear dropdown results
-  }
   };
 
-  // (Your search function for dropdown suggestions)
+  // LIVE SEARCH
   const handleSearch = async (e) => {
     const value = e.target.value;
     setQuery(value);
-    if (value.trim() === "") {
+
+    if (!value.trim()) {
       setResults([]);
       return;
     }
+
     try {
-      const res = await fetch(`http://localhost:9090/api/movies/search?query=${value}`);
-      if (!res.ok) throw new Error("Network error");
+      const res = await fetch(
+        `http://localhost:9090/api/movies/search?query=${encodeURIComponent(
+          value
+        )}`
+      );
       const data = await res.json();
-      if (data && data.length > 0) {
-        setResults(data.map((m) => ({ ...m, mpaaRating: m.mpaaRating || "Not Rated" })));
-      } else {
-        const localMatches = fallbackMovies.filter((movie) =>
-          movie.title.toLowerCase().includes(value.toLowerCase())
-        );
-        setResults(localMatches);
-      }
+
+      setResults(
+        Array.isArray(data) && data.length > 0
+          ? data
+          : fallbackMovies.filter((m) =>
+              m.title.toLowerCase().includes(value.toLowerCase())
+            )
+      );
     } catch (err) {
-      console.error("Error searching movies:", err);
+      setResults(
+        fallbackMovies.filter((m) =>
+          m.title.toLowerCase().includes(value.toLowerCase())
+        )
+      );
     }
   };
 
   const handleSelectMovie = (movieId) => {
     setQuery("");
     setResults([]);
-    navigate(`/movieDescription/${movieId}`);
+    navigate(`${prefix}/movieDescription/${movieId}`);
   };
 
   const handleDropdownNavigate = (path) => {
@@ -92,55 +113,52 @@ export function NavBar() {
   return (
     <header className="mainHeader">
       <div className="headerDiv">
-        <NavLink to="/" className="logoDiv">
+
+        <NavLink to={prefix || "/"} className="logoDiv">
           <img src={logo} alt="Logo" className="logo" />
           <h1 className="logoText">Absolute Cinema</h1>
         </NavLink>
 
-        <div className="navBar">
-          <a href="/movies" className="buttons">Movies</a>
-          <a href="/showtimes" className="buttons">Showtimes</a>
-          <a href="/theaters" className="buttons">Theaters</a>
-          <a href="/" className="buttons">About</a>
-        </div>
+        {/* MAIN NAV (customer or public) */}
+        <nav className="navBar">
+          <NavLink to={`${prefix}/movies`} className="buttons">Movies</NavLink>
+          <NavLink to={`${prefix}/showtimes`} className="buttons">Showtimes</NavLink>
+          <NavLink to={`${prefix}/theaters`} className="buttons">Theaters</NavLink>
+          <NavLink to="/" className="buttons">About</NavLink>
+        </nav>
 
-        {/* Search Bar */}
+        {/* SEARCH BAR */}
         <div className="searchBar">
           <input
             type="text"
             value={query}
             onChange={handleSearch}
-            onKeyDown={handleSearchSubmit} 
+            onKeyDown={handleSearchSubmit}
             placeholder="Search movies..."
             className="searchInput"
           />
+
           {results.length > 0 && (
             <div className="searchResults">
               {results.map((movie) => (
                 <div
-                  key={movie.movie_id || movie.movieId}
+                  key={movie.movieId}
                   className="searchResultItem"
-                  onClick={() => handleSelectMovie(movie.movie_id || movie.movieId)}
-                  style={{ cursor: "pointer" }}
+                  onClick={() => handleSelectMovie(movie.movieId)}
                 >
                   <img
-                    src={movie.poster_url || "https://via.placeholder.com/45x65?text=No+Image"}
-                    alt={movie.title}
+                    src={movie.poster_url || "https://via.placeholder.com/45x65"}
                     className="searchPoster"
+                    alt=""
                   />
-                  <div>
-                    <h4>{movie.title}</h4>
-                    <div className="ratingRow">
-                      <span className="ratingText">{movie.mpaaRating || "Not Rated"}</span>
-                    </div>
-                  </div>
+                  <h4>{movie.title}</h4>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* User Menu Section */}
+        {/* USER DROPDOWN */}
         <div className="navDiv">
           {user ? (
             <div className="userMenu" ref={dropdownRef}>
@@ -148,19 +166,37 @@ export function NavBar() {
                 className={`userButton ${isDropdownOpen ? "menu-open" : ""}`}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-              <span>{user.firstName}</span>               
-              <div className="hamburger-icon">
-                  <span></span>
-                </div>
+                <span>{user.firstName || "Account"}</span>
+                <div className="hamburger-icon"><span></span></div>
               </button>
 
               <div className={isDropdownOpen ? "dropdownMenu show" : "dropdownMenu"}>
+
+                {/* EDIT PROFILE */}
                 <button
-                  onClick={() => handleDropdownNavigate("/editProfile")}
+                  onClick={() =>
+                    handleDropdownNavigate(
+                      user.role === "CUSTOMER"
+                        ? "/customer/editProfile"
+                        : "/editProfile"
+                    )
+                  }
                   className="dropdownItem"
                 >
                   Edit Profile
                 </button>
+
+                {/* CUSTOMER ONLY */}
+                {user.role === "CUSTOMER" && (
+                  <button
+                    onClick={() => handleDropdownNavigate("/customer/orders")}
+                    className="dropdownItem"
+                  >
+                    My Orders
+                  </button>
+                )}
+
+                {/* ADMIN ONLY */}
                 {user.role === "ADMIN" && (
                   <button
                     onClick={() => handleDropdownNavigate("/admindashboard")}
@@ -169,6 +205,7 @@ export function NavBar() {
                     Admin Dashboard
                   </button>
                 )}
+
                 <button onClick={handleLogout} className="dropdownItem divider">
                   Logout
                 </button>
@@ -176,8 +213,8 @@ export function NavBar() {
             </div>
           ) : (
             <>
-              <a href="/login" className="buttons">Log In</a>
-              <a href="/register" className="buttons">Sign Up</a>
+              <NavLink to="/login" className="buttons">Log In</NavLink>
+              <NavLink to="/register" className="buttons">Sign Up</NavLink>
             </>
           )}
         </div>
