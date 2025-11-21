@@ -46,7 +46,7 @@ function SeatReservationPage() {
         ? ["C5", "C6"]
         : ["D1", "E4"];
     setReservedSeats(mockData);
-  }, [showtimeId, isLoading, user]); // Added dependencies
+  }, [showtimeId, isLoading, currentUser]); // Added dependencies
 
   // Handle seat selection toggle
   const toggleSeat = (seatId) => {
@@ -91,7 +91,7 @@ function SeatReservationPage() {
   };
 
   const handleCheckout = () => {
-    if (!user) {
+    if (!isLoggedIn) {
       // Use a custom modal or message component in a real app
       console.error("Session expired. Please log in again.");
       navigate("/login");
@@ -102,8 +102,6 @@ function SeatReservationPage() {
       tickets,
       total,
       showtimeId,
-      userId: user.userId, // <-- Add user ID for backend
-      token: user.token, // <-- Add token for backend auth
     };
     navigate("/checkout", { state: { order } });
   };

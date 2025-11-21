@@ -50,17 +50,17 @@ function App() {
           <Route path="/customer" element={<WelcomePage />} />
           <Route path="/editProfilePage" element={<EditProfilePage />} />
           //fix movie desc page to adhere to customer view
-          <Route path="/customer/movieDescription/:id" element={<MovieDescription/>} />
-          <Route path="/customer/movies" element={<MoviesPage />} />
-          <Route path="/customer/showtimes" element={<ShowtimesPage />} />
+          <Route path="/movieDescription/:id" element={<MovieDescription/>} />
+          <Route path="/movies" element={<MoviesPage />} />
+          <Route path="/showtimes" element={<ShowtimesPage />} />
           //fix reservation to adhere to customer view
-          <Route path="/customer/seat-reservation/:showtimeId" element={<SeatReservationPage />} />
+          <Route path="/seat-reservation/:showtimeId" element={<SeatReservationPage />} />
             //fix order summary to adhere to customer view
-          <Route path="/customer/order-summary" element={<OrderSummaryPage />} />
+          <Route path="/order-summary" element={<OrderSummaryPage />} />
             //fix checkout to adhere to customer view
-          <Route path="/customer/checkout" element={<CheckoutPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
             //fix order confirmation to adhere to customer view
-          <Route path="/customer/order-confirmation" element={<OrderConfirmationPage />} />
+          <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
         {<Route path="*" element={<NotFoundPage />} /> }
           
 
