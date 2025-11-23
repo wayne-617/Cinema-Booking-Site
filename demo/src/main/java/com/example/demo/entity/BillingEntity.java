@@ -12,7 +12,7 @@ public class BillingEntity {
     private long uid;
 
     @NotNull
-    @Column(nullable = false) // Removed unique = true, first name isn't unique
+    @Column(nullable = false, name = "first_name") // Removed unique = true, first name isn't unique
     private String firstName;
 
     @NotNull

@@ -79,7 +79,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody Map<String, Object> requestBody) {
     try {
-        // 1️⃣ Extract user info
+        
         String username = (String) requestBody.get("username");
         String password = (String) requestBody.get("password");
         String fullName = (String) requestBody.get("fullName");
@@ -181,11 +181,12 @@ public class AuthController {
             String newPassword = payload.get("newPassword");
             String phone = payload.get("phone");
             String name = payload.get("fullName");
-
+            String promo = payload.get("promoOptIn");
+            Boolean promoBool = Boolean.parseBoolean(promo);
             UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // ✅ If changing password, validate the current one
+           
             if (currentPassword != null && newPassword != null &&
                 !currentPassword.isEmpty() && !newPassword.isEmpty()) {
 
@@ -203,6 +204,11 @@ public class AuthController {
 
             if (name != null && !name.isEmpty()) {
                 userEntity.setFullName(name);
+            }
+
+            if(promo != null && !promo.isEmpty()) {
+                
+                userEntity.setPromoOptIn(promoBool);
             }
 
             userRepository.save(userEntity);

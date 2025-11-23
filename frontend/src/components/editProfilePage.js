@@ -1,42 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./editProfilePage.css"; // We are using your custom CSS file
+import "./editProfilePage.css"; 
 
 function EditProfilePage() {
   const navigate = useNavigate();
 
-  // --- State Definitions ---
+ 
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [userId, setUserId] = useState(null);
 
-  // Billing Address
+  
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [stateUS, setStateUS] = useState("");
   const [zip, setZip] = useState("");
 
-  // Password
+  
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Promotions
+  
   const [promoOptIn, setPromoOptIn] = useState(false);
 
-  // Payment
+  
   const [cardType, setCardType] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [expMonth, setExpMonth] = useState("");
   const [expYear, setExpYear] = useState("");
 
-  // UI State
-  const [message, setMessage] = useState({ text: "", type: "" }); // type: 'success' or 'error'
+ 
+  const [message, setMessage] = useState({ text: "", type: "" }); 
   const [isLoading, setIsLoading] = useState(true);
 
-  // --- Fetch profile data on mount ---
+ 
   useEffect(() => {
     async function fetchProfile() {
       const storedUser = localStorage.getItem("user");
@@ -64,22 +64,22 @@ function EditProfilePage() {
 
         if (!res.ok) throw new Error("Failed to fetch profile data");
 
-        const profileData = await res.json(); // ✅ single unified object
+        const profileData = await res.json();
         console.log("Profile data:", profileData);
 
-        // --- Account Info ---
+        
         setEmail(profileData.email || "");
         setFirstName(profileData.firstName.split(" ")[0] || "");
         setLastName(profileData.lastName.split(" ")[1] || "");
         setPhone(profileData.phone || "");
 
-        // --- Billing Address ---
+        
         setStreet(profileData.street || "");
         setCity(profileData.city || "");
         setStateUS(profileData.state || "");
         setZip(profileData.zip || "");
 
-        // --- Payment Info ---
+       
         setCardType(profileData.cardType || "");
         setCardNumber(profileData.cardNumber || "");
         setExpMonth(
@@ -87,7 +87,7 @@ function EditProfilePage() {
         );
         setExpYear(profileData.expYear ? profileData.expYear.toString() : "");
 
-        // --- Promo ---
+       
         setPromoOptIn(profileData.promoOptIn || false);
       } catch (err) {
         setMessage({ text: err.message, type: "error" });
@@ -99,7 +99,7 @@ function EditProfilePage() {
     fetchProfile();
   }, [navigate]);
 
-  // --- Handle Save Changes ---
+  
   const handleSave = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
@@ -130,7 +130,7 @@ function EditProfilePage() {
     // This payload MUST match your UpdateProfileRequestDTO
     let cleanedCardNumber = cardNumber;
     if (cardNumber && cardNumber.startsWith("****")) {
-      cleanedCardNumber = null; // don't send masked number back to backend
+      //cleanedCardNumber = null; // don't send masked number back to backend
     }
 
     const billingPayload = {
@@ -150,7 +150,8 @@ function EditProfilePage() {
     const payload2 = {
       username: email,
       phone,
-      fullName: firstName + " " + lastName
+      fullName: firstName + " " + lastName,
+      promoOptIn: promoOptIn
       
     };
 
@@ -172,7 +173,7 @@ function EditProfilePage() {
       });
 
       if (!res.ok) {
-        // Try to parse error from backend
+        
 
         let errorMsg = "Failed to update profile. Billing info error";
         try {
@@ -212,7 +213,7 @@ function EditProfilePage() {
       if (newPassword && currentPassword) {
         setMessage({ text: "Password updated successfully!", type: "success" });
 
-        // 🔒 Optional: Log the user out after password change (for security)
+       
         setTimeout(() => {
           localStorage.removeItem("user");
           navigate("/login");
@@ -228,7 +229,7 @@ function EditProfilePage() {
       setNewPassword("");
       setConfirmPassword("");
 
-      // ✅ Update localStorage to keep NavBar in sync
+      
       const oldUserData = JSON.parse(localStorage.getItem("user"));
       const newUserData = {
         ...oldUserData,
@@ -237,10 +238,10 @@ function EditProfilePage() {
       };
       localStorage.setItem("user", JSON.stringify(newUserData));
 
-      // ✅ Reload only for non-password updates
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+     
+     
+        navigate("/editProfile"); //changed to fix page rerender issue
+
     } catch (error) {
       setMessage({ text: error.message, type: "error" });
     } finally {
@@ -510,7 +511,7 @@ function EditProfilePage() {
           </div>
         </fieldset>
 
-        {/* ===== Promotions ===== */}
+        {/*  */}
         <fieldset disabled={isLoading} className="editProfilePage-section">
           <h2 className="editProfilePage-sectionHeader">Promotions & Offers</h2>
           <div className="editProfilePage-formGroup-promo">
@@ -519,7 +520,7 @@ function EditProfilePage() {
             <input
               id="promoOptInBox"
               type="checkbox"
-              className="promo-checkbox" // Added a class for easier selection
+              className="promo-checkbox" 
               checked={promoOptIn}
               onChange={(e) => setPromoOptIn(e.target.checked)}
             />
@@ -532,7 +533,7 @@ function EditProfilePage() {
           </div>
         </fieldset>
 
-        {/* ===== Action Buttons ===== */}
+        {/* Buttons */}
         <div className="editProfilePage-buttonRow">
           <button
             type="button"

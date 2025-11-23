@@ -27,14 +27,14 @@ public class BillingController {
     @Autowired
     private UserRepository userRepository;
 
-    // ✅ Save or update billing info (encrypts card automatically)
+    //Save or update billing info 
    @PutMapping("/submit")
     public ResponseEntity<String> submitBilling(@RequestBody BillingRequest request) {
         try {
             var user = userRepository.findById(request.getUserId())
                     .orElseThrow(() -> new RuntimeException("User not found for ID: " + request.getUserId()));
 
-            // Try to find existing billing — but don’t throw if not found
+         
             BillingEntity billing = billingService.findByUserIdOptional(request.getUserId())
                     .orElse(new BillingEntity());
 
@@ -47,8 +47,9 @@ public class BillingController {
             billing.setCity(request.getCity());
             billing.setState(request.getState());
             billing.setZip(request.getZip());
-           
-            billingService.saveBilling(billing); // 🔒 this will now always run
+            billing.setFirstName(user.getFullName().split(" ")[0]);
+            billing.setLastName(user.getFullName().split(" ")[1]);
+            billingService.saveBilling(billing); 
 
             if (user != null) {
 
@@ -56,7 +57,7 @@ public class BillingController {
                      SimpleMailMessage message = new SimpleMailMessage();
                     message.setTo(user.getUsername());
                     message.setSubject("Profile info changed");
-                    message.setText("Your billing info under Edit Profile has been changed.");
+                    message.setText("Your profile info under Edit Profile has been changed.");
                     mailSender.send(message);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -70,7 +71,7 @@ public class BillingController {
         }
     }
 
-    // ✅ Retrieve billing by user ID (masked last 4 shown)
+    
     @GetMapping("/get/{userId}")
     public ResponseEntity<BillingRequest> getBilling(@PathVariable long userId) {
         try {
