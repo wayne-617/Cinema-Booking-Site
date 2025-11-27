@@ -113,35 +113,51 @@ export default function OrderSummaryPage() {
                 <option value="CHILD">CHILD — $8.00</option>
                 <option value="SENIOR">SENIOR — $10.00</option>
               </select>
+              
             </li>
           ))}
         </ul>
+        <button
+        className="edit-seats-btn"
+        onClick={() =>
+          navigate(`/customer/seat-selection/${showtimeId}`, {
+            state: {
+              selectedSeats,
+              showtimeId,
+              userId,
+            },
+          })
+        }
+      >
+        Edit Seats
+      </button>
       </div>
 
       <div className="billing-card">
         <h3>Billing Information</h3>
+
         {billing ? (
           <>
-            <p>
-              <strong>Card:</strong> {billing.cardType} **** **** ****{" "}
-              {billing.cardNumber?.slice(-4)}
-            </p>
-            <p>
-              <strong>Name:</strong> {billing.firstName} {billing.lastName}
-            </p>
-            <p>
-              <strong>Address:</strong> {billing.street}, {billing.city},{" "}
-              {billing.state} {billing.zip}
-            </p>
+            <p><strong>Card:</strong> {billing.cardType} **** **** **** {billing.cardNumber?.slice(-4)}</p>
+            <p><strong>Name:</strong> {billing.firstName} {billing.lastName}</p>
+            <p><strong>Address:</strong> {billing.street}, {billing.city}, {billing.state} {billing.zip}</p>
           </>
         ) : (
-          <p>Loading billing info...</p>
+          <p>No billing information found.</p>
         )}
+
+        <button
+          className="edit-billing-btn"
+          onClick={() => navigate("/customer/editProfile")}   // Send user to edit profile page
+        >
+          {billing ? "Update Billing" : "Add Billing"}
+        </button>
       </div>
 
       <div className="total-card">
         <h2>Total: ${total.toFixed(2)}</h2>
       </div>
+      
 
       <button className="confirm-btn" onClick={handleConfirm}>
         Proceed to Checkout

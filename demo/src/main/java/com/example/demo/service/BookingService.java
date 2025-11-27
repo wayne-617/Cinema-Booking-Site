@@ -12,6 +12,7 @@ import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.SeatRepository;
 import com.example.demo.repository.ShowtimeRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.util.EncryptionUtil;
 import com.example.demo.repository.BillingRepository;
 
 import jakarta.transaction.Transactional;
@@ -70,8 +71,12 @@ public class BookingService {
             LocalDateTime.of(showtime.getShowDate(), showtime.getShowTime())
         );      
         booking.setTotalAmount(total);
-        booking.setLastFour(getLastFourDigits(billing.getCardNumber()));
-
+        try {
+            String decrypted = EncryptionUtil.decrypt(billing.getCardNumber());
+            booking.setLastFour(Integer.parseInt(decrypted.substring(decrypted.length() - 4)));
+        } catch (Exception e) {
+            booking.setLastFour(null);
+        }
         BookingEntity savedBooking = bookingRepository.save(booking);
 
         // Assign seats
@@ -147,29 +152,58 @@ public class BookingService {
     public List<BookingHistoryDTO> getBookingHistory(Long userId) {
         List<BookingEntity> bookings = bookingRepository.findByUser_Id(userId);
 
+        // Load user's billing once
+        BillingEntity billing = billingRepository.findByUser_Id(userId).orElse(null);
+        Integer lastFour = null;
+
+        if (billing != null) {
+            try {
+                String decrypted = EncryptionUtil.decrypt(billing.getCardNumber());
+                lastFour = Integer.parseInt(decrypted.substring(decrypted.length() - 4));
+            } catch (Exception e) {
+                lastFour = null;
+            }
+        }
+
+        final Integer lastFourFinal = lastFour;
+
         return bookings.stream().map(b -> {
             List<String> seats = b.getSeats().stream()
-                    .map(s -> s.getSeatRow() + s.getSeatNumber())
+                    .map(s -> "Row " + s.getSeatRow() + " — Seat " + s.getSeatNumber())
                     .toList();
+
+            long ticketCount = seats.size();
 
             return new BookingHistoryDTO(
                     b.getBookingNo(),
                     b.getMovieTitle(),
                     b.getTotalAmount(),
                     b.getPurchaseDate(),
-                    b.getLastFour(),
-                    b.getTixNo(),
+                    lastFourFinal,
+                    ticketCount,
                     seats
             );
         }).toList();
     }
-
     public BookingReviewDTO toReviewDTO(BookingEntity b) {
+
+        BillingEntity billing = billingRepository.findByUser_Id(b.getUser().getId()).orElse(null);
+        Integer lastFour = null;
+
+        if (billing != null) {
+            try {
+                String decrypted = EncryptionUtil.decrypt(billing.getCardNumber());
+                lastFour = Integer.parseInt(decrypted.substring(decrypted.length() - 4));
+            } catch (Exception e) {
+                lastFour = null;
+            }
+        }
+
         return new BookingReviewDTO(
                 b.getBookingNo(),
                 b.getMovieTitle(),
                 b.getTotalAmount(),
-                b.getLastFour(),
+                lastFour,
                 b.getPurchaseDate()
         );
     }

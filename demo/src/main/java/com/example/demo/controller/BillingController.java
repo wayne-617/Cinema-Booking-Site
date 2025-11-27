@@ -33,9 +33,15 @@ public class BillingController {
                     .orElse(new BillingEntity());
 
             billing.setUser(user);
-            billing.setCardType(request.getCardType());
-            billing.setCardNumber(request.getCardNumber()); // encryption handled by service
-            billing.setExpMonth(request.getExpMonth());
+                        billing.setCardType(request.getCardType());
+            String incoming = request.getCardNumber();
+
+            if (incoming != null && !incoming.isBlank() && !incoming.startsWith("****")) {
+                billing.setCardNumber(incoming); 
+            } else {
+                System.out.println("Skipping card update — keeping existing encrypted card.");
+            }           
+             billing.setExpMonth(request.getExpMonth());
             billing.setExpYear(request.getExpYear());
             billing.setStreet(request.getStreet());
             billing.setCity(request.getCity());
@@ -52,7 +58,6 @@ public class BillingController {
         }
     }
 
-    // ✅ Retrieve billing by user ID (masked last 4 shown)
     @GetMapping("/get/{userId}")
     public ResponseEntity<BillingRequest> getBilling(@PathVariable long userId) {
         try {
@@ -60,6 +65,9 @@ public class BillingController {
 
             BillingRequest req = new BillingRequest();
             req.setUserId(userId);
+            req.setFirstName(billingEnt.getFirstName());
+            req.setLastName(billingEnt.getLastName());
+            req.setEmail(billingEnt.getEmail());
             req.setCardType(billingEnt.getCardType());
             req.setCardNumber(billingEnt.getCardNumber()); // already masked
             req.setExpMonth(billingEnt.getExpMonth());

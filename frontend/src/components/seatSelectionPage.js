@@ -1,18 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./seatSelection.css";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 export default function SeatSelection() {
   const { showtimeId } = useParams();
   const navigate = useNavigate();
-
-  const [seats, setSeats] = useState([]);
-  const [selected, setSelected] = useState([]);
+  const location = useLocation();
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userId = storedUser?.userId;
   const token = storedUser?.token;
+
+  // 🔥 restore seats from navigation OR sessionStorage
+  const sessionData = JSON.parse(sessionStorage.getItem("orderData")) || {};
+  const preselected =
+    location.state?.selectedSeats ||
+    sessionData.selectedSeats ||
+    [];
+
+  const [selected, setSelected] = useState(preselected);
+  const [seats, setSeats] = useState([]);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -27,18 +35,16 @@ export default function SeatSelection() {
 
     axios
       .get(`http://localhost:9090/api/seats/showtime/${showtimeId}`, {
-        headers: { Authorization: `Bearer ${token}` } // ✅ FIXED
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => {
-        setSeats(res.data);
-      })
+      .then((res) => setSeats(res.data))
       .catch((err) => {
-        console.error("Error loading seats:", err);
+        console.error("Seat load error:", err);
         alert("Unable to load seats.");
       });
   }, [showtimeId]);
 
-  // Select / deselect a seat
+  // Toggle seat selection
   const toggleSeat = (seatId) => {
     setSelected((prev) =>
       prev.includes(seatId)
@@ -47,30 +53,30 @@ export default function SeatSelection() {
     );
   };
 
-  // Continue to Order Summary
+  // Continue → Order Summary
   const goToOrderSummary = () => {
-  if (!userId) {
-    navigate("/login");
-    return;
-  }
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
 
-  sessionStorage.setItem(
-    "orderData",
-    JSON.stringify({
-      selectedSeats: selected,
-      showtimeId,
-      userId,
-    })
-  );
+    sessionStorage.setItem(
+      "orderData",
+      JSON.stringify({
+        selectedSeats: selected,
+        showtimeId,
+        userId,
+      })
+    );
 
-  navigate("/customer/order-summary", {
-    state: {
-      selectedSeats: selected,
-      showtimeId,
-      userId,
-    },
-  });
-};
+    navigate("/customer/order-summary", {
+      state: {
+        selectedSeats: selected,
+        showtimeId,
+        userId,
+      },
+    });
+  };
 
   return (
     <div className="seat-container">
@@ -90,6 +96,7 @@ export default function SeatSelection() {
 
               {rowSeats.map((seat) => {
                 const isSelected = selected.includes(seat.seatId);
+
                 const img = seat.isBooked
                   ? "https://res.cloudinary.com/dvucimldu/image/upload/v1762966397/ClosedSeeat_ubht9m.png"
                   : isSelected

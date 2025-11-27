@@ -34,8 +34,6 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-
     @Autowired
     private JavaMailSender mailSender;
 
