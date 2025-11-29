@@ -15,17 +15,19 @@ Modal.setAppElement("#root");
 export default function WelcomePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [currentTrailer, setCurrentTrailer] = useState("");
-  const [showtimes, setShowtimes] = useState([]);
+  const [movies, setMovies] = useState([]);
   const navigate = useNavigate();
 
+  // prefix for customer vs public user
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const prefix = storedUser?.role === "CUSTOMER" ? "/customer" : "";
+
   const handleWatchTrailer = (url) => {
-    if (url) {
-      setCurrentTrailer(url);
-      setModalOpen(true);
-    } else {
-      alert("Trailer not available for this movie.");
-    }
+    if (!url) return alert("Trailer not available");
+    setCurrentTrailer(url);
+    setModalOpen(true);
   };
+
   const getEmbedUrl = (url) => {
     if (!url) return "";
     if (url.includes("embed")) return url;
@@ -35,35 +37,28 @@ export default function WelcomePage() {
       return url.replace("youtu.be/", "www.youtube.com/embed/") + "?autoplay=1";
     return url;
   };
-  const [movies, setMovies] = useState([]);
+
   useEffect(() => {
-    // Try fetching from backend API
     fetch("http://localhost:9090/api/movies")
       .then((res) => {
-        if (!res.ok) {
-          throw new Error("Network error");
-        }
+        if (!res.ok) throw new Error("Network error");
         return res.json();
       })
       .then((data) => {
-        if (data && data.length > 0) {
-          setMovies(data);
-        } else {
-          console.warn("No movies found in database — using fallback data.");
-          setMovies(fallbackMovies);
-        }
+        if (data && data.length > 0) setMovies(data);
+        else setMovies(fallbackMovies);
       })
-      .catch((err) => {
-        console.error("Error fetching movies:", err);
-        setMovies(fallbackMovies);
-      });
+      .catch(() => setMovies(fallbackMovies));
   }, []);
 
   const nowShowing = movies.filter((m) => m.status === "NOW_PLAYING");
   const comingSoon = movies.filter((m) => m.status === "COMING_SOON");
+
   return (
     <div className="bodyDiv">
       <section className="contentSection">
+
+        {/* HERO SECTION */}
         <section className="bodySection">
           <div className="bodyTextDiv">
             <h1 className="headerText">
@@ -71,26 +66,27 @@ export default function WelcomePage() {
             </h1>
             <p className="smallerText">
               Immerse yourself in the latest blockbusters with state-of-the-art
-              sound, crystal-clear visuals, and luxury seating that puts you
-              right in the action.
+              sound, crystal-clear visuals, and luxury seating.
             </p>
-            <div className="bodyButtonDiv">
-              <a className="bigButton" href="/movies">
-                Book Tickets Now
-              </a>
-            </div>
+
+            <button
+              className="bigButton"
+              onClick={() => navigate(`${prefix}/movies`)}
+            >
+              Book Tickets Now
+            </button>
           </div>
         </section>
 
-        {/* Featured Trailers Section */}
+        {/* FEATURED TRAILERS */}
         <section className="trailerSection">
           <h2 className="carouselHeader">Featured Trailers</h2>
           <Swiper
             spaceBetween={30}
-            centeredSlides={true}
+            centeredSlides
             autoplay={{ delay: 8000, disableOnInteraction: false }}
             pagination={{ clickable: true }}
-            navigation={true}
+            navigation
             modules={[Autoplay, Pagination, Navigation]}
             className="trailerSwiper"
           >
@@ -103,7 +99,7 @@ export default function WelcomePage() {
                       className="trailerImage"
                       src={movie.trailer_picture || movie.poster_url}
                       onClick={() =>
-                        navigate(`/movieDescription/${movie.movieId}`)
+                        navigate(`${prefix}/movieDescription/${movie.movieId}`)
                       }
                       style={{ cursor: "pointer" }}
                       alt={movie.title}
@@ -123,14 +119,13 @@ export default function WelcomePage() {
               ))}
           </Swiper>
         </section>
-        {/* Modal for YouTube trailer */}
+
+        {/* TRAILER MODAL */}
         <Modal
           isOpen={modalOpen}
           onRequestClose={() => setModalOpen(false)}
-          contentLabel="Trailer Modal"
           className="trailerModal"
           overlayClassName="trailerOverlayModal"
-          shouldFocusAfterRender={true} // adjust as needed
         >
           <button className="watchButton" onClick={() => setModalOpen(false)}>
             ✕ Close
@@ -140,26 +135,25 @@ export default function WelcomePage() {
               width="100%"
               height="480"
               src={getEmbedUrl(currentTrailer)}
-              title="YouTube trailer"
-              frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
           )}
         </Modal>
 
-        {/* Caleb Currently Showing Movie Carousel */}
+        {/* NOW SHOWING + COMING SOON */}
         <section className="dualCarouselSection">
-          {/* Now Showing */}
+
+          {/* NOW SHOWING */}
           <div className="carouselBox">
             <h2 className="carouselHeader">Currently Running</h2>
             {nowShowing.length > 0 ? (
               <Swiper
                 spaceBetween={30}
-                centeredSlides={true}
+                centeredSlides
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
                 pagination={{ clickable: true }}
-                navigation={true}
+                navigation
                 modules={[Autoplay, Pagination, Navigation]}
                 className="movieSwiper"
               >
@@ -171,7 +165,7 @@ export default function WelcomePage() {
                         alt={movie.title}
                         className="carouselImage"
                         onClick={() =>
-                          navigate(`/movieDescription/${movie.movieId}`)
+                          navigate(`${prefix}/movieDescription/${movie.movieId}`)
                         }
                         style={{ cursor: "pointer" }}
                       />
@@ -181,37 +175,32 @@ export default function WelcomePage() {
                 ))}
               </Swiper>
             ) : (
-              <div className="carouselPlaceholder">
-                <p>No movies currently showing.</p>
-              </div>
+              <p>No movies currently showing.</p>
             )}
           </div>
 
-          {/* Upcoming Movies placeholder */}
+          {/* COMING SOON */}
           <div className="carouselBox">
             <h2 className="carouselHeader">Coming Soon</h2>
             {comingSoon.length > 0 ? (
               <Swiper
                 spaceBetween={30}
-                centeredSlides={true}
+                centeredSlides
                 autoplay={{ delay: 3500, disableOnInteraction: false }}
                 pagination={{ clickable: true }}
-                navigation={true}
+                navigation
                 modules={[Autoplay, Pagination, Navigation]}
                 className="movieSwiper"
               >
                 {comingSoon.map((movie) => (
                   <SwiperSlide key={movie.movieId}>
-                    <div
-                      className="carouselSlide"
-                      data-movie-id={movie.movieId}
-                    >
+                    <div className="carouselSlide" data-movie-id={movie.movieId}>
                       <img
                         src={movie.poster_url}
                         alt={movie.title}
                         className="carouselImage"
                         onClick={() =>
-                          navigate(`/movieDescription/${movie.movieId}`)
+                          navigate(`${prefix}/movieDescription/${movie.movieId}`)
                         }
                         style={{ cursor: "pointer" }}
                       />
@@ -221,50 +210,41 @@ export default function WelcomePage() {
                 ))}
               </Swiper>
             ) : (
-              <div className="carouselPlaceholder">
-                <p>Coming Soon...</p>
-              </div>
+              <p>Coming Soon…</p>
             )}
           </div>
         </section>
+
+        {/* BOTTOM SECTION */}
         <section className="bodySection">
           <div className="bodyTextDiv">
             <div className="primaryDiv">
               <h2 className="smallHeader">Why Choose Absolute Cinema?</h2>
               <p className="smallerText">
-                Premium cinema experience with cutting-edge technology
+                Premium cinema experience with cutting-edge tech.
               </p>
             </div>
+
             <div className="gridDiv">
               <div className="primaryDiv">
                 <h3 className="smallHeader">Dolby Atmos Sound</h3>
-                <p className="smallerText">
-                  Immersive 3D audio that puts you right in the middle of the
-                  action with crystal-clear sound quality.
-                </p>
+                <p className="smallerText">Immersive 3D audio.</p>
               </div>
               <div className="primaryDiv">
                 <h3 className="smallHeader">4K Laser Projection</h3>
-                <p className="smallerText">
-                  Ultra-high definition visuals with vibrant colors and sharp
-                  details that bring movies to life.
-                </p>
+                <p className="smallerText">Ultra-high definition visuals.</p>
               </div>
               <div className="primaryDiv">
-                <h3 className="smallHeader">Luxury Reclining Seats</h3>
-                <p className="smallerText">
-                  Plush leather recliners with personal tables and cup holders
-                  for maximum comfort during your movie.
-                </p>
+                <h3 className="smallHeader">Luxury Recliners</h3>
+                <p className="smallerText">Maximum comfort seating.</p>
               </div>
             </div>
           </div>
         </section>
       </section>
+
       <section className="bottomSection">
-        <div className="primaryDiv">
-          <footer className="mainFooter"></footer>
-        </div>
+        <footer className="mainFooter"></footer>
       </section>
     </div>
   );

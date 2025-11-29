@@ -1,3 +1,4 @@
+// src/components/navBar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import logo from "../logo512.png";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -10,136 +11,111 @@ export function NavBar() {
   const [results, setResults] = useState([]);
   const { setUser, setAuth, userAuth, isLoggedIn, currentUser } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const navigate = useNavigate();
   const dropdownRef = useRef(null);
-  console.log(
-    "User Auth: " +
-      userAuth +
-      " User Name: " +
-      currentUser +
-      "Is Logged In: " +
-      isLoggedIn
-  );
+  const navigate = useNavigate();
 
-  // Effect to handle clicking outside the dropdown
+  // Load user info on mount
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false); // Close menu
+    const stored = localStorage.getItem("user");
+    if (stored) setUser(JSON.parse(stored));
+  }, [setUser]);
+
+  // CUSTOMER prefix → /customer
+  const prefix = userAuth === "USER" ? "/customer" : "";
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownRef]);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
     setAuth(null);
-    setIsDropdownOpen(false); // Close menu on logout
+    setIsDropdownOpen(false);
     navigate("/");
   };
 
+  // SEARCH submit
   const handleSearchSubmit = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const trimmed = query.trim();
+    if (e.key !== "Enter") return;
+    e.preventDefault();
 
-      if (trimmed === "") {
-        navigate("/movies");
-      } else {
-        navigate(`/movies?search=${trimmed}`);
-      }
-
-      setResults([]); // Clear dropdown results
-    }
+    const trimmed = query.trim();
+    navigate(trimmed === "" ? "/movies" : `/movies?search=${trimmed}`);
+    setResults([]);
   };
 
-  // (Your search function for dropdown suggestions)
+  // LIVE SEARCH updates
   const handleSearch = async (e) => {
     const value = e.target.value;
     setQuery(value);
-    if (value.trim() === "") {
+
+    if (!value.trim()) {
       setResults([]);
       return;
     }
+
     try {
       const res = await fetch(
         `http://localhost:9090/api/movies/search?query=${value}`
       );
+
       if (!res.ok) throw new Error("Network error");
+
       const data = await res.json();
-      if (data && data.length > 0) {
-        setResults(
-          data.map((m) => ({ ...m, mpaaRating: m.mpaaRating || "Not Rated" }))
-        );
-      } else {
-        const localMatches = fallbackMovies.filter((movie) =>
+      setResults(
+        data.length > 0
+          ? data.map((m) => ({
+              ...m,
+              mpaaRating: m.mpaaRating || "Not Rated",
+            }))
+          : fallbackMovies.filter((movie) =>
+              movie.title.toLowerCase().includes(value.toLowerCase())
+            )
+      );
+    } catch {
+      setResults(
+        fallbackMovies.filter((movie) =>
           movie.title.toLowerCase().includes(value.toLowerCase())
-        );
-        setResults(localMatches);
-      }
-    } catch (err) {
-      console.error("Error searching movies:", err);
+        )
+      );
     }
   };
 
   const handleSelectMovie = (movieId) => {
     setQuery("");
     setResults([]);
-    navigate(`/movieDescription/${movieId}`);
+    navigate(`${prefix}/movieDescription/${movieId}`);
   };
 
   const handleDropdownNavigate = (path) => {
     navigate(path);
     setIsDropdownOpen(false);
   };
+
   return (
     <header className="mainHeader">
       <div className="headerDiv">
-        <NavLink to="/" className="logoDiv">
+        <NavLink to={prefix || "/"} className="logoDiv">
           <img src={logo} alt="Logo" className="logo" />
           <h1 className="logoText">Absolute Cinema</h1>
         </NavLink>
-        {userAuth == "ADMIN" ? (
-          <div className="navBar">
-            <NavLink to="/movies" className="buttons">
-              Movies
-            </NavLink>
-            <NavLink to="/showtimes" className="buttons">
-              Showtimes
-            </NavLink>
-            <NavLink to="/" className="buttons">
-              About
-            </NavLink>
-            <NavLink to="/admindashboard" className="buttons">
-              Dashboard
-            </NavLink>
-            <NavLink to="/adminmovies" className="buttons">
-              Manage Movies
-            </NavLink>
-            <NavLink to="/adminpromotions" className="buttons">
-              Manage Promotions
-            </NavLink>
-            <NavLink to="/adminUsers" className="buttons">
-              Edit Users
-            </NavLink>
-          </div>
-        ) : (
-          <div className="navBar">
-            <NavLink to="/movies" className="buttons">
-              Movies
-            </NavLink>
-            <NavLink to="/showtimes" className="buttons">
-              Showtimes
-            </NavLink>
-            <NavLink to="/" className="buttons">
-              About
-            </NavLink>
-          </div>
-        )}
+
+        {/* Top Nav Buttons */}
+        <div className="navBar">
+          <NavLink to="/movies" className="buttons">Movies</NavLink>
+          <NavLink to="/showtimes" className="buttons">Showtimes</NavLink>
+          <NavLink to="/theaters" className="buttons">Theaters</NavLink>
+          <NavLink to="/" className="buttons">About</NavLink>
+        </div>
+
         {/* Search Bar */}
         <div className="searchBar">
           <input
@@ -154,12 +130,9 @@ export function NavBar() {
             <div className="searchResults">
               {results.map((movie) => (
                 <div
-                  key={movie.movie_id || movie.movieId}
+                  key={movie.movieId}
                   className="searchResultItem"
-                  onClick={() =>
-                    handleSelectMovie(movie.movie_id || movie.movieId)
-                  }
-                  style={{ cursor: "pointer" }}
+                  onClick={() => handleSelectMovie(movie.movieId)}
                 >
                   <img
                     src={
@@ -183,7 +156,7 @@ export function NavBar() {
           )}
         </div>
 
-        {/* User Menu Section */}
+        {/* User Dropdown */}
         <div className="navDiv">
           {isLoggedIn ? (
             <div className="userMenu" ref={dropdownRef}>
@@ -197,17 +170,20 @@ export function NavBar() {
                 </div>
               </button>
 
-              <div
-                className={
-                  isDropdownOpen ? "dropdownMenu show" : "dropdownMenu"
-                }
-              >
+              <div className={isDropdownOpen ? "dropdownMenu show" : "dropdownMenu"}>
                 <button
-                  onClick={() => handleDropdownNavigate("/editProfile")}
+                  onClick={() =>
+                    handleDropdownNavigate(
+                      userAuth === "USER"
+                        ? "/customer/editProfile"
+                        : "/editProfile"
+                    )
+                  }
                   className="dropdownItem"
                 >
                   Edit Profile
                 </button>
+
                 {userAuth === "ADMIN" && (
                   <button
                     onClick={() => handleDropdownNavigate("/admindashboard")}
@@ -216,6 +192,7 @@ export function NavBar() {
                     Admin Dashboard
                   </button>
                 )}
+
                 <button onClick={handleLogout} className="dropdownItem divider">
                   Logout
                 </button>
@@ -223,12 +200,8 @@ export function NavBar() {
             </div>
           ) : (
             <>
-              <NavLink to="/login" className="buttons">
-                Log In
-              </NavLink>
-              <NavLink to="/register" className="buttons">
-                Sign Up
-              </NavLink>
+              <NavLink to="/login" className="buttons">Log In</NavLink>
+              <NavLink to="/register" className="buttons">Sign Up</NavLink>
             </>
           )}
         </div>

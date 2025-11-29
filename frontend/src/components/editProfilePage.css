@@ -173,3 +173,62 @@
     font-size: 0.9rem;
   }
 }
+.grid-cols-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+.grid-cols-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+.payment-method-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.1rem;
+    background: rgba(0, 0, 0, 0.18);
+    border-radius: 0.7rem;
+    border: 1px solid rgba(249, 212, 139, 0.25);
+    box-shadow: 0 0 10px rgba(249, 212, 139, 0.12);
+}
+.payment-field {
+    padding: 0.75rem 1rem;
+    border-radius: 2rem;
+    border: 2px solid rgba(249, 212, 139, 0.6);
+    background: rgba(10, 18, 20, 0.9);
+    font-size: 1rem;
+    color: var(--text-color);
+    width: 100%;
+    box-shadow: 0 0 6px rgba(249, 212, 139, 0.3); /* match your inputs */
+    transition: all 0.25s ease-in-out;
+    outline: none; /* removes white outline */
+}
+.payment-field:focus {
+    border-color: var(--secondary-color);
+    box-shadow:
+        0 0 10px var(--secondary-accent),
+        0 0 30px rgba(249, 212, 139, 0.4);
+    background-color: var(--primary-color);
+    outline: none;
+}
+.payment-edit-btn {
+    align-self: flex-start;
+    padding: 0.55rem 1.4rem;
+    border-radius: 1.5rem;
+    background: rgba(249, 212, 139, 0.15);
+    border: 2px solid var(--secondary-accent);
+    color: var(--secondary-accent);
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s ease-in-out;
+    font-size: 0.9rem;
+}
+
+.payment-edit-btn:hover {
+    background: var(--secondary-accent);
+    color: #000;
+    box-shadow: 0 0 12px rgba(249,212,139,0.55);
+    transform: translateY(-2px);
+}

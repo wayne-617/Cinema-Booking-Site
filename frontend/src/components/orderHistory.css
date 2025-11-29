@@ -1,0 +1,96 @@
+/* ====== MAIN CONTAINER ====== */
+.order-history-container {
+  margin: 40px auto;
+  max-width: 900px;
+  padding: 2.5rem;
+  border-radius: 16px;
+  background: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid rgba(112, 169, 161, 0.25); /* subtle teal border */
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+}
+
+/* ====== HEADER ====== */
+.order-history-container h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: var(--primary-accent);
+  letter-spacing: 1px;
+}
+
+/* ====== LIST ====== */
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+}
+
+/* ====== ORDER CARD ====== */
+.order-card {
+  background: #0f2d35;
+  padding: 1.5rem;
+  border-radius: 14px;
+  border: 1px solid rgba(112, 169, 161, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  transition: all 0.3s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary-accent);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+/* ====== HEADER ROW IN CARD ====== */
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--secondary-color);
+}
+
+.order-header .date {
+  font-size: 0.9rem;
+  color: var(--primary-accent);
+}
+
+/* ====== TEXT ====== */
+.order-card p {
+  margin: 5px 0;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.order-card strong {
+  color: var(--primary-accent);
+}
+
+/* ====== BUTTON ====== */
+.view-btn {
+  margin-top: 1rem;
+  padding: 0.7rem 1.3rem;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.view-btn:hover {
+  background-color: var(--primary-accent);
+  transform: translateY(-2px);
+}
+
+.view-btn:active {
+  transform: scale(0.95);
+}

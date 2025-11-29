@@ -36,16 +36,21 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(
-                "api/profile/**",    
-                "/auth/**",
-                "billing/**",
-                "/api/movies/**", 
-                "/swagger-ui/**",
-                "/v3/api-docs/**",
-                "/swagger-ui.html",
-                "/webjars/**",
-                "/api/showtimes/**",
-                "/error" 
+                   "/api/profile/**",
+                    "/auth/**",
+                    "/billing/**",
+                    "/api/movies/**",
+                    "/api/showtimes/**",
+                    "/api/seats/**",        
+                    "/api/bookings/**", 
+                    "/api/orders/review/**",
+                    "/api/orders/create",
+                    "/api/orders/history/**",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui.html",
+                    "/webjars/**",
+                    "/error"
             ).permitAll()
             .anyRequest().authenticated()
         )

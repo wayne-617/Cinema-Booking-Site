@@ -18,71 +18,69 @@ function LoginPage() {
     const fetchLink = `http://localhost:9090/auth/login`;
 
     try {
-      const response = await fetch(fetchLink, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: emailInput.value,
-          password: passInput.value,
-        }),
-      });
+  const response = await fetch(fetchLink, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: emailInput.value,
+      password: passInput.value,
+    }),
+  });
+  
+  console.log("Response status:", response.status);
 
-      console.log("Response status:", response.status);
+  let text = await response.text(); // get raw response first
+  console.log("Raw response text:", text);
 
-      let text = await response.text(); // get raw response first
-      console.log("Raw response text:", text);
-
-      let data = {};
-      try {
+  let data = {};
+  try {
         data = JSON.parse(text);
-        console.log("Parsed JSON data:", data);
       } catch (err) {
-        console.error("Failed to parse JSON:", err);
+        console.error("Could not parse JSON:", err);
       }
 
       if (response.ok) {
-        const decoded = jwtDecode(data.token);
-        console.log("Decoded token:", decoded);
+    const decoded = jwtDecode(data.token);
+    console.log("Decoded token:", decoded);
 
-        const fullName = decoded.fullName || "User User";
-        const firstName = fullName.split(" ")[0];
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            fullName,
-            firstName,
-            username: decoded.sub, // 'sub' is often the email/username
-            role: decoded.role,
-            userId: decoded.userId,
-            token: data.token,
-          })
-        );
+    const fullName = decoded.fullName || "User User";
+    const firstName = fullName.split(" ")[0]; 
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        fullName,
+        firstName,
+        username: decoded.sub,  // 'sub' is often the email/username
+        role: decoded.role,
+        userId: decoded.userId,
+        token: data.token,
+      })
+    );
 
-        // Redirect based on role
-        if (decoded.role === "ADMIN") {
-          setAuth("ADMIN");
-          setUser(firstName);
-          navigate("/");
-        } else {
-          setAuth("USER");
-          setUser(firstName);
-          navigate("/");
-        }
-      } else {
-        const message =
-          data.error === "Password incorrect"
-            ? "Incorrect password."
-            : data.error;
-        setErrorMessage(message);
-        setShake(true);
-        setTimeout(() => setShake(false), 500);
-      }
-    } catch (error) {
-      console.error("Network or server error:", error);
-      setErrorMessage("Server unavailable. Please try again later.");
+    // Redirect based on role
+    if (decoded.role === "ADMIN") {
+      navigate("/admindashboard");
+    } else {
+      navigate("/customer");
+    }
+
+    setTimeout(() => window.location.reload(), 100);
+    } else {
+      const message =
+        data.error === "Password incorrect"
+          ? "Incorrect password."
+          : data.error;
+      setErrorMessage(message);
       setShake(true);
       setTimeout(() => setShake(false), 500);
     }
+  } catch (error) {
+    console.error("Network or server error:", error);
+    setErrorMessage("Server unavailable. Please try again later.");
+    setShake(true);
+    setTimeout(() => setShake(false), 500);
+  }
+
   };
   return (
     <div className="loginPage-container">

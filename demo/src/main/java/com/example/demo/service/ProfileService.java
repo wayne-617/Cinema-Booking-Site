@@ -6,6 +6,7 @@ import com.example.demo.entity.BillingEntity;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.BillingRepository;
 import com.example.demo.repository.UserRepository;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,7 @@ public class ProfileService {
 
     private final UserRepository userRepository;
     private final BillingRepository billingRepository;
-    private final BillingService billingService; // ✅ inject the billing service
+    private final BillingService billingService;
     private final PasswordEncoder passwordEncoder;
 
     public ProfileService(UserRepository userRepository,
@@ -28,53 +29,52 @@ public class ProfileService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // GET PROFILE
     public ProfileResponseDTO getProfileByUserId(Long userId) {
-        // 1️⃣ Fetch user info
+
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
 
-        // 2️⃣ Fetch billing info through BillingService (auto decrypts + masks)
         BillingEntity billingEntity = billingService.getBillingForUser(userId);
 
-        // 3️⃣ Build the response DTO
         ProfileResponseDTO dto = new ProfileResponseDTO();
 
-        // --- User info ---
+        // User fields
         dto.setUserId(userEntity.getId());
         dto.setEmail(userEntity.getUsername());
         dto.setRole(userEntity.getRole().toString());
         dto.setPhone(userEntity.getPhone());
         dto.setPromoOptIn(userEntity.getPromoOptIn());
         dto.setHomeAddress(userEntity.getHomeAddress());
-        
-        // --- Billing info ---
-        dto.setFirstName(userEntity.getFullName());
-        dto.setLastName(userEntity.getFullName());
+
+        dto.setFirstName(billingEntity.getFirstName());
+        dto.setLastName(billingEntity.getLastName());
         dto.setBillingEmail(billingEntity.getEmail());
-        dto.setCardNumber(billingEntity.getCardNumber()); // ✅ already masked (**** **** **** 1234)
-        dto.setStreet(billingEntity.getStreet());
-        dto.setCity(billingEntity.getCity());
-        dto.setState(billingEntity.getState());
-        dto.setZip(billingEntity.getZip());
+
+        dto.setCardNumber(billingEntity.getCardNumber());
         dto.setCardType(billingEntity.getCardType());
         dto.setExpMonth(billingEntity.getExpMonth());
         dto.setExpYear(billingEntity.getExpYear());
 
+        dto.setStreet(billingEntity.getStreet());
+        dto.setCity(billingEntity.getCity());
+        dto.setState(billingEntity.getState());
+        dto.setZip(billingEntity.getZip());
+
         return dto;
     }
 
+    // UPDATE PROFILE
     @Transactional
     public void updateProfile(Long userId, ProfileUpdateRequestDTO dto) {
 
-        // 1️⃣ Get user
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
 
-        // 2️⃣ Get billing
         BillingEntity billingEntity = billingRepository.findByUser_Id(userId)
                 .orElseThrow(() -> new RuntimeException("Billing not found for user id " + userId));
 
-        // --- Update User Entity ---
+        // Update User fields
         if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
             if (dto.getCurrentPassword() == null ||
                 !passwordEncoder.matches(dto.getCurrentPassword(), userEntity.getPassword())) {
@@ -85,11 +85,9 @@ public class ProfileService {
 
         userEntity.setPhone(dto.getPhone());
         userEntity.setPromoOptIn(dto.getPromoOptIn());
-        userEntity.setFullName(dto.getFirstName() + " " + dto.getLastName());
         userEntity.setHomeAddress(dto.getHomeAddress());
         userRepository.save(userEntity);
 
-        // --- Update Billing Entity ---
         billingEntity.setFirstName(dto.getFirstName());
         billingEntity.setLastName(dto.getLastName());
         billingEntity.setStreet(dto.getStreet());
@@ -98,21 +96,17 @@ public class ProfileService {
         billingEntity.setZip(dto.getZip());
         billingEntity.setCardType(dto.getCardType());
 
-        // ✅ Only encrypt if card number looks real (not masked)
-        String card = dto.getCardNumber();
-        if (card != null && !card.isBlank()) {
-            if (!card.startsWith("****")) {
-                billingEntity.setCardNumber(card); // real number, will be encrypted
-            } else {
-                // keep existing encrypted card number (don’t overwrite)
-                System.out.println("ℹ️ Skipping encryption — masked card retained.");
-            }
+        String incomingCard = dto.getCardNumber();
+
+        if (incomingCard != null && !incomingCard.startsWith("****") && !incomingCard.isBlank()) {
+            billingEntity.setCardNumber(incomingCard);
+        } else {
+            System.out.println("No new card — keeping existing encrypted card.");
         }
 
         billingEntity.setExpMonth(dto.getExpMonth());
         billingEntity.setExpYear(dto.getExpYear());
 
-        // ✅ Always save via BillingService for encryption
         billingService.saveBilling(billingEntity);
     }
 }
