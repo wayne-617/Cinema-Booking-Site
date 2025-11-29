@@ -9,20 +9,28 @@ import { useAuth } from "../AuthContext";
 export function NavBar() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
-  const { setUser, setAuth, userAuth, isLoggedIn, currentUser } = useAuth();
+  const { setUser, setAuth, userAuth, isLoggedIn, currentUser, adminMode, toggleAdminMode } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   // Load user info on mount
   useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) setUser(JSON.parse(stored));
-  }, [setUser]);
+  const stored = localStorage.getItem("user");
+  if (stored) {
+    const parsed = JSON.parse(stored);
+    setUser(parsed);
+    setAuth(parsed.auth);
+
+    // 👉 Automatically start admins in admin mode
+    if (parsed.auth === "ADMIN") {
+      setAdminMode(true);
+    }
+  }
+}, []);
 
   // CUSTOMER prefix → /customer
-  const prefix = userAuth === "USER" ? "/customer" : "";
-
+  const prefix = userAuth === "CUSTOMER" ? "/customer" : "";
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(e) {
@@ -109,12 +117,30 @@ export function NavBar() {
         </NavLink>
 
         {/* Top Nav Buttons */}
-        <div className="navBar">
-          <NavLink to="/movies" className="buttons">Movies</NavLink>
-          <NavLink to="/showtimes" className="buttons">Showtimes</NavLink>
-          <NavLink to="/theaters" className="buttons">Theaters</NavLink>
-          <NavLink to="/" className="buttons">About</NavLink>
-        </div>
+      <div className="navBar">
+
+            {/* CUSTOMER or Admin-in-Customer-View */}
+            {(userAuth !== "ADMIN" || !adminMode) && (
+              <>
+                <NavLink to="/movies" className="buttons">Movies</NavLink>
+                <NavLink to="/showtimes" className="buttons">Showtimes</NavLink>
+                <NavLink to="/theaters" className="buttons">Theaters</NavLink>
+                <NavLink to="/" className="buttons">About</NavLink>
+              </>
+            )}
+
+            {/* ADMIN VIEW (adminMode = true) */}
+            {userAuth === "ADMIN" && adminMode && (
+              <>
+                <NavLink to="/admindashboard" className="buttons">Dashboard</NavLink>
+                <NavLink to="/adminmovies" className="buttons">Movies</NavLink>
+                <NavLink to="/adminpromotions" className="buttons">Promotions</NavLink>
+                <NavLink to="/adminusers" className="buttons">Users</NavLink>
+                <NavLink to="/admin/orders" className="buttons">Orders</NavLink>
+              </>
+            )}
+
+          </div>
 
         {/* Search Bar */}
         <div className="searchBar">
@@ -157,54 +183,71 @@ export function NavBar() {
         </div>
 
         {/* User Dropdown */}
-        <div className="navDiv">
-          {isLoggedIn ? (
-            <div className="userMenu" ref={dropdownRef}>
-              <button
-                className={`userButton ${isDropdownOpen ? "menu-open" : ""}`}
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                <span>{currentUser}</span>
-                <div className="hamburger-icon">
-                  <span></span>
-                </div>
-              </button>
-
-              <div className={isDropdownOpen ? "dropdownMenu show" : "dropdownMenu"}>
+          <div className="navDiv">
+            {isLoggedIn ? (
+              <div className="userMenu" ref={dropdownRef}>
                 <button
-                  onClick={() =>
-                    handleDropdownNavigate(
-                      userAuth === "USER"
-                        ? "/customer/editProfile"
-                        : "/editProfile"
-                    )
-                  }
-                  className="dropdownItem"
+                  className={`userButton ${isDropdownOpen ? "menu-open" : ""}`}
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
-                  Edit Profile
+                  <span>{currentUser?.fullName || currentUser?.username}</span>
+                  <div className="hamburger-icon">
+                    <span></span>
+                  </div>
                 </button>
 
-                {userAuth === "ADMIN" && (
+                <div className={isDropdownOpen ? "dropdownMenu show" : "dropdownMenu"}>
+
+                  {/* Edit Profile */}
                   <button
-                    onClick={() => handleDropdownNavigate("/admindashboard")}
+                    onClick={() =>
+                      handleDropdownNavigate(
+                        userAuth === "CUSTOMER"
+                          ? "/customer/editProfile"
+                          : "/editProfile"
+                      )
+                    }
                     className="dropdownItem"
                   >
-                    Admin Dashboard
+                    Edit Profile
                   </button>
-                )}
 
-                <button onClick={handleLogout} className="dropdownItem divider">
-                  Logout
-                </button>
+                  {/* My Orders — only for customers */}
+                  {userAuth === "CUSTOMER" && (
+                    <button
+                      onClick={() => handleDropdownNavigate("/customer/orders")}
+                      className="dropdownItem"
+                    >
+                      My Orders
+                    </button>
+                  )}
+
+                  {/* ADMIN ONLY OPTIONS */}
+                  {userAuth === "ADMIN" && (
+                    <>
+                      {/* Admin Mode Toggle */}
+                      <button
+                        onClick={toggleAdminMode}
+                        className="dropdownItem"
+                      >
+                        {adminMode ? "Switch to Customer View" : "Switch to Admin View"}
+                      </button>
+                    </>
+                  )}
+
+                  {/* LOGOUT */}
+                  <button onClick={handleLogout} className="dropdownItem divider">
+                    Logout
+                  </button>
+                </div>
               </div>
-            </div>
-          ) : (
-            <>
-              <NavLink to="/login" className="buttons">Log In</NavLink>
-              <NavLink to="/register" className="buttons">Sign Up</NavLink>
-            </>
-          )}
-        </div>
+            ) : (
+              <>
+                <NavLink to="/login" className="buttons">Log In</NavLink>
+                <NavLink to="/register" className="buttons">Sign Up</NavLink>
+              </>
+            )}
+          </div>
       </div>
     </header>
   );

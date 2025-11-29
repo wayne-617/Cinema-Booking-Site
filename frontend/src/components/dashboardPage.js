@@ -1,32 +1,21 @@
-import React from "react";
-import logo from "../logo512.png";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
-import { useEffect } from "react";
 
-export function dashboardPage() {
-  const { currentUser, userAuth, setUser, setAuth } = useAuth();
+export default function AdminDashboard() {
+  const navigate = useNavigate();
+  const { userAuth } = useAuth();
+
   useEffect(() => {
-    if (userAuth == "ADMIN") {
-      return;
-    } else {
+    if (userAuth !== "ADMIN") {
       navigate("/login");
     }
-  }, [navigate]);
+  }, [userAuth, navigate]);
+
   return (
-    <div className="bodyDiv">
-      <section className="contentSection">
-        <section className="bodySection">
-          <div className="bodyTextDiv">
-            <h1 className="headerText">Admin Page</h1>
-          </div>
-        </section>
-      </section>
-      <section className="bottomSection">
-        <div className="primaryDiv">
-          <footer className="mainFooter"></footer>
-        </div>
-      </section>
+    <div>
+      <h1>Welcome to the Admin Dashboard</h1>
+      <p>Manage movies, promotions, users and more.</p>
     </div>
   );
 }
-export default dashboardPage;

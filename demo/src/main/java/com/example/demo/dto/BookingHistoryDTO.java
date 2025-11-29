@@ -10,8 +10,10 @@ public class BookingHistoryDTO {
     private Double totalAmount;
     private LocalDateTime purchaseDate;
     private Integer lastFour;
-    private Long tixNo;
+    private Long ticketCount;         
     private List<String> seats;
+    private String customerName;
+
 
     public BookingHistoryDTO(
             Long bookingNo,
@@ -19,16 +21,18 @@ public class BookingHistoryDTO {
             Double totalAmount,
             LocalDateTime purchaseDate,
             Integer lastFour,
-            Long tixNo,
-            List<String> seats
+            Long ticketCount,
+            List<String> seats,
+            String customerName
     ) {
         this.bookingNo = bookingNo;
         this.movieTitle = movieTitle;
         this.totalAmount = totalAmount;
         this.purchaseDate = purchaseDate;
         this.lastFour = lastFour;
-        this.tixNo = tixNo;
+        this.ticketCount = ticketCount;
         this.seats = seats;
+        this.customerName = customerName;
     }
 
     public Long getBookingNo() {
@@ -51,11 +55,15 @@ public class BookingHistoryDTO {
         return lastFour;
     }
 
-    public Long getTixNo() {
-        return tixNo;
+    public Long getTicketCount() {
+        return ticketCount;
     }
 
     public List<String> getSeats() {
         return seats;
     }
+    public String getCustomerName() {
+        return customerName;
+    }
+
 }

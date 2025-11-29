@@ -19,6 +19,7 @@ public class MovieController {
     public MovieController(MovieService movieService) {
         this.movieService = movieService;
     }
+    
     @PostMapping("/addMovies")
     public Movie addMovie(@RequestBody Movie movie) {  
         return movieService.save(movie);
@@ -49,5 +50,37 @@ public class MovieController {
         String details = movieService.getMovieDetailsFormatted(id);
         return ResponseEntity.ok(details);
     }
+    // UPDATE MOVIE
+    @PutMapping("/{id}")
+    public Movie updateMovie(@PathVariable Long id, @RequestBody Movie updatedMovie) {
+        Movie movie = movieService.findById(id);
+        if (movie == null) {
+            throw new RuntimeException("Movie not found");
+        }
+
+        movie.setTitle(updatedMovie.getTitle());
+        movie.setCategory(updatedMovie.getCategory());
+        movie.setDirector(updatedMovie.getDirector());
+        movie.setProducer(updatedMovie.getProducer());
+        movie.setCastMembers(updatedMovie.getCastMembers());
+        movie.setSynopsis(updatedMovie.getSynopsis());
+        movie.setReviews(updatedMovie.getReviews());
+        movie.setTrailer_picture(updatedMovie.getTrailer_picture());
+        movie.setTrailer_video(updatedMovie.getTrailer_video());
+        movie.setMpaaRating(updatedMovie.getMpaaRating());
+        movie.setShowtime(updatedMovie.getShowtime());
+        movie.setPoster_url(updatedMovie.getPoster_url());
+        movie.setStatus(updatedMovie.getStatus());
+
+        return movieService.save(movie);
+    }
+
+    // DELETE MOVIE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
+        movieService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
 }
 

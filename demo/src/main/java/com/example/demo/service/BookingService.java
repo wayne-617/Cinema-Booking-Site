@@ -152,7 +152,6 @@ public class BookingService {
     public List<BookingHistoryDTO> getBookingHistory(Long userId) {
         List<BookingEntity> bookings = bookingRepository.findByUser_Id(userId);
 
-        // Load user's billing once
         BillingEntity billing = billingRepository.findByUser_Id(userId).orElse(null);
         Integer lastFour = null;
 
@@ -165,15 +164,19 @@ public class BookingService {
             }
         }
 
+        String customerName = billing != null
+                ? billing.getFirstName() + " " + billing.getLastName()
+                : null;
+
         final Integer lastFourFinal = lastFour;
+        final String customerNameFinal = customerName;
 
         return bookings.stream().map(b -> {
             List<String> seats = b.getSeats().stream()
                     .map(s -> "Row " + s.getSeatRow() + " — Seat " + s.getSeatNumber())
                     .toList();
 
-            long ticketCount = seats.size();
-
+            Long ticketCount = (long) seats.size();
             return new BookingHistoryDTO(
                     b.getBookingNo(),
                     b.getMovieTitle(),
@@ -181,7 +184,8 @@ public class BookingService {
                     b.getPurchaseDate(),
                     lastFourFinal,
                     ticketCount,
-                    seats
+                    seats,
+                    customerNameFinal
             );
         }).toList();
     }
@@ -207,4 +211,26 @@ public class BookingService {
                 b.getPurchaseDate()
         );
     }
+    public List<BookingEntity> getAllBookings() {
+        return bookingRepository.findAll();
+    }
+
+    @Transactional
+    public void adminDeleteBooking(Long bookingId) {
+
+        BookingEntity booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        // Unbook seats
+        List<SeatEntity> seats = seatRepository.findByBooking_BookingNo(bookingId);
+        for (SeatEntity s : seats) {
+            s.setIsBooked(false);
+            s.setBooking(null);
+            seatRepository.save(s);
+        }
+
+        bookingRepository.delete(booking);
+    }
+
+    
 }

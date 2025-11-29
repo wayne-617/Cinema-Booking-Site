@@ -5,7 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
 import Layout from './components/pageLayout';
 import CustomerLayout from './components/customerLayout';
-import AdminLayout from './components/adminpageLayout';
 import SignIn from './components/loginPage';
 import Register from './components/Register';
 import CongratsPage from './components/congratsPage';
@@ -13,14 +12,14 @@ import WelcomePage from './components/welcomePage';
 import MoviesPage from './components/moviesPage';
 import MovieDescription from './components/movieDescription';
 import ShowtimesPage from './components/showtimesPage';
-import TheatersPage from './components/theatersPage';
 import NotFoundPage from './components/notFoundPage';
-import Layout from './components/pageLayout';
-import AdminLayout from './components/adminpageLayout';
+
 import AdminDashboard from './components/dashboardPage';
 import AdminUsers from './components/adminUsers';
 import AdminPromotions from './components/adminPromotions';
 import AdminMovies from './components/adminMovies';
+import RequireAdmin from "./components/RequireAdmin";
+
 
 import OrderSummaryPage from './components/orderSummaryPage';
 import CheckoutPage from './components/checkoutPage';
@@ -51,7 +50,6 @@ function App() {
             <Route path="/movieDescription/:id" element={<MovieDescription />} />
 
             <Route path="/showtimes" element={<ShowtimesPage />} />
-            <Route path="/theaters" element={<TheatersPage />} />
 
             {/* Public seat selection */}
             <Route path="/seat-selection/:showtimeId" element={<SeatSelection />} />
@@ -59,16 +57,34 @@ function App() {
             <Route path="/forgetPassword" element={<ForgotPassword />} />
             <Route path="/reset" element={<ResetPassword />} />
             <Route path="/verify" element={<Verify />} />
+            
 
-        <Route path="*" element={<NotFoundPage />} />
-        </Route>
-        <Route element={<AdminLayout />}>
-          <Route path="/admindashboard" element={<AdminDashboard />} />
-          <Route path="/adminmovies" element={<AdminMovies />} />
-            <Route path="/adminpromotions" element={<AdminPromotions />} />
-            <Route path="/adminusers" element={<AdminUsers />} />
-            <Route path="/admin/orders" element={<OrderHistory />} />
+            <Route path="*" element={<NotFoundPage />} />
+
+             {/* ADMIN ROUTES */}
+            <Route
+              path="/admindashboard"
+              element={<RequireAdmin><AdminDashboard /></RequireAdmin>}
+            />
+            <Route
+              path="/adminmovies"
+              element={<RequireAdmin><AdminMovies /></RequireAdmin>}
+            />
+            <Route
+              path="/adminpromotions"
+              element={<RequireAdmin><AdminPromotions /></RequireAdmin>}
+            />
+            <Route
+              path="/adminusers"
+              element={<RequireAdmin><AdminUsers /></RequireAdmin>}
+            />
+            <Route
+              path="/admin/orders"
+              element={<RequireAdmin><OrderHistory /></RequireAdmin>}
+            />
           </Route>
+         
+
 
           {/* ---------- CUSTOMER ROUTES ---------- */}
           <Route element={<CustomerLayout />}>
@@ -77,7 +93,6 @@ function App() {
             <Route path="/customer/movies" element={<MoviesPage />} />
             <Route path="/customer/movieDescription/:id" element={<MovieDescription />} />
             <Route path="/customer/showtimes" element={<ShowtimesPage />} />
-            <Route path="/customer/theaters" element={<TheatersPage />} />
 
             <Route path="/customer/seat-selection/:showtimeId" element={<SeatSelection />} />
 

@@ -3,8 +3,10 @@ package com.example.demo.entity;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.example.demo.entity.ShowtimeEntity;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 
 @Entity
@@ -85,5 +87,8 @@ public class Movie {
 
     public LocalDateTime getShowtime() { return showtime; }
     public void setShowtime(LocalDateTime showtime) { this.showtime = showtime; }
+    
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<ShowtimeEntity> showtimes;
 
 }

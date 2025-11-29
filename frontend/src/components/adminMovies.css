@@ -1,33 +1,245 @@
-.movieList {
+.adminMovies-container {
+  padding: 2rem;
+  color: #e8f7f7;
+}
+
+/* Header layout */
+.adminMovies-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.adminMovies-header h1 {
+  color: #5ce1e6;
+  font-size: 2.1rem;
+}
+
+/* Add movie button */
+.addMovie-btn {
+  background: #5ce1e6;
+  color: black;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+.addMovie-btn:hover {
+  background: #3bcfd1;
+}
+
+/* Add Movie Form */
+.addMovie-form {
+  background: #0f1a1c;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-top: 1.5rem;
+  box-shadow: 0 0 10px #0007;
+}
+
+.formRow {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.addMovie-form input,
+.addMovie-form select,
+.addMovie-form textarea {
+  flex: 1;
+  background: #162326;
+  color: #d5e7e7;
+  border: 1px solid #223336;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.wideInput {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* Publish button */
+.publishBtn {
+  background: #5ce1e6;
+  padding: 12px;
+  width: 100%;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+.publishBtn:hover { background: #3bcfd1; }
+
+/* Movie Grid */
+.moviesGrid {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+/* Movie Card */
+.movieCard {
+  background: #0f1a1c;
+  border: 1px solid #1a2a2d;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Header */
+.movieCard-header {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.movieThumbnail {
+  width: 70px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* Expandable section */
+.movieDetails {
+  padding: 1rem;
+  border-top: 1px solid #203033;
   display: flex;
   flex-direction: column;
-  padding: 3rem;
+  gap: 1rem;
 }
 
-.movieEditItem {
-  padding: 2rem;
+.details-buttons {
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  align-content: center;
-  background-color: var(--background-color);
-  border-radius: 1rem;
-  margin: 3rem auto;
-  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.4);
+  gap: 1rem;
 }
 
-.movieEdit {
-  width: 6rem;
-  height: 6rem;
-  align-self: stretch;
-  text-wrap: wrap;
+.updateBtn {
+  flex: 1;
+  background: #5ce1e6;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
 }
 
-.movieEdit:focus {
-  height: 12rem;
-  width: 12rem;
+.deleteBtn {
+  flex: 1;
+  background: #ff4f4f;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
 }
-.movieEditButton {
-  width: 7rem;
+.deleteBtn:hover { background: #d43a3a; }
+
+.posterPreviewContainer {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
 }
+
+.posterPreview {
+  width: 150px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #1a2a2d;
+}
+/* CONTAINER */
+.movieEditForm {
+  padding: 1.5rem;
+  background: #102225;
+  border-radius: 12px;
+  margin-top: 1rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* GROUP OF 2 INPUTS PER ROW */
+.formGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.formGroup label {
+  width: 100%;
+  font-weight: 600;
+  color: #89d6d9;
+}
+
+.formGroup input,
+.formGroup select {
+  flex: 1;
+  min-width: 230px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #264346;
+  background: #0b1618;
+  color: #e8f7f7;
+}
+
+/* TEXTAREAS */
+.formBlock label {
+  font-weight: 600;
+  color: #89d6d9;
+}
+
+.formBlock textarea {
+  width: 100%;
+  min-height: 90px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #264346;
+  background: #0b1618;
+  color: #e8f7f7;
+}
+
+/* POSTER PREVIEW */
+.posterPreviewContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.posterPreview {
+  width: 150px;
+  height: 220px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid #1f3639;
+}
+
+/* BUTTONS */
+.details-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.updateBtn {
+  flex: 1;
+  padding: 12px;
+  background: #5ce1e6;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #102225;
+}
+
+.deleteBtn {
+  flex: 1;
+  padding: 12px;
+  background: #ff4b4b;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  color: white;
+}
+

@@ -4,7 +4,7 @@ import "./seatSelection.css";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 export default function SeatSelection() {
-  const { showtimeId } = useParams();
+   const { showtimeId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -12,21 +12,18 @@ export default function SeatSelection() {
   const userId = storedUser?.userId;
   const token = storedUser?.token;
 
-  // 🔥 restore seats from navigation OR sessionStorage
-  const sessionData = JSON.parse(sessionStorage.getItem("orderData")) || {};
-  const preselected =
-    location.state?.selectedSeats ||
-    sessionData.selectedSeats ||
-    [];
-
-  const [selected, setSelected] = useState(preselected);
+  const [selected, setSelected] = useState([]);  // 🔥 always start empty
   const [seats, setSeats] = useState([]);
+
+  // 🚫 Clear leftovers on page load
+  useEffect(() => {
+    sessionStorage.removeItem("orderData");
+    setSelected([]);  
+  }, []);
 
   // Redirect if not logged in
   useEffect(() => {
-    if (!storedUser || !token) {
-      navigate("/login");
-    }
+    if (!storedUser || !token) navigate("/login");
   }, []);
 
   // Load seats for this showtime
@@ -37,12 +34,15 @@ export default function SeatSelection() {
       .get(`http://localhost:9090/api/seats/showtime/${showtimeId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => setSeats(res.data))
+      .then((res) => {
+        console.log("Loaded seats:", res.data);
+        setSeats(res.data);
+      })
       .catch((err) => {
         console.error("Seat load error:", err);
         alert("Unable to load seats.");
       });
-  }, [showtimeId]);
+  }, [showtimeId, token]);
 
   // Toggle seat selection
   const toggleSeat = (seatId) => {

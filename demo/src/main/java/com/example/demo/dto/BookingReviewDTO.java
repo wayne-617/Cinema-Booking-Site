@@ -7,5 +7,6 @@ public record BookingReviewDTO(
         String movieTitle,
         Double totalAmount,
         Integer lastFour,
-        LocalDateTime purchaseDate
+        LocalDateTime purchaseDate,
+        String customerName
 ) {}
