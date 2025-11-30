@@ -38,7 +38,6 @@ function ResetPassword() {
       console.error("Request error", err);
     }
 
-    //navigate("/customer", {state: {user: emailaddr.value}});
   };
 
   return (

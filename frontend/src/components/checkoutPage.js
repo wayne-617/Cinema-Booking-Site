@@ -36,7 +36,7 @@ export default function CheckoutPage() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      navigate("/customer/order-confirmation", { state: { bookingId } });
+      navigate("order-confirmation", { state: { bookingId } });
     } catch (err) {
       alert("Error confirming order.");
       setProcessing(false);

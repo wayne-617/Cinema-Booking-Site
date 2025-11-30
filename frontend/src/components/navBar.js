@@ -33,14 +33,13 @@ export function NavBar() {
       setAuth(parsed.role);  
 
       // Admin auto mode
-      if (parsed.role === "ADMIN") {
+      if (parsed.role === "ADMIN" && localStorage.getItem("adminMode") === null) {
         setAdminMode(true);
+        localStorage.setItem("adminMode", "true");
       }
     }
   }, []);
 
-  // CUSTOMER prefix → /customer
-  const prefix = userAuth === "CUSTOMER" ? "/customer" : "";
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(e) {
@@ -112,7 +111,7 @@ console.log("currentUser:", currentUser);
   const handleSelectMovie = (movieId) => {
     setQuery("");
     setResults([]);
-    navigate(`${prefix}/movieDescription/${movieId}`);
+    navigate(`/movieDescription/${movieId}`);
   };
 
   const handleDropdownNavigate = (path) => {
@@ -123,7 +122,7 @@ console.log("currentUser:", currentUser);
   return (
     <header className="mainHeader">
       <div className="headerDiv">
-        <NavLink to={prefix || "/"} className="logoDiv">
+        <NavLink to={"/"} className="logoDiv">
           <img src={logo} alt="Logo" className="logo" />
           <h1 className="logoText">Absolute Cinema</h1>
         </NavLink>
@@ -136,7 +135,6 @@ console.log("currentUser:", currentUser);
               <>
                 <NavLink to="/movies" className="buttons">Movies</NavLink>
                 <NavLink to="/showtimes" className="buttons">Showtimes</NavLink>
-                <NavLink to="/theaters" className="buttons">Theaters</NavLink>
                 <NavLink to="/" className="buttons">About</NavLink>
               </>
             )}
@@ -221,7 +219,7 @@ console.log("currentUser:", currentUser);
                   {/* My Orders — only for customers */}
                   {userAuth === "CUSTOMER" && (
                     <button
-                      onClick={() => handleDropdownNavigate("/customer/orders")}
+                      onClick={() => handleDropdownNavigate("/orders")}
                       className="dropdownItem"
                     >
                       My Orders

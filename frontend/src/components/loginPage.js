@@ -52,7 +52,7 @@ function LoginPage() {
         if (decoded.role === "ADMIN") {
           navigate("/admindashboard");
         } else {
-          navigate("/customer");
+          navigate("/");
         }
 
       } else {

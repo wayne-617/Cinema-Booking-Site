@@ -12,28 +12,28 @@ export default function SeatSelection() {
   const userId = storedUser?.userId;
   const token = storedUser?.token;
 
-  const [selected, setSelected] = useState([]);  // 🔥 always start empty
+  const [selected, setSelected] = useState([]);  
   const [seats, setSeats] = useState([]);
 
-  // 🚫 Clear leftovers on page load
   useEffect(() => {
-    sessionStorage.removeItem("orderData");
-    setSelected([]);  
-  }, []);
+  const fromState = location.state?.selectedSeats;
+  const fromSession = JSON.parse(sessionStorage.getItem("orderData"))?.selectedSeats;
 
-  // Redirect if not logged in
-  useEffect(() => {
-    if (!storedUser || !token) navigate("/login");
-  }, []);
-
+  if (fromState) {
+    setSelected(fromState);
+  } else if (fromSession) {
+    setSelected(fromSession);
+  }
+}, [location.state]);
+  
   // Load seats for this showtime
   useEffect(() => {
     if (!showtimeId) return;
 
-    axios
-      .get(`http://localhost:9090/api/seats/showtime/${showtimeId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+   axios
+  .get(`http://localhost:9090/api/seats/showtime/${showtimeId}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  })
       .then((res) => {
         console.log("Loaded seats:", res.data);
         setSeats(res.data);
@@ -69,7 +69,7 @@ export default function SeatSelection() {
       })
     );
 
-    navigate("/customer/order-summary", {
+    navigate("/order-summary", {
       state: {
         selectedSeats: selected,
         showtimeId,

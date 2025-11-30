@@ -37,14 +37,7 @@ function ShowtimesPage() {
 
   // When user clicks a showtime card
   const handleShowtimeClick = (showtimeId) => {
-    if (window.location.pathname.includes("/customer")) {
-
-
-
-    navigate(`/customer/seat-selection/${showtimeId}`);
-    } else {
-       navigate(`/seat-selection/${showtimeId}`);
-    }
+    navigate(`/seat-selection/${showtimeId}`);
   };
 
   return (

@@ -80,7 +80,7 @@ export default function OrderSummaryPage() {
         }
       );
 
-      navigate("/customer/order-confirmation", {
+      navigate("/order-confirmation", {
         state: { bookingId: res.data.bookingNo },
       });
     } catch (err) {
@@ -120,7 +120,7 @@ export default function OrderSummaryPage() {
         <button
         className="edit-seats-btn"
         onClick={() =>
-          navigate(`/customer/seat-selection/${showtimeId}`, {
+          navigate(`/seat-selection/${showtimeId}`, {
             state: {
               selectedSeats,
               showtimeId,
@@ -148,7 +148,7 @@ export default function OrderSummaryPage() {
 
         <button
           className="edit-billing-btn"
-          onClick={() => navigate("/customer/editProfile")}   // Send user to edit profile page
+          onClick={() => navigate("/editProfile")}   // Send user to edit profile page
         >
           {billing ? "Update Billing" : "Add Billing"}
         </button>
@@ -157,6 +157,8 @@ export default function OrderSummaryPage() {
       <div className="total-card">
         <h2>Total: ${total.toFixed(2)}</h2>
       </div>
+    
+      
       
 
       <button className="confirm-btn" onClick={handleConfirm}>
