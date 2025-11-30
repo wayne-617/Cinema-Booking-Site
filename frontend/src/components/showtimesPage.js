@@ -2,16 +2,27 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./showtimesPage.css";
 
+function formatDateLocal(iso) {
+  const [year, month, day] = iso.split("-").map(Number);
+  const d = new Date(year, month - 1, day); // local timezone, no shift
+
+  return d.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+}
+
 function ShowtimesPage() {
   const [showtimes, setShowtimes] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const navigate = useNavigate();
+  
 
   useEffect(() => {
-    const start = "2025-10-14";
-    const end = "2025-10-18";
+  
 
-    fetch(`http://localhost:9090/api/showtimes?start=${start}&end=${end}`)
+  fetch(`http://localhost:9090/api/showtimes?start=2000-01-01&end=2100-01-01`)
       .then((res) => res.json())
       .then((data) => {
         setShowtimes(data);
@@ -42,23 +53,33 @@ function ShowtimesPage() {
 
   return (
     <div className="showtimes-container">
-      <h1>🎬 Showtimes</h1>
+      <h1>Showtimes</h1>
 
-      {/* Date Buttons */}
-      <div className="day-selector">
-        {Object.keys(grouped).map((date) => (
-          <button
-            key={date}
-            className={`day-btn ${selectedDate === date ? "active" : ""}`}
-            onClick={() => setSelectedDate(date)}
-          >
-            {new Date(date).toLocaleDateString("en-US", {
-              weekday: "short",
-              month: "short",
-              day: "numeric",
-            })}
-          </button>
-        ))}
+     {/* Date Carousel */}
+      <div className="date-carousel-wrapper">
+        <button className="carousel-arrow left" onClick={() => {
+          document.querySelector(".date-carousel").scrollBy({ left: -200, behavior: "smooth" });
+        }}>
+          ‹
+        </button>
+
+        <div className="date-carousel">
+          {Object.keys(grouped).map((date) => (
+            <button
+              key={date}
+              className={`day-btn ${selectedDate === date ? "active" : ""}`}
+              onClick={() => setSelectedDate(date)}
+            >
+              {formatDateLocal(date)}
+            </button>
+          ))}
+        </div>
+
+        <button className="carousel-arrow right" onClick={() => {
+          document.querySelector(".date-carousel").scrollBy({ left: 200, behavior: "smooth" });
+        }}>
+          ›
+        </button>
       </div>
 
       {/* Showtimes for selected day */}
@@ -73,7 +94,7 @@ function ShowtimesPage() {
               <img src={st.posterUrl} alt={st.title} className="movie-poster" />
               <h3>{st.title}</h3>
               <p className="time-text">{formatTime(st.showTime)}</p>
-              <p className="click-text">🎟 Click to reserve seats</p>
+              <p className="click-text">Click to reserve seats</p>
             </div>
           ))
         ) : (

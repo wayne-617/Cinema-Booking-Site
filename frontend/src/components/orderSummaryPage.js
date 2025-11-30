@@ -125,6 +125,7 @@ export default function OrderSummaryPage() {
               selectedSeats,
               showtimeId,
               userId,
+              fromOrderSummary: true 
             },
           })
         }

@@ -14,17 +14,21 @@ export default function SeatSelection() {
 
   const [selected, setSelected] = useState([]);  
   const [seats, setSeats] = useState([]);
+  
 
   useEffect(() => {
-  const fromState = location.state?.selectedSeats;
-  const fromSession = JSON.parse(sessionStorage.getItem("orderData"))?.selectedSeats;
+    const state = location.state;
 
-  if (fromState) {
-    setSelected(fromState);
-  } else if (fromSession) {
-    setSelected(fromSession);
-  }
-}, [location.state]);
+    if (state?.fromOrderSummary && state?.selectedSeats) {
+      setSelected(state.selectedSeats);
+      return;
+    }
+
+    setSelected([]);
+
+    sessionStorage.removeItem("orderData");
+  }, [showtimeId]);
+
   
   // Load seats for this showtime
   useEffect(() => {
@@ -95,7 +99,7 @@ export default function SeatSelection() {
               <span className="row-label">{row}</span>
 
               {rowSeats.map((seat) => {
-                const isSelected = selected.includes(seat.seatId);
+                const isSelected = !seat.isBooked && selected.includes(seat.seatId);
 
                 const img = seat.isBooked
                   ? "https://res.cloudinary.com/dvucimldu/image/upload/v1762966397/ClosedSeeat_ubht9m.png"

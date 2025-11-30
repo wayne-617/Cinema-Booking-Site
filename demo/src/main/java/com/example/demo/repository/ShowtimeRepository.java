@@ -25,6 +25,7 @@ public interface ShowtimeRepository extends JpaRepository<ShowtimeEntity, Long> 
 
     List<ShowtimeEntity> findByMovie_MovieId(Long movieId);
     
+    
 
     
 }
