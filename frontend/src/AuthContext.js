@@ -7,13 +7,13 @@ export function AuthProvider({ children }) {
   const [userAuth, setUserAuth] = useState(null);
 
   const setUser = (user) => {
-    setCurrentUser(user);
-    setUserAuth(user?.role || null);  
-  };
+  setCurrentUser(user);
+  setUserAuth(user?.auth?.toUpperCase() || null);
+};
 
-  const setAuth = (auth) => {
-    setUserAuth(auth);
-  };
+const setAuth = (auth) => {
+  setUserAuth(auth?.toUpperCase() || null);
+};
 
   const [adminMode, setAdminMode] = useState(
     localStorage.getItem("adminMode") === "true"
@@ -27,14 +27,15 @@ export function AuthProvider({ children }) {
 
 
   const value = {
-    currentUser,
-    userAuth,
-    adminMode,
-    toggleAdminMode,
-    isLoggedIn: !!currentUser,
-    setUser,
-    setAuth
-  };
+  currentUser,
+  userAuth,
+  adminMode,
+  toggleAdminMode,
+  setAdminMode,     
+  isLoggedIn: !!currentUser,
+  setUser,
+  setAuth
+};
   
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -9,25 +9,35 @@ import { useAuth } from "../AuthContext";
 export function NavBar() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
-  const { setUser, setAuth, userAuth, isLoggedIn, currentUser, adminMode, toggleAdminMode } = useAuth();
+  const { 
+    setUser, 
+    setAuth, 
+    userAuth, 
+    isLoggedIn, 
+    currentUser, 
+    adminMode, 
+    toggleAdminMode,
+    setAdminMode            
+  } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   // Load user info on mount
   useEffect(() => {
-  const stored = localStorage.getItem("user");
-  if (stored) {
-    const parsed = JSON.parse(stored);
-    setUser(parsed);
-    setAuth(parsed.auth);
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      const parsed = JSON.parse(stored);
 
-    // 👉 Automatically start admins in admin mode
-    if (parsed.auth === "ADMIN") {
-      setAdminMode(true);
+      setUser(parsed);
+      setAuth(parsed.role);  
+
+      // Admin auto mode
+      if (parsed.role === "ADMIN") {
+        setAdminMode(true);
+      }
     }
-  }
-}, []);
+  }, []);
 
   // CUSTOMER prefix → /customer
   const prefix = userAuth === "CUSTOMER" ? "/customer" : "";
@@ -59,6 +69,8 @@ export function NavBar() {
     navigate(trimmed === "" ? "/movies" : `/movies?search=${trimmed}`);
     setResults([]);
   };
+  console.log("userAuth:", userAuth);
+console.log("currentUser:", currentUser);
 
   // LIVE SEARCH updates
   const handleSearch = async (e) => {
@@ -200,13 +212,7 @@ export function NavBar() {
 
                   {/* Edit Profile */}
                   <button
-                    onClick={() =>
-                      handleDropdownNavigate(
-                        userAuth === "CUSTOMER"
-                          ? "/customer/editProfile"
-                          : "/editProfile"
-                      )
-                    }
+                    onClick={() => handleDropdownNavigate("/editProfile")}
                     className="dropdownItem"
                   >
                     Edit Profile

@@ -103,7 +103,7 @@ function App() {
             <Route path="/customer/orders" element={<OrderHistory />} />
 
             {/* Profile */}
-            <Route path="/customer/editProfile" element={<EditProfilePage />} />
+            <Route path="editProfile" element={<EditProfilePage />} />
           </Route>
 
         </Routes>
