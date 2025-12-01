@@ -27,6 +27,22 @@ export default function OrderSummaryPage() {
   const [billing, setBilling] = useState(null);
   const [ticketTypes, setTicketTypes] = useState({});
   const [total, setTotal] = useState(0);
+  const hasValidBilling = (b) => {
+    if (!b) return false;
+
+    // no card saved
+    if (!b.cardNumber || b.cardNumber === "****" || b.cardNumber.trim() === "") {
+      return false;
+    }
+
+    // missing address
+    if (!b.street || !b.city || !b.state || !b.zip) {
+      return false;
+    }
+
+    return true;
+  };
+
 
   // Redirect if not logged in
   useEffect(() => {
@@ -61,7 +77,13 @@ export default function OrderSummaryPage() {
   }, [ticketTypes, selectedSeats]);
 
   // Create order
-  const handleConfirm = async () => {
+ const handleConfirm = async () => {
+    if (!hasValidBilling(billing)) {
+      alert("Please enter your billing and payment information before checking out.");
+      navigate("/editProfile");
+      return;
+    }
+
     try {
       const tickets = selectedSeats.map((seatId) => ({
         seatId,
@@ -134,27 +156,43 @@ export default function OrderSummaryPage() {
       </button>
       </div>
 
-      <div className="billing-card">
-        <h3>Billing Information</h3>
+     <div className="billing-card">
+          <h3>Billing Information</h3>
 
-        {billing ? (
-          <>
-            <p><strong>Card:</strong> {billing.cardType} **** **** **** {billing.cardNumber?.slice(-4)}</p>
-            <p><strong>Name:</strong> {billing.firstName} {billing.lastName}</p>
-            <p><strong>Address:</strong> {billing.street}, {billing.city}, {billing.state} {billing.zip}</p>
-          </>
-        ) : (
-          <p>No billing information found.</p>
-        )}
+          {billing ? (
+            <>
+              {/* CARD NUMBER */}
+              <p>
+                <strong>Card:</strong>{" "}
+                {billing.cardNumber && billing.cardNumber.startsWith("****")
+                  ? `${billing.cardType} ${billing.cardNumber}`
+                  : "No card on file"}
+              </p>
 
-        <button
-          className="edit-billing-btn"
-          onClick={() => navigate("/editProfile")}   // Send user to edit profile page
-        >
-          {billing ? "Update Billing" : "Add Billing"}
-        </button>
-      </div>
+              {/* NAME */}
+              <p>
+                <strong>Name:</strong> {billing.firstName} {billing.lastName}
+              </p>
 
+              {/* ADDRESS */}
+              <p>
+                <strong>Address:</strong>{" "}
+                {billing.street && billing.city && billing.state && billing.zip
+                  ? `${billing.street}, ${billing.city}, ${billing.state} ${billing.zip}`
+                  : "No billing address added"}
+              </p>
+            </>
+          ) : (
+            <p>No billing information found.</p>
+          )}
+
+          <button
+            className="edit-billing-btn"
+            onClick={() => navigate("/editProfile")}
+          >
+            {billing ? "Update Billing" : "Add Billing"}
+          </button>
+        </div>
       <div className="total-card">
         <h2>Total: ${total.toFixed(2)}</h2>
       </div>

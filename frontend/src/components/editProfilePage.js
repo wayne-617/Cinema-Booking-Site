@@ -73,7 +73,11 @@ function EditProfilePage() {
 
     // masked number ONLY
     setCardType(data.cardType || "");
-    setCardNumber(data.cardNumber || "");
+    const masked = data.cardNumber && data.cardNumber.startsWith("****")
+      ? data.cardNumber
+      : "";
+
+    setCardNumber(masked);
     setExpMonth(data.expMonth ? data.expMonth.toString() : "");
     setExpYear(data.expYear ? data.expYear.toString() : "");
 
@@ -106,7 +110,14 @@ function EditProfilePage() {
 
     const { token } = stored;
 
-const realCardNumber = isEditingCard ? cardNumber : null;
+  let realCardNumber = null;
+
+  if (
+    isEditingCard ||
+    (cardNumber && !cardNumber.startsWith("****"))
+  ) {
+    realCardNumber = cardNumber;
+  }
     // --- Billing payload ---
     const billingPayload = {
       userId,
@@ -360,7 +371,7 @@ const realCardNumber = isEditingCard ? cardNumber : null;
         onChange={(e) => setCardNumber(e.target.value)}
       />
 
-      {!isEditingCard && cardNumber.startsWith("****") && (
+      {!isEditingCard && (!cardNumber || cardNumber.startsWith("****")) && (
         <button
           type="button"
           className="payment-edit-btn"
@@ -371,7 +382,8 @@ const realCardNumber = isEditingCard ? cardNumber : null;
         >
           Edit
         </button>
-      )}
+    )}
+
     </div>
 
     {/* Expiration */}
@@ -385,8 +397,8 @@ const realCardNumber = isEditingCard ? cardNumber : null;
       />
       <input
         className="payment-field"
-        placeholder="YY"
-        maxLength="2"
+        placeholder="YYYY"
+        maxLength="4"
         value={expYear}
         onChange={(e) => setExpYear(e.target.value)}
       />
@@ -394,9 +406,6 @@ const realCardNumber = isEditingCard ? cardNumber : null;
 
   </div>
 </fieldset>
-
-
-
 
                 {/* ================== PROMOS ================== */}
                 <fieldset disabled={isLoading} className="editProfilePage-section">
