@@ -17,8 +17,10 @@ import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthUserDTO;
 import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.RegisterRequest;
+import com.example.demo.dto.UserAdminDTO;
 import com.example.demo.entity.BillingEntity;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.entity.Role;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -250,6 +252,166 @@ public class AuthController {
             return ResponseEntity.ok("User verified successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            var users = userRepository.findAll().stream()
+                    .map(u -> new UserAdminDTO(
+                            u.getId(),
+                            u.getUsername(),
+                            u.getFullName(),
+                            u.getPhone(),
+                            u.getRole().name(),
+                            u.getEnabled(),
+                            u.getPromoOptIn(),
+                            u.getHomeAddress()
+                    ))
+                    .toList();
+
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to load users"));
+        }
+    }
+
+
+    @PutMapping("/users/{id}/status") 
+    public ResponseEntity<?> updateUserStatus(
+        @PathVariable Long id,
+        @RequestBody Map<String, Object> payload) {
+
+        try {
+            UserEntity user = userRepository.findById(id).orElse(null);
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // expect {"enabled": true/false}
+            Object enabledObj = payload.get("enabled");
+            if (enabledObj == null) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Missing 'enabled' field"));
+            }
+
+            boolean newEnabled = Boolean.parseBoolean(enabledObj.toString());
+
+            // Optional: protect admins from being suspended
+            if (!newEnabled && user.getRole() == Role.ADMIN) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "Cannot suspend admin users"));
+            }
+
+            user.setEnabled(newEnabled);
+
+            userRepository.save(user);
+
+            return ResponseEntity.ok(Map.of("message", "User status updated"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to update user status"));
+        }
+    }
+
+    @PutMapping("/users/{id}/role")
+    public ResponseEntity<?> updateUserRole(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> payload) {
+
+        try {
+            UserEntity user = userRepository.findById(id).orElse(null);
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Object roleObj = payload.get("role");
+            if (roleObj == null) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Missing 'role' field"));
+            }
+
+            String roleStr = roleObj.toString().toUpperCase();
+
+            Role newRole;
+            try {
+                newRole = Role.valueOf(roleStr);
+            } catch (IllegalArgumentException ex) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Invalid role: " + roleStr));
+            }
+
+            user.setRole(newRole);
+            userRepository.save(user);
+
+            return ResponseEntity.ok(Map.of("message", "User role updated"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to update user role"));
+        }
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<?> adminUpdateUser(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> payload) {
+
+        try {
+            // Find user by ID (admin is editing some other account)
+            UserEntity userEntity = userRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("User not found: " + id));
+
+            // Convert payload values to strings so we can use the same style checks
+            String fullName    = payload.get("fullName")    != null ? payload.get("fullName").toString()    : null;
+            String phone       = payload.get("phone")       != null ? payload.get("phone").toString()       : null;
+            String homeAddress = payload.get("homeAddress") != null ? payload.get("homeAddress").toString() : null;
+            Object promoObj    = payload.get("promoOptIn");
+
+            // ---- mimic /auth/update behaviour: only update if not null AND not empty ----
+
+            if (phone != null && !phone.isEmpty()) {
+                userEntity.setPhone(phone);
+            }
+
+            if (fullName != null && !fullName.isEmpty()) {
+                userEntity.setFullName(fullName);
+            }
+
+            if (homeAddress != null && !homeAddress.isEmpty()) {
+                userEntity.setHomeAddress(homeAddress);
+            }
+
+            if (promoObj != null) {
+                // accepts true/false or "true"/"false"
+                boolean promoBool = Boolean.parseBoolean(promoObj.toString());
+                userEntity.setPromoOptIn(promoBool);
+            }
+
+            userRepository.save(userEntity);
+
+            // send updated user info back to frontend
+            UserAdminDTO dto = new UserAdminDTO(
+                    userEntity.getId(),
+                    userEntity.getUsername(),
+                    userEntity.getFullName(),
+                    userEntity.getPhone(),
+                    userEntity.getRole().name(),
+                    userEntity.getEnabled(),
+                    userEntity.getPromoOptIn(),
+                    userEntity.getHomeAddress()
+            );
+
+            return ResponseEntity.ok(dto);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to update user"));
         }
     }
 }
