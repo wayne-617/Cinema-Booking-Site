@@ -12,28 +12,32 @@ export default function SeatSelection() {
   const userId = storedUser?.userId;
   const token = storedUser?.token;
 
-  const [selected, setSelected] = useState([]);  // 🔥 always start empty
+  const [selected, setSelected] = useState([]);  
   const [seats, setSeats] = useState([]);
+  
 
-  // 🚫 Clear leftovers on page load
   useEffect(() => {
+    const state = location.state;
+
+    if (state?.fromOrderSummary && state?.selectedSeats) {
+      setSelected(state.selectedSeats);
+      return;
+    }
+
+    setSelected([]);
+
     sessionStorage.removeItem("orderData");
-    setSelected([]);  
-  }, []);
+  }, [showtimeId]);
 
-  // Redirect if not logged in
-  useEffect(() => {
-    if (!storedUser || !token) navigate("/login");
-  }, []);
-
+  
   // Load seats for this showtime
   useEffect(() => {
     if (!showtimeId) return;
 
-    axios
-      .get(`http://localhost:9090/api/seats/showtime/${showtimeId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+   axios
+  .get(`http://localhost:9090/api/seats/showtime/${showtimeId}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  })
       .then((res) => {
         console.log("Loaded seats:", res.data);
         setSeats(res.data);
@@ -69,7 +73,7 @@ export default function SeatSelection() {
       })
     );
 
-    navigate("/customer/order-summary", {
+    navigate("/order-summary", {
       state: {
         selectedSeats: selected,
         showtimeId,
@@ -95,7 +99,7 @@ export default function SeatSelection() {
               <span className="row-label">{row}</span>
 
               {rowSeats.map((seat) => {
-                const isSelected = selected.includes(seat.seatId);
+                const isSelected = !seat.isBooked && selected.includes(seat.seatId);
 
                 const img = seat.isBooked
                   ? "https://res.cloudinary.com/dvucimldu/image/upload/v1762966397/ClosedSeeat_ubht9m.png"

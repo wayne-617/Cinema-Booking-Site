@@ -14,6 +14,8 @@ export default function OrderConfirmationPage() {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const token = storedUser?.token;
 
+  
+
   // Load main review info
   useEffect(() => {
     if (!bookingId || !token) return;

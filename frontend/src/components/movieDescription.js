@@ -4,6 +4,8 @@ import "./movieDescription.css"; // reuse your styles
 
 const API = "http://localhost:9090";
 
+
+
 // helpers
 function groupByDate(list) {
   return list.reduce((acc, s) => {
@@ -40,6 +42,9 @@ export default function MovieDescription() {
 
   const [showtimes, setShowtimes] = useState([]);
   const [sState, setSState] = useState({ loading: true, error: null });
+  const goToShowtime = (id) => {
+    nav(`/seat-selection/${id}`);
+  };
 
   // fetch the movie
   useEffect(() => {
@@ -74,7 +79,9 @@ export default function MovieDescription() {
     async function load() {
       setSState({ loading: true, error: null });
       try {
-        const res = await fetch(`${API}/api/showtimes`);
+        const res = await fetch(
+          `${API}/api/showtimes?start=2000-01-01&end=2100-01-01`
+        );        
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!cancelled) {
@@ -217,6 +224,7 @@ export default function MovieDescription() {
                         key={s.showtimeId}
                         className="timeBtn"
                         type="button"
+                        onClick={() => goToShowtime(s.showtimeId)}
                       >
                         {fmtTime(s.showTime || s.time)}
                       </button>

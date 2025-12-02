@@ -5,6 +5,9 @@ import com.example.demo.entity.ShowtimeEntity;
 import com.example.demo.service.ShowtimeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.demo.repository.ShowtimeRepository;
+
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,12 +18,13 @@ import java.util.List;
 public class ShowtimeController {
 
     private final ShowtimeService showtimeService;
+    private final ShowtimeRepository showtimeRepository;
 
-    public ShowtimeController(ShowtimeService showtimeService) {
+    public ShowtimeController(ShowtimeService showtimeService, ShowtimeRepository showtimeRepository) {
         this.showtimeService = showtimeService;
+        this.showtimeRepository = showtimeRepository;
     }
 
-    // ✅ POST: create new showtime
     @PostMapping
     public ShowtimeEntity createShowtime(
             @RequestParam Long movieId,
@@ -29,7 +33,6 @@ public class ShowtimeController {
         return showtimeService.createShowtime(movieId, showtime);
     }
 
-    // ✅ GET: all showtimes (with optional date filters)
     @GetMapping
     public List<ShowtimeRequest> getShowtimes(
             @RequestParam(required = false) LocalDate start,
@@ -43,17 +46,30 @@ public class ShowtimeController {
         }
     }
 
-    // ✅ FIXED: get showtimes by movie (delegates to service)
     @GetMapping("/movie/{movieId}")
     public ResponseEntity<List<ShowtimeEntity>> getShowtimesByMovie(@PathVariable Long movieId) {
         List<ShowtimeEntity> showtimes = showtimeService.getShowtimesByMovie(movieId);
         return ResponseEntity.ok(showtimes);
     }
 
-    // ✅ DELETE: delete showtime
     @DeleteMapping("/{id}")
     public String deleteShowtime(@PathVariable Long id) {
         showtimeService.deleteShowtime(id);
         return "Showtime " + id + " deleted successfully.";
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateShowtime(
+            @PathVariable Long id,
+            @RequestBody ShowtimeEntity incoming
+    ) {
+        ShowtimeEntity s = showtimeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Showtime not found"));
+
+        s.setShowDate(incoming.getShowDate());
+        s.setShowTime(incoming.getShowTime());
+
+        showtimeRepository.save(s);
+        return ResponseEntity.ok(s);
     }
 }

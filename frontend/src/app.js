@@ -4,7 +4,6 @@ import { AuthProvider } from "./AuthContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
 import Layout from './components/pageLayout';
-import CustomerLayout from './components/customerLayout';
 import SignIn from './components/loginPage';
 import Register from './components/Register';
 import CongratsPage from './components/congratsPage';
@@ -30,6 +29,7 @@ import ResetPassword from './components/resetPassword';
 import Verify from './components/Verify';
 import OrderHistory from "./components/orderHistory";
 import SeatSelection from './components/seatSelectionPage';
+import RequireCustomer from './components/requireCustomer';
 
 import './app.css';
 
@@ -57,6 +57,28 @@ function App() {
             <Route path="/forgetPassword" element={<ForgotPassword />} />
             <Route path="/reset" element={<ResetPassword />} />
             <Route path="/verify" element={<Verify />} />
+
+             {/* ---------- CUSTOMER ROUTES ---------- */}
+          <Route
+            path="/order-summary"
+            element={<RequireCustomer><OrderSummaryPage /></RequireCustomer>}
+          />
+          <Route
+            path="/checkout"
+            element={<RequireCustomer><CheckoutPage /></RequireCustomer>}
+          />
+          <Route
+            path="/order-confirmation"
+            element={<RequireCustomer><OrderConfirmationPage /></RequireCustomer>}
+          />
+          <Route
+            path="/orders"
+            element={<RequireCustomer><OrderHistory /></RequireCustomer>}
+          />
+          <Route
+            path="/editProfile"
+            element={<RequireCustomer><EditProfilePage /></RequireCustomer>}
+          />
             
 
             <Route path="*" element={<NotFoundPage />} />
@@ -83,28 +105,8 @@ function App() {
               element={<RequireAdmin><OrderHistory /></RequireAdmin>}
             />
           </Route>
+
          
-
-
-          {/* ---------- CUSTOMER ROUTES ---------- */}
-          <Route element={<CustomerLayout />}>
-            <Route path="/customer" element={<WelcomePage />} />
-
-            <Route path="/customer/movies" element={<MoviesPage />} />
-            <Route path="/customer/movieDescription/:id" element={<MovieDescription />} />
-            <Route path="/customer/showtimes" element={<ShowtimesPage />} />
-
-            <Route path="/customer/seat-selection/:showtimeId" element={<SeatSelection />} />
-
-            {/* Order flow */}
-            <Route path="/customer/order-summary" element={<OrderSummaryPage />} />
-            <Route path="/customer/checkout" element={<CheckoutPage />} />
-            <Route path="/customer/order-confirmation" element={<OrderConfirmationPage />} />
-            <Route path="/customer/orders" element={<OrderHistory />} />
-
-            {/* Profile */}
-            <Route path="/customer/editProfile" element={<EditProfilePage />} />
-          </Route>
 
         </Routes>
       </AuthProvider>

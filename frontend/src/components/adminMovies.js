@@ -6,9 +6,107 @@ export default function AdminMovies() {
   const [movies, setMovies] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [expandedMovie, setExpandedMovie] = useState(null);
-
+  const [showtimeForm, setShowtimeForm] = useState(null);
+  const [showtimes, setShowtimes] = useState([]);
   const navigate = useNavigate();
+  const [editingShowtimeId, setEditingShowtimeId] = useState(null);
+  const [editData, setEditData] = useState({ date: "", time: "" });
+  function formatReadableTime(t) {
+    const d = new Date(`1970-01-01T${t}`);
+    return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  }
 
+  const openShowtimeForm = (movie) => {
+    setShowtimeForm({
+      movieId: movie.movieId,
+      date: "",
+      time: ""
+    });
+  };
+
+  const deleteShowtime = async (id) => {
+    if (!window.confirm("Delete this showtime?")) return;
+
+    const res = await fetch(`http://localhost:9090/api/showtimes/${id}`, {
+      method: "DELETE"
+    });
+
+    if (res.ok) {
+      setShowtimes(prev => prev.filter(s => s.showtimeId !== id));
+    } else {
+      alert("Failed to delete showtime.");
+    }
+  };
+
+  const updateShowtime = async (id) => {
+    const res = await fetch(`http://localhost:9090/api/showtimes/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        showDate: editData.date,
+        showTime: editData.time
+      })
+    });
+
+    if (res.ok) {
+      const updated = await res.json();
+
+      // update list
+      setShowtimes(prev => prev.map(s =>
+        s.showtimeId === id ? updated : s
+      ));
+
+      setEditingShowtimeId(null);
+    } else {
+      alert("Failed to update showtime.");
+    }
+  };
+
+
+  const closeShowtimeForm = () => setShowtimeForm(null);
+
+  useEffect(() => {
+    fetch("http://localhost:9090/api/showtimes?start=2000-01-01&end=2100-01-01")
+      .then(res => res.json())
+      .then(data => setShowtimes(data))
+      .catch(err => console.error("Error loading showtimes:", err));
+  }, []);
+
+  const submitShowtime = async () => {
+    const { movieId, date, time } = showtimeForm;
+
+    const body = {
+      showDate: date,
+      showTime: time
+    };
+
+    const res = await fetch(
+      `http://localhost:9090/api/showtimes?movieId=${movieId}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      }
+    );
+
+    if (res.ok) {
+      const newShowtime = await res.json(); // backend returns created showtime
+
+      // ⬇️ Add the new showtime to the local list without refreshing
+      setShowtimes(prev => [...prev, newShowtime]);
+
+      alert("Showtime added!");
+      closeShowtimeForm();
+
+    } else {
+      alert("Failed to add showtime.");
+    }
+  };
+
+
+
+
+  
   // Fetch movies
   useEffect(() => {
     fetch("http://localhost:9090/api/movies")
@@ -68,6 +166,8 @@ export default function AdminMovies() {
     }
   };
 
+  const getMovieShowtimes = (id) =>
+  showtimes.filter(st => st.movieId === id);
 
   return (
     <div className="adminMovies-container">
@@ -130,33 +230,37 @@ export default function AdminMovies() {
           <button className="publishBtn">Publish Movie</button>
         </form>
       )}
-
-{/* Movie List */}
+      {/* Movie List */}
 <div className="moviesGrid">
   {movies.map((movie) => (
-  <div
-  className="movieCard"
-    key={movie.movieId}
-    onClick={() =>
-      setExpandedMovie(expandedMovie === movie.movieId ? null : movie.movieId)
-    }
-    style={{ cursor: "pointer" }}
-  >
-    <div className="movieCard-header">
-        <img src={movie.poster_url} alt={movie.title} className="movieThumbnail" />
+    <div
+      className="movieCard"
+      key={movie.movieId}
+      onClick={() =>
+        setExpandedMovie(
+          expandedMovie === movie.movieId ? null : movie.movieId
+        )
+      }
+      style={{ cursor: "pointer" }}
+    >
+      <div className="movieCard-header">
+        <img
+          src={movie.poster_url}
+          alt={movie.title}
+          className="movieThumbnail"
+        />
         <div>
           <h3>{movie.title}</h3>
-          <p>{movie.category} • {movie.mpaaRating}</p>
+          <p>
+            {movie.category} • {movie.mpaaRating}
+          </p>
         </div>
       </div>
 
-      {/* Expandable Details */}
+      {/* Expandable Panel */}
       {expandedMovie === movie.movieId && (
-        <div
-          className="movieEditForm"
-          onClick={(e) => e.stopPropagation()}
-        >
-
+        <div className="movieEditForm" onClick={(e) => e.stopPropagation()}>
+          
           {/* TITLE + CATEGORY */}
           <div className="formGroup">
             <label>Title</label>
@@ -250,14 +354,111 @@ export default function AdminMovies() {
             />
           </div>
 
+          
+
           {/* SHOWTIME & STATUS */}
           <div className="formGroup">
-            <label>Showtime</label>
-            <input
-              type="datetime-local"
-              defaultValue={movie.showtime}
-              onChange={(e) => (movie.showtime = e.target.value)}
-            />
+            <label>Showtimes</label>
+           
+            <div className="existingShowtimes">
+              <h4>Existing Showtimes</h4>
+
+              {getMovieShowtimes(movie.movieId).length === 0 ? (
+                <p>No showtimes yet.</p>
+              ) : (
+                <ul className="showtimeList">
+                  {getMovieShowtimes(movie.movieId).map(st => (
+                    <li key={st.showtimeId} className="showtimeItem">
+
+                      {editingShowtimeId === st.showtimeId ? (
+                        <>
+                          {/* EDIT MODE */}
+                          <input
+                            type="date"
+                            value={editData.date}
+                            onChange={(e) =>
+                              setEditData({ ...editData, date: e.target.value })
+                            }
+                          />
+
+                          <input
+                            type="time"
+                            value={editData.time}
+                            onChange={(e) =>
+                              setEditData({ ...editData, time: e.target.value })
+                            }
+                          />
+
+                          <button
+                            className="showtimeSaveBtn"
+                            onClick={() => updateShowtime(st.showtimeId)}
+                          >
+                            Save
+                          </button>
+
+                          <button
+                            className="showtimeCancelBtn"
+                            onClick={() => setEditingShowtimeId(null)}
+                          >
+                            Cancel
+                          </button>
+
+                          <button
+                            className="showtimeDeleteBtn"
+                            onClick={() => deleteShowtime(st.showtimeId)}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          {/* READ VIEW */}
+                          <span>
+                             {st.showDate} —  {formatReadableTime(st.showTime)}
+                          </span>
+
+                          <button
+                            className="showtimeEditBtn"
+                            onClick={() => {
+                              setEditingShowtimeId(st.showtimeId);
+                              setEditData({
+                                date: st.showDate,
+                                time: st.showTime.substring(0, 5),
+                              });
+                            }}
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            className="showtimeDeleteBtn"
+                            onClick={() => deleteShowtime(st.showtimeId)}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            {/* ADD SHOWTIME BUTTON */}
+          <button
+            className="addShowtimeBtn"
+            onClick={() => openShowtimeForm(movie)}
+            style={{
+              padding: "10px",
+              marginBottom: "1rem",
+              background: "#5ce1e6",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              border: "none",
+            }}
+          >
+            ➕ Add Showtime
+          </button>
 
             <label>Status</label>
             <select
@@ -269,7 +470,9 @@ export default function AdminMovies() {
             </select>
           </div>
 
-          {/* Poster Preview */}
+          
+
+          {/* POSTER PREVIEW */}
           <div className="posterPreviewContainer">
             <img
               src={movie.poster_url}
@@ -278,21 +481,61 @@ export default function AdminMovies() {
             />
           </div>
 
-          {/* BUTTONS */}
+          {/* ACTION BUTTONS */}
           <div className="details-buttons">
-            <button className="updateBtn" onClick={() => updateMovie(movie.movieId, movie)}>
+            <button
+              className="updateBtn"
+              onClick={() => updateMovie(movie.movieId, movie)}
+            >
               Update Movie
             </button>
-            <button className="deleteBtn" onClick={() => removeMovie(movie.movieId)}>
+            <button
+              className="deleteBtn"
+              onClick={() => removeMovie(movie.movieId)}
+            >
               Delete Movie
             </button>
           </div>
-
         </div>
       )}
     </div>
+    
   ))}
+  {/* SHOWTIME MODAL (GLOBAL, OUTSIDE MOVIE LOOP) */}
+{showtimeForm && (
+  <div className="modalOverlay">
+    <div className="modalBox">
+      <h2>Add Showtime for Movie #{showtimeForm.movieId}</h2>
+
+      <input
+        type="date"
+        value={showtimeForm.date}
+        onChange={(e) =>
+          setShowtimeForm({ ...showtimeForm, date: e.target.value })
+        }
+      />
+
+      <input
+        type="time"
+        value={showtimeForm.time}
+        onChange={(e) =>
+          setShowtimeForm({ ...showtimeForm, time: e.target.value })
+        }
+      />
+
+      <button className="publishBtn" onClick={submitShowtime}>
+        Save Showtime
+      </button>
+
+      <button className="deleteBtn" onClick={closeShowtimeForm}>
+        Cancel
+      </button>
+    </div>
+  </div>
+)}
 </div>
+
+
 
     </div>
   );

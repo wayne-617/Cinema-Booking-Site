@@ -8,6 +8,7 @@ import com.example.demo.repository.MovieRepository;
 import com.example.demo.repository.SeatRepository;
 import com.example.demo.repository.ShowtimeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +19,7 @@ public class ShowtimeService {
      private final ShowtimeRepository showtimeRepository;
     private final MovieRepository movieRepository;
     private final SeatService seatService;
+    
 
     public ShowtimeService(
             ShowtimeRepository showtimeRepository,
@@ -36,7 +38,6 @@ public class ShowtimeService {
         showtime.setMovie(movie);
         ShowtimeEntity savedShowtime = showtimeRepository.save(showtime);
 
-        // ✅ Auto-generate seats using the shared SeatService
         seatService.generateSeatsForShowtime(savedShowtime.getShowtimeId());    
 
         return savedShowtime;
@@ -51,9 +52,6 @@ public class ShowtimeService {
         return showtimeRepository.findShowtimesBetweenDates(start, end);
     }
 
-    /**
-     * 🎥 Get showtimes for a specific movie.
-     */
     public List<ShowtimeEntity> getShowtimesByMovie(Long movieId) {
         return showtimeRepository.findByMovie_MovieId(movieId);
     }
@@ -69,4 +67,16 @@ public class ShowtimeService {
         showtimeRepository.deleteById(id);
         System.out.println("🗑 Showtime " + id + " deleted successfully.");
     }
+
+    public ResponseEntity<?> updateShowtime(Long id, ShowtimeEntity updated) {
+        ShowtimeEntity s = showtimeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Showtime not found"));
+
+        s.setShowDate(updated.getShowDate());
+        s.setShowTime(updated.getShowTime());
+
+        showtimeRepository.save(s);
+        return ResponseEntity.ok(s);
+    }
+
 }

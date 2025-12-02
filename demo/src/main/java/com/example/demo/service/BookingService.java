@@ -193,6 +193,7 @@ public class BookingService {
 
         BillingEntity billing = billingRepository.findByUser_Id(b.getUser().getId()).orElse(null);
         Integer lastFour = null;
+        String FinalCustomerName = null;
 
         if (billing != null) {
             try {
@@ -201,6 +202,7 @@ public class BookingService {
             } catch (Exception e) {
                 lastFour = null;
             }
+            FinalCustomerName = billing.getFirstName() + " " + billing.getLastName();
         }
 
         return new BookingReviewDTO(
@@ -208,7 +210,8 @@ public class BookingService {
                 b.getMovieTitle(),
                 b.getTotalAmount(),
                 lastFour,
-                b.getPurchaseDate()
+                b.getPurchaseDate(),
+                FinalCustomerName
         );
     }
     public List<BookingEntity> getAllBookings() {

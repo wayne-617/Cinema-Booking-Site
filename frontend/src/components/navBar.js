@@ -9,28 +9,37 @@ import { useAuth } from "../AuthContext";
 export function NavBar() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
-  const { setUser, setAuth, userAuth, isLoggedIn, currentUser, adminMode, toggleAdminMode } = useAuth();
+  const { 
+    setUser, 
+    setAuth, 
+    userAuth, 
+    isLoggedIn, 
+    currentUser, 
+    adminMode, 
+    toggleAdminMode,
+    setAdminMode            
+  } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   // Load user info on mount
   useEffect(() => {
-  const stored = localStorage.getItem("user");
-  if (stored) {
-    const parsed = JSON.parse(stored);
-    setUser(parsed);
-    setAuth(parsed.auth);
+    const stored = localStorage.getItem("user");
+    if (stored) {
+      const parsed = JSON.parse(stored);
 
-    // 👉 Automatically start admins in admin mode
-    if (parsed.auth === "ADMIN") {
-      setAdminMode(true);
+      setUser(parsed);
+      setAuth(parsed.role);  
+
+      // Admin auto mode
+      if (parsed.role === "ADMIN" && localStorage.getItem("adminMode") === null) {
+        setAdminMode(true);
+        localStorage.setItem("adminMode", "true");
+      }
     }
-  }
-}, []);
+  }, []);
 
-  // CUSTOMER prefix → /customer
-  const prefix = userAuth === "CUSTOMER" ? "/customer" : "";
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(e) {
@@ -59,6 +68,8 @@ export function NavBar() {
     navigate(trimmed === "" ? "/movies" : `/movies?search=${trimmed}`);
     setResults([]);
   };
+  console.log("userAuth:", userAuth);
+console.log("currentUser:", currentUser);
 
   // LIVE SEARCH updates
   const handleSearch = async (e) => {
@@ -100,7 +111,7 @@ export function NavBar() {
   const handleSelectMovie = (movieId) => {
     setQuery("");
     setResults([]);
-    navigate(`${prefix}/movieDescription/${movieId}`);
+    navigate(`/movieDescription/${movieId}`);
   };
 
   const handleDropdownNavigate = (path) => {
@@ -111,7 +122,7 @@ export function NavBar() {
   return (
     <header className="mainHeader">
       <div className="headerDiv">
-        <NavLink to={prefix || "/"} className="logoDiv">
+        <NavLink to={"/"} className="logoDiv">
           <img src={logo} alt="Logo" className="logo" />
           <h1 className="logoText">Absolute Cinema</h1>
         </NavLink>
@@ -124,7 +135,6 @@ export function NavBar() {
               <>
                 <NavLink to="/movies" className="buttons">Movies</NavLink>
                 <NavLink to="/showtimes" className="buttons">Showtimes</NavLink>
-                <NavLink to="/theaters" className="buttons">Theaters</NavLink>
                 <NavLink to="/" className="buttons">About</NavLink>
               </>
             )}
@@ -200,13 +210,7 @@ export function NavBar() {
 
                   {/* Edit Profile */}
                   <button
-                    onClick={() =>
-                      handleDropdownNavigate(
-                        userAuth === "CUSTOMER"
-                          ? "/customer/editProfile"
-                          : "/editProfile"
-                      )
-                    }
+                    onClick={() => handleDropdownNavigate("/editProfile")}
                     className="dropdownItem"
                   >
                     Edit Profile
@@ -215,7 +219,7 @@ export function NavBar() {
                   {/* My Orders — only for customers */}
                   {userAuth === "CUSTOMER" && (
                     <button
-                      onClick={() => handleDropdownNavigate("/customer/orders")}
+                      onClick={() => handleDropdownNavigate("/orders")}
                       className="dropdownItem"
                     >
                       My Orders

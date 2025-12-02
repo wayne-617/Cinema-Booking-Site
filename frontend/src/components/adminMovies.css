@@ -243,3 +243,120 @@
   color: white;
 }
 
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalBox {
+  background: #0f1a1c;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 400px;
+  color: white;
+  box-shadow: 0 0 20px #000;
+}
+
+.modalBox input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 1rem;
+  background: #162326;
+  border: 1px solid #233436;
+  color: white;
+  border-radius: 8px;
+}
+
+.existingShowtimes {
+  background: #0b1618;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid #1e3437;
+}
+
+.existingShowtimes h4 {
+  color: #5ce1e6;
+  margin-bottom: 0.8rem;
+}
+
+/* --- LIST & ITEMS --- */
+.showtimeList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.showtimeItem {
+  padding: 10px;
+  background: #102225;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #233436;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  color: #e8f7f7;
+}
+
+/* --- BUTTON STYLES --- */
+.showtimeBtn,
+.showtimeEditBtn,
+.showtimeDeleteBtn,
+.showtimeSaveBtn,
+.showtimeCancelBtn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Edit */
+.showtimeEditBtn {
+  background: #5ce1e6;
+  color: #102225;
+}
+.showtimeEditBtn:hover { background: #3bcfd1; }
+
+/* Save */
+.showtimeSaveBtn {
+  background: #7bf87f;
+  color: #0f1a1c;
+}
+.showtimeSaveBtn:hover { background: #5dd967; }
+
+/* Cancel */
+.showtimeCancelBtn {
+  background: #3a4b4d;
+  color: white;
+}
+.showtimeCancelBtn:hover { background: #2c393b; }
+
+/* Delete */
+.showtimeDeleteBtn {
+  background: #ff4b4b;
+  color: white;
+}
+.showtimeDeleteBtn:hover { background: #d43a3a; }
+
+/* Inputs when editing */
+.showtimeItem input {
+  background: #162326;
+  border: 1px solid #264346;
+  padding: 8px;
+  color: #e8f7f7;
+  border-radius: 6px;
+  min-width: 130px;
+}
+
+
+

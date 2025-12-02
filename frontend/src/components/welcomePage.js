@@ -20,8 +20,7 @@ export default function WelcomePage() {
 
   // prefix for customer vs public user
   const storedUser = JSON.parse(localStorage.getItem("user"));
-  const prefix = storedUser?.role === "CUSTOMER" ? "/customer" : "";
-
+  const prefix = ""; 
   const handleWatchTrailer = (url) => {
     if (!url) return alert("Trailer not available");
     setCurrentTrailer(url);
@@ -71,8 +70,8 @@ export default function WelcomePage() {
 
             <button
               className="bigButton"
-              onClick={() => navigate(`${prefix}/movies`)}
-            >
+              onClick={() => navigate("/movies")}>
+            
               Book Tickets Now
             </button>
           </div>
@@ -98,9 +97,8 @@ export default function WelcomePage() {
                     <img
                       className="trailerImage"
                       src={movie.trailer_picture || movie.poster_url}
-                      onClick={() =>
-                        navigate(`${prefix}/movieDescription/${movie.movieId}`)
-                      }
+                      onClick={() => navigate(`/movieDescription/${movie.movieId}`)}
+
                       style={{ cursor: "pointer" }}
                       alt={movie.title}
                     />
@@ -164,9 +162,7 @@ export default function WelcomePage() {
                         src={movie.poster_url}
                         alt={movie.title}
                         className="carouselImage"
-                        onClick={() =>
-                          navigate(`${prefix}/movieDescription/${movie.movieId}`)
-                        }
+                        onClick={() => navigate(`/movieDescription/${movie.movieId}`)}
                         style={{ cursor: "pointer" }}
                       />
                       <h3 className="carouselTitle">{movie.title}</h3>
@@ -199,9 +195,8 @@ export default function WelcomePage() {
                         src={movie.poster_url}
                         alt={movie.title}
                         className="carouselImage"
-                        onClick={() =>
-                          navigate(`${prefix}/movieDescription/${movie.movieId}`)
-                        }
+                        onClick={() => navigate(`/movieDescription/${movie.movieId}`)}
+
                         style={{ cursor: "pointer" }}
                       />
                       <h3 className="carouselTitle">{movie.title}</h3>
