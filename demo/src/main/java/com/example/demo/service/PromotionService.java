@@ -12,29 +12,44 @@ import java.util.stream.Collectors;
 public class PromotionService {
 
     private final PromotionRepository promotionRepository;
+    private final UserService userService;
 
-    public PromotionService(PromotionRepository promotionRepository) {
+    public PromotionService(PromotionRepository promotionRepository, UserService userService) {
         this.promotionRepository = promotionRepository;
+        this.userService = userService;
     }
 
     public PromotionEntity createPromotion(PromotionDTO dto) {
         PromotionEntity p = new PromotionEntity();
-        p.setTitle(dto.title());
-        p.setDescription(dto.description());
-        p.setCode(dto.code());
-        p.setDiscount(dto.discount());
-        p.setActive(dto.active() == null ? Boolean.TRUE : dto.active());
-        return promotionRepository.save(p);
+        p.setTitle(dto.getTitle());
+        p.setDescription(dto.getDescription());
+        p.setCode(dto.getCode());
+        p.setDiscount(dto.getDiscount());
+        p.setActive(dto.getActive() == null ? Boolean.TRUE : dto.getActive());
+        PromotionEntity saved = promotionRepository.save(p);
+
+        // If requested, send email alerts to opted-in users (not persisted on promotion)
+        if (dto.getSendEmail() != null && dto.getSendEmail()) {
+            System.out.println("Sending promotion emails for promotion ID " + saved.getId());
+            try {
+                userService.sendPromotionEmails(saved.getTitle(), saved.getDescription(), saved.getCode());
+            } catch (Exception ex) {
+                // don't fail creation if email sending fails; just log
+                ex.printStackTrace();
+            }
+        }
+
+        return saved;
     }
 
     public PromotionEntity updatePromotion(Long id, PromotionDTO dto) {
         PromotionEntity p = promotionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Promotion not found: " + id));
-        if (dto.title() != null) p.setTitle(dto.title());
-        if (dto.description() != null) p.setDescription(dto.description());
-        if (dto.code() != null) p.setCode(dto.code());
-        if (dto.discount() != null) p.setDiscount(dto.discount());
-        if (dto.active() != null) p.setActive(dto.active());
+        if (dto.getTitle() != null) p.setTitle(dto.getTitle());
+        if (dto.getDescription() != null) p.setDescription(dto.getDescription());
+        if (dto.getCode() != null) p.setCode(dto.getCode());
+        if (dto.getDiscount() != null) p.setDiscount(dto.getDiscount());
+        if (dto.getActive() != null) p.setActive(dto.getActive());
         return promotionRepository.save(p);
     }
 
