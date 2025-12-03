@@ -139,7 +139,8 @@ export default function OrderSummaryPage() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const promo = res.data;
-      if (!promo || promo.discount == null) {
+      // Treat missing, invalid discount, or inactive promos as "not found"
+      if (!promo || promo.discount == null || promo.active !== true) {
         setPromoError("Promo code not valid");
         setPromoApplied(null);
         return;
