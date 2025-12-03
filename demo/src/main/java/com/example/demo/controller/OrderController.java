@@ -27,6 +27,9 @@ public class OrderController {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private com.example.demo.service.PromotionService promotionService;
 
 
     public OrderController(BookingService bookingService) {
@@ -38,11 +41,12 @@ public class OrderController {
      * Called from Order Summary Page BEFORE confirmation screen.
      */
     @PostMapping("/create")
-    public ResponseEntity<BookingEntity> createOrder(
+        public ResponseEntity<BookingEntity> createOrder(
             @RequestParam Long userId,
             @RequestParam Long showtimeId,
+            @RequestParam(required = false) String promoCode,
             @RequestBody List<TicketSelection> tickets
-    ) {
+        ) {
          var user = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found for ID: " + userId));
 
@@ -56,6 +60,21 @@ public class OrderController {
                     default -> 12.50;
                 })
                 .sum();
+
+        // Apply promo code discount if provided and valid
+        if (promoCode != null && !promoCode.isBlank()) {
+            try {
+                var promo = promotionService.getPromotionByCode(promoCode.trim());
+                if (promo != null && Boolean.TRUE.equals(promo.getActive()) && promo.getDiscount() != null) {
+                    double pct = promo.getDiscount().doubleValue();
+                    double discountAmount = total * (pct / 100.0);
+                    total = Math.round((total - discountAmount) * 100.0) / 100.0; // round to cents
+                }
+            } catch (Exception ex) {
+                // invalid promo code - ignore and proceed with original total
+                System.out.println("Promo code lookup failed or invalid: " + promoCode + " -> " + ex.getMessage());
+            }
+        }
 
         BookingEntity booking = bookingService.createOrder(userId, showtimeId, tickets, total);
         String movie = booking.getMovieTitle();
