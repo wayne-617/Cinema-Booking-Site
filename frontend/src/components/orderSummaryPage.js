@@ -26,7 +26,12 @@ export default function OrderSummaryPage() {
 
   const [billing, setBilling] = useState(null);
   const [ticketTypes, setTicketTypes] = useState({});
-  const [total, setTotal] = useState(0);
+  const [subtotal, setSubtotal] = useState(0);
+  const [total, setTotal] = useState(0); // grand total after fees/discounts
+  const [promoCode, setPromoCode] = useState("");
+  const [promoApplied, setPromoApplied] = useState(null); // {code, discount}
+  const [promoError, setPromoError] = useState(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
   const hasValidBilling = (b) => {
     if (!b) return false;
 
@@ -73,8 +78,17 @@ export default function OrderSummaryPage() {
       const type = ticketTypes[seatId] || "ADULT";
       return sum + (type === "CHILD" ? 8 : type === "SENIOR" ? 10 : 12.5);
     }, 0);
-    setTotal(calc);
+    setSubtotal(calc);
   }, [ticketTypes, selectedSeats]);
+
+  // Recompute fees/discount/total when subtotal or promo changes
+  useEffect(() => {
+    const discountPct = promoApplied && promoApplied.discount ? Number(promoApplied.discount) : 0;
+    const discount = +(subtotal * (discountPct / 100)).toFixed(2);
+    setDiscountAmount(discount);
+    const grand = +(subtotal - discount).toFixed(2);
+    setTotal(grand >= 0 ? grand : 0);
+  }, [subtotal, promoApplied]);
 
   // Create order
  const handleConfirm = async () => {
@@ -94,7 +108,7 @@ export default function OrderSummaryPage() {
         `http://localhost:9090/api/orders/create`,
         tickets,
         {
-          params: { userId, showtimeId },
+          params: { userId, showtimeId, promoCode: promoApplied?.code },
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -108,6 +122,34 @@ export default function OrderSummaryPage() {
     } catch (err) {
       console.error("Order creation failed:", err);
       alert("Error creating order.");
+    }
+  };
+
+  const applyPromo = async () => {
+    setPromoError(null);
+    if (!promoCode || promoCode.trim() === "") {
+      setPromoError("Enter a promo code");
+      setPromoApplied(null);
+      return;
+    }
+
+    try {
+      const res = await axios.get(
+        `http://localhost:9090/api/promotions/code/${encodeURIComponent(promoCode.trim())}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const promo = res.data;
+      if (!promo || promo.discount == null) {
+        setPromoError("Promo code not valid");
+        setPromoApplied(null);
+        return;
+      }
+      setPromoApplied(promo);
+      setPromoError(null);
+    } catch (err) {
+      console.error("Promo lookup failed:", err);
+      setPromoApplied(null);
+      setPromoError("Promo code not found");
     }
   };
 
@@ -193,9 +235,31 @@ export default function OrderSummaryPage() {
             {billing ? "Update Billing" : "Add Billing"}
           </button>
         </div>
-      <div className="total-card">
-        <h2>Total: ${total.toFixed(2)}</h2>
-      </div>
+        <div className="promo-card">
+          <h3>Promo Code</h3>
+          <div className="promo-row">
+            <input
+              className="promo-input"
+              placeholder="Enter promo code"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+            />
+            <button className="apply-promo-btn" onClick={applyPromo}>
+              Apply
+            </button>
+          </div>
+          {promoError && <p className="promo-error">{promoError}</p>}
+          {promoApplied && (
+            <p className="promo-success">Applied: {promoApplied.code} — {promoApplied.discount}% off</p>
+          )}
+        </div>
+
+        <div className="breakdown-card">
+          <h3>Price Summary</h3>
+          <div className="breakdown-row"><span>Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
+          {discountAmount > 0 && (<div className="breakdown-row"><span>Discount</span><span>-${discountAmount.toFixed(2)}</span></div>)}
+          <div className="breakdown-total"><strong>Total</strong><strong>${total.toFixed(2)}</strong></div>
+        </div>
     
       
       
