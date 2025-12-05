@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.demo.adapter.FormatAdapter;
 import com.example.demo.adapter.MovieDescription;
 import com.example.demo.entity.Movie;
+import com.example.demo.entity.MovieStatus;
 import com.example.demo.repository.MovieRepository;
 
 @Service
@@ -71,9 +72,51 @@ public class MovieService  {
         return movieRepository.findById(id).orElse(null); // from JpaRepository
     }
 
-    public List<Movie> searchMovies(String query) {
+    public List<Movie> searchMovies(String title, String category, String castMembers, String director, String producer,
+        String synopsis, String mpaaRating, String reviews, MovieStatus status
+    ) {
         // custom query you defined
-        return movieRepository.findByTitleContainingIgnoreCase(query);
+        List<Movie> result = null;
+        if (title != null && !title.isEmpty()) {
+        result = movieRepository.findByTitleContainingIgnoreCase(title);
+        } 
+        
+        if (category != null && !category.isEmpty()) {
+            result = movieRepository.findByCategoryContainingIgnoreCase(category);
+        }
+
+        if(castMembers != null && !castMembers.isEmpty()) {
+            result = movieRepository.findBycastMembersContainingIgnoreCase(castMembers);
+        }
+
+        if(director != null && !director.isEmpty()) {
+            result = movieRepository.findByDirectorContainingIgnoreCase(director);
+        }
+
+         if(producer != null && !producer.isEmpty()) {
+            result = movieRepository.findByProducerContainingIgnoreCase(producer);
+        }
+
+        if(synopsis != null && !synopsis.isEmpty()) {
+            result = movieRepository.findBySynopsisContainingIgnoreCase(synopsis);
+        }
+
+        if(reviews != null && !reviews.isEmpty()) {
+            result = movieRepository.findByReviewsContainingIgnoreCase(reviews);
+        }
+
+        if(mpaaRating != null && !mpaaRating.isEmpty()) {
+            result = movieRepository.findBympaaRatingContainingIgnoreCase(mpaaRating);
+        }
+
+        if(status != null) {
+            result = movieRepository.findByStatus(status);
+        }
+        
+        
+
+        
+        return result;
     }
 
     public String getMovieDetailsFormatted(Long id) {

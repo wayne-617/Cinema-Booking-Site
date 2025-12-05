@@ -142,4 +142,43 @@ public class UserService implements UserDetailsService {
         }
     }
     
+    public void sendPromotionEmails(String title, String description, String code) {
+        java.util.List<UserEntity> recipients = userRepository.findByPromoOptInTrue();
+        System.out.println("Found " + (recipients != null ? recipients.size() : 0) + " users opted in for promotions.");
+        if (recipients == null || recipients.isEmpty()) {
+            java.util.List<UserEntity> all = userRepository.findAll();
+            for (UserEntity u : all) {
+                Boolean optIn = u.getPromoOptIn();
+                System.out.println(String.format("User id=%s username=%s promoOptIn=%s", u.getId(), u.getUsername(), String.valueOf(optIn)));
+                if (optIn != null && optIn.booleanValue()) {
+                    // add to recipients list
+                    if (recipients == null) recipients = new java.util.ArrayList<>();
+                    recipients.add(u);
+                }
+            }
+        }
+
+        if (recipients == null || recipients.isEmpty()) {
+            System.out.println("No recipients to send promotion emails to after fallback scan.");
+            return;
+        }
+
+        for (UserEntity u : recipients) {
+            System.out.println("Sending promo email to: " + u.getUsername() + " (id=" + u.getId() + ")");
+            try {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setTo(u.getUsername()); // username is email
+                message.setSubject(title != null ? title : "Promotion");
+                StringBuilder sb = new StringBuilder();
+                if (description != null) sb.append(description).append("\n\n");
+                if (code != null) sb.append("Code: ").append(code).append("\n");
+                message.setText(sb.toString());
+                mailSender.send(message);
+            } catch (Exception e) {
+                // log and continue
+                e.printStackTrace();
+            }
+        }
+    }
+    
 }
