@@ -9,6 +9,7 @@ import { useAuth } from "../AuthContext";
 export function NavBar() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [searchFilter, setSearchFilter] = useState('title')
   const { 
     setUser, 
     setAuth, 
@@ -63,9 +64,10 @@ export function NavBar() {
   const handleSearchSubmit = (e) => {
     if (e.key !== "Enter") return;
     e.preventDefault();
-
+    
     const trimmed = query.trim();
-    navigate(trimmed === "" ? "/movies" : `/movies?search=${trimmed}`);
+    console.log(trimmed);
+    navigate(trimmed === "" ? "/movies" : `/movies?${searchFilter}=${encodeURIComponent(trimmed)}`);
     setResults([]);
   };
   console.log("userAuth:", userAuth);
@@ -83,7 +85,7 @@ console.log("currentUser:", currentUser);
 
     try {
       const res = await fetch(
-        `http://localhost:9090/api/movies/search?query=${value}`
+        `http://localhost:9090/api/movies/search?${searchFilter}=${value}`
       );
 
       if (!res.ok) throw new Error("Network error");
@@ -93,16 +95,21 @@ console.log("currentUser:", currentUser);
         data.length > 0
           ? data.map((m) => ({
               ...m,
+              //category: m.category,
               mpaaRating: m.mpaaRating || "Not Rated",
+              
             }))
           : fallbackMovies.filter((movie) =>
-              movie.title.toLowerCase().includes(value.toLowerCase())
+              movie.title.toLowerCase().includes(value.toLowerCase()),
+              //movie.category.toLowerCase().includes(value.toLowerCase()),
             )
       );
     } catch {
       setResults(
         fallbackMovies.filter((movie) =>
-          movie.title.toLowerCase().includes(value.toLowerCase())
+          movie.title.toLowerCase().includes(value.toLowerCase()),
+          //movie.category.toLowerCase().includes(value.toLowerCase()),
+
         )
       );
     }
@@ -154,6 +161,23 @@ console.log("currentUser:", currentUser);
 
         {/* Search Bar */}
         <div className="searchBar">
+          <select
+            value={searchFilter}
+            onChange={(e) => setSearchFilter(e.target.value)}
+            className={`filterButton ${isDropdownOpen ? "menu-open" : ""}`} // Apply styling here
+    >
+            <option value="title">Title</option>
+            <option value="category">Category</option>
+            <option value="castMembers">Cast</option>
+            <option value="director">Director</option>
+            <option value="producer">Producer</option>
+            <option value="synopsis">Synopsis</option>
+            <option value="reviews">Reviews</option>
+            <option value="mpaaRating">Rating</option>
+            <option value="status">Status</option>
+            
+          </select>
+
           <input
             type="text"
             value={query}

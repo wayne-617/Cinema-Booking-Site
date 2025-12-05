@@ -10,10 +10,94 @@ export default function MoviesPage() {
   const [movies, setMovies] = useState([]);
   const [showtimes, setShowtimes] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
+ 
   const navigate = useNavigate();
   const query = useQuery();
 
-  const searchTerm = query.get("search")?.toLowerCase() || "";
+  const searchTerm1 = query.get("title")?.toLowerCase() || "";
+  const searchTerm2 = query.get("category")?.toLowerCase() || "";
+  const searchTerm3 = query.get("castMembers")?.toLowerCase() || "";
+  const searchTerm4 = query.get("director")?.toLowerCase() || "";
+  const searchTerm5 = query.get("producer")?.toLowerCase() || "";
+  const searchTerm6 = query.get("synopsis")?.toLowerCase() || "";
+  const searchTerm7 = query.get("reviews")?.toLowerCase() || "";
+  const searchTerm8 = query.get("mpaaRating")?.toLowerCase() || "";
+  const searchTerm9 = query.get("status")?.toLowerCase() || "";
+  
+  let currentTerm = searchTerm1 || searchTerm2 || searchTerm3 || searchTerm4 || searchTerm5 || searchTerm6 
+  || searchTerm7 || searchTerm8 || searchTerm9;
+
+ /** 
+  let currentTerm = null;
+  let field = null;
+ if (searchTerm1 != null) {
+   currentTerm = searchTerm1;
+   field = "title=";
+  } else if (searchTerm2 != null) {
+    searchTerm1 = null;
+   currentTerm = searchTerm2;
+   field = "category=";
+  }
+*/
+
+ useEffect(() => {
+ let url = "http://localhost:9090/api/movies";
+
+  if (searchTerm1 || searchTerm2 || searchTerm3 || searchTerm4 || searchTerm5|| searchTerm6 
+  || searchTerm7 || searchTerm8 || searchTerm9) {
+    const params = new URLSearchParams();
+
+    if(searchTerm1) {
+      params.append("title", searchTerm1);
+    }
+
+    if(searchTerm2) {
+      params.append("category", searchTerm2);
+    }
+
+    if(searchTerm3) {
+      params.append("castMembers", searchTerm3)
+    }
+
+    if(searchTerm4) {
+      params.append("director", searchTerm4)
+    }
+
+    if(searchTerm5) {
+      params.append("producer", searchTerm5)
+    }
+
+    if(searchTerm6) {
+      params.append("synopsis", searchTerm6)
+    }
+
+    if(searchTerm7) {
+      params.append("reviews", searchTerm7)
+    }
+
+    if(searchTerm8) {
+      params.append("mpaaRating", searchTerm8)
+    }
+
+    if(searchTerm9) {
+      params.append("status", searchTerm9)
+    }
+
+    url = `${url}?${params.toString()}`;
+  }
+
+  fetch(url)
+  .then((res) => {
+        if (!res.ok) throw new Error(`HTTP status: ${res.status}`);
+        return res.json();
+      })
+      .then((data) => setMovies(data))
+      .catch((err) => {
+          console.error("Error loading movies:", err);
+          setMovies([]); 
+      });
+    
+ }, [searchTerm1, searchTerm2, searchTerm3, searchTerm4, searchTerm5, searchTerm6, searchTerm7, searchTerm8, searchTerm9]);
 
   // Fetch movies
   useEffect(() => {
@@ -40,21 +124,58 @@ export default function MoviesPage() {
     navigate(`/movieDescription/${id}`);
   };
 
-  const filteredMovies = searchTerm
-    ? movies.filter((m) => m.title.toLowerCase().includes(searchTerm))
+  const filteredMovies = currentTerm
+    ? movies.filter((m) => {
+      if (searchTerm1 && m.title.toLowerCase().includes(currentTerm)) {
+        return true;
+      } 
+
+      if(searchTerm2 && m.category.toLowerCase().includes(currentTerm)) {
+       return true;
+      }
+
+      if(searchTerm3 && m.castMembers.toLowerCase().includes(currentTerm)) {
+       return true;
+      }
+
+      if(searchTerm4 && m.director.toLowerCase().includes(currentTerm)) {
+       return true;
+      }
+
+       if(searchTerm5 && m.producer.toLowerCase().includes(currentTerm)) {
+       return true;
+      }
+
+      if(searchTerm6 && m.synopsis.toLowerCase().includes(currentTerm)) {
+       return true;
+      }
+
+      if(searchTerm7 && m.reviews.toLowerCase().includes(currentTerm)) {
+       return true;
+      }
+
+      if(searchTerm8 && m.mpaaRating.toLowerCase().includes(currentTerm)) {
+       return true;
+      }
+
+      if(searchTerm9 && m.status.toLowerCase().includes(currentTerm)) {
+       return true;
+      }
+      
+    })
     : movies;
 
   return (
     <div className="moviesPageContainer">
       <h1 className="moviesHeader">🎬 Now Showing</h1>
       <p className="moviesSubheader">
-        {searchTerm
-          ? `Search results for “${searchTerm}”`
+        {currentTerm
+          ? `Search results for “${currentTerm}”`
           : "Click a movie to view its showtimes"}
       </p>
 
       {filteredMovies.length === 0 ? (
-        <p className="noResultsText">No movies found matching "{searchTerm}"</p>
+        <p className="noResultsText">No movies found matching "{currentTerm}"</p>
       ) : (
         <div className="movieGrid">
           {filteredMovies.map((movie) => (
