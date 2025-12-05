@@ -2,8 +2,8 @@
 -- admin@user.com, password: masterkey
 -- user1@user.com, password: userpassword
 INSERT INTO users (id, password, role, username, full_name, phone, promo_opt_in, enabled, home_address) VALUES 
-(1, '$2a$10$jlT2BqziFJsVMpLUIEstIuV0yMG8Yze.wjD66G4JhfLruwNYakNc.', 'ADMIN', 'admin@user.com', 'Admin User', '+15555550100', false, true, '123 Admin Lane, Server City, GA 30303'),
-(2, '$2a$10$64tXJNgLMp5m78Krvn964uQRkuFGgLdjJZYpeQrItBzBpgLWmPZ/a', 'CUSTOMER', 'user1@user.com', 'Customer User', '+15555550101', false, true, '456 Homewood Dr, Athens, GA 30605');
+(1, '$2a$10$jlT2BqziFJsVMpLUIEstIuV0yMG8Yze.wjD66G4JhfLruwNYakNc.', 'ADMIN', 'admin@user.com', 'Admin User', '5555550100', false, true, '123 Admin Lane, Server City, GA 30303'),
+(2, '$2a$10$64tXJNgLMp5m78Krvn964uQRkuFGgLdjJZYpeQrItBzBpgLWmPZ/a', 'CUSTOMER', 'user1@user.com', 'Customer User', '5555550101', false, true, '456 Homewood Dr, Athens, GA 30605');
 
 ALTER TABLE users MODIFY enabled BOOLEAN NOT NULL DEFAULT TRUE;
 
