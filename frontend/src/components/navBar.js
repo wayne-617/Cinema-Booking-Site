@@ -67,7 +67,11 @@ export function NavBar() {
     
     const trimmed = query.trim();
     console.log(trimmed);
+    if (searchFilter != 'showtime') {
     navigate(trimmed === "" ? "/movies" : `/movies?${searchFilter}=${encodeURIComponent(trimmed)}`);
+    } else {
+      navigate(trimmed === "" ? "/movies/showtime" : `/movies/showtimes?${searchFilter}=${encodeURIComponent(trimmed)}`);
+    }
     setResults([]);
   };
   console.log("userAuth:", userAuth);
@@ -87,7 +91,7 @@ console.log("currentUser:", currentUser);
       const res = await fetch(
         `http://localhost:9090/api/movies/search?${searchFilter}=${value}`
       );
-
+      
       if (!res.ok) throw new Error("Network error");
 
       const data = await res.json();
@@ -168,13 +172,8 @@ console.log("currentUser:", currentUser);
     >
             <option value="title">Title</option>
             <option value="category">Category</option>
-            <option value="castMembers">Cast</option>
-            <option value="director">Director</option>
-            <option value="producer">Producer</option>
-            <option value="synopsis">Synopsis</option>
-            <option value="reviews">Reviews</option>
-            <option value="mpaaRating">Rating</option>
-            <option value="status">Status</option>
+            
+            <option value="showtime">Showtime</option>
             
           </select>
 

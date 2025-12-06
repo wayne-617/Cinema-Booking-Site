@@ -6,6 +6,8 @@ import com.example.demo.repository.MovieRepository;
 import com.example.demo.service.MovieService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -39,8 +41,9 @@ public class MovieController {
     @GetMapping("/search")
      public ResponseEntity<List<Movie>> searchMovies(@RequestParam(required = false)  String title, @RequestParam(required = false) String category,
     @RequestParam(required = false) String castMembers,  @RequestParam(required = false) String director, @RequestParam(required = false) String producer,
-    @RequestParam(required = false) String synopsis, @RequestParam(required = false) String reviews, @RequestParam(required = false) String mpaaRating, @RequestParam(required = false) MovieStatus status) {
-        List<Movie> movies = movieService.searchMovies(title, category, castMembers, director, producer, synopsis, reviews, mpaaRating, status);
+    @RequestParam(required = false) String synopsis, @RequestParam(required = false) String reviews, @RequestParam(required = false) String mpaaRating, @RequestParam(required = false) MovieStatus status,
+    @RequestParam(required = false) LocalDateTime showtime) {
+        List<Movie> movies = movieService.searchMovies(title, category, castMembers, director, producer, synopsis, reviews, mpaaRating, status, showtime);
         return ResponseEntity.ok(movies);
     }
 

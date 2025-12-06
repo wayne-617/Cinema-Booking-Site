@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 import com.example.demo.entity.Movie;
 import com.example.demo.entity.MovieStatus;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +21,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      List<Movie> findByReviewsContainingIgnoreCase(String reviews);
      List<Movie> findBympaaRatingContainingIgnoreCase(String mpaaRating);
      List<Movie> findByStatus(MovieStatus status);
-     
+     List<Movie> findByShowtime(LocalDateTime showtime);
      
 }

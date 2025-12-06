@@ -23,9 +23,11 @@ export default function MoviesPage() {
   const searchTerm7 = query.get("reviews")?.toLowerCase() || "";
   const searchTerm8 = query.get("mpaaRating")?.toLowerCase() || "";
   const searchTerm9 = query.get("status")?.toLowerCase() || "";
-  
+  //const searchTerm10 = query.get("showtime")?.toLowerCase() || "";
+ 
   let currentTerm = searchTerm1 || searchTerm2 || searchTerm3 || searchTerm4 || searchTerm5 || searchTerm6 
   || searchTerm7 || searchTerm8 || searchTerm9;
+  //let unique = null;
 
  /** 
   let currentTerm = null;
@@ -39,12 +41,17 @@ export default function MoviesPage() {
    field = "category=";
   }
 */
-
+  
+  
  useEffect(() => {
+  //unique = currentTerm;
  let url = "http://localhost:9090/api/movies";
+//let unique = null
 
+   
   if (searchTerm1 || searchTerm2 || searchTerm3 || searchTerm4 || searchTerm5|| searchTerm6 
   || searchTerm7 || searchTerm8 || searchTerm9) {
+    
     const params = new URLSearchParams();
 
     if(searchTerm1) {
@@ -83,6 +90,8 @@ export default function MoviesPage() {
       params.append("status", searchTerm9)
     }
 
+    
+
     url = `${url}?${params.toString()}`;
   }
 
@@ -100,13 +109,10 @@ export default function MoviesPage() {
  }, [searchTerm1, searchTerm2, searchTerm3, searchTerm4, searchTerm5, searchTerm6, searchTerm7, searchTerm8, searchTerm9]);
 
   // Fetch movies
-  useEffect(() => {
-    fetch("http://localhost:9090/api/movies")
-      .then((res) => res.json())
-      .then((data) => setMovies(data))
-      .catch((err) => console.error("Error loading movies:", err));
-  }, []);
+ 
 
+
+  // Fetch showtimes
   // Fetch showtimes
   useEffect(() => {
     fetch("http://localhost:9090/api/showtimes")
@@ -114,7 +120,7 @@ export default function MoviesPage() {
       .then((data) => setShowtimes(data))
       .catch((err) => console.error("Error loading showtimes:", err));
   }, []);
-
+  //const filteredMovies = movies;
   // Filter showtimes for selected movie
   const getMovieShowtimes = (movieId) =>
     showtimes.filter((s) => s.movieId === movieId);
@@ -124,8 +130,13 @@ export default function MoviesPage() {
     navigate(`/movieDescription/${id}`);
   };
 
-  const filteredMovies = currentTerm
-    ? movies.filter((m) => {
+  
+   const filteredMovies = movies.filter((m) => {
+
+     if(!currentTerm) {
+      return true;
+     }
+      
       if (searchTerm1 && m.title.toLowerCase().includes(currentTerm)) {
         return true;
       } 
@@ -161,9 +172,11 @@ export default function MoviesPage() {
       if(searchTerm9 && m.status.toLowerCase().includes(currentTerm)) {
        return true;
       }
+
+     
       
     })
-    : movies;
+   
 
   return (
     <div className="moviesPageContainer">
@@ -174,10 +187,11 @@ export default function MoviesPage() {
           : "Click a movie to view its showtimes"}
       </p>
 
-      {filteredMovies.length === 0 ? (
+      {filteredMovies.length === 0 && currentTerm? (
         <p className="noResultsText">No movies found matching "{currentTerm}"</p>
       ) : (
         <div className="movieGrid">
+          
           {filteredMovies.map((movie) => (
             <div
               key={movie.movieId}

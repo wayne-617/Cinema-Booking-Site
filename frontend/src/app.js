@@ -19,7 +19,7 @@ import AdminPromotions from './components/adminPromotions';
 import AdminMovies from './components/adminMovies';
 import RequireAdmin from "./components/RequireAdmin";
 
-
+import MoviesPageShows from './components/moviePageShows';
 import OrderSummaryPage from './components/orderSummaryPage';
 import CheckoutPage from './components/checkoutPage';
 import OrderConfirmationPage from './components/orderConfirmationPage';
@@ -47,6 +47,7 @@ function App() {
             <Route path="/congrats" element={<CongratsPage />} />
 
             <Route path="/movies" element={<MoviesPage />} />
+            <Route path="/movies/showtimes" element={<MoviesPageShows />} />
             <Route path="/movieDescription/:id" element={<MovieDescription />} />
 
             <Route path="/showtimes" element={<ShowtimesPage />} />
