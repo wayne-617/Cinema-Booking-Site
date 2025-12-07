@@ -5,7 +5,8 @@ INSERT INTO users (id, password, role, username, full_name, phone, promo_opt_in,
 (1, '$2a$10$jlT2BqziFJsVMpLUIEstIuV0yMG8Yze.wjD66G4JhfLruwNYakNc.', 'ADMIN', 'admin@user.com', 'Admin User', '5555550100', false, true, '123 Admin Lane, Server City, GA 30303'),
 (2, '$2a$10$64tXJNgLMp5m78Krvn964uQRkuFGgLdjJZYpeQrItBzBpgLWmPZ/a', 'CUSTOMER', 'user1@user.com', 'Customer User', '5555550101', false, true, '456 Homewood Dr, Athens, GA 30605');
 
-ALTER TABLE users MODIFY enabled BOOLEAN NOT NULL DEFAULT TRUE;
+
+
 
 
 INSERT INTO billing (user_id, first_name, last_name, email, card_number, street, city, state, zip, card_type, exp_month, exp_year) VALUES
@@ -24,6 +25,14 @@ INSERT INTO movie (title, cast, director, producer, synopsis, poster_url, review
 ('Wicked: For Good', 'Cynthia Erivo, Ariana Grande, Jonathan Bailey, Jeff Goldblum, Michelle Yeoh', 'Jon M. Chu', 'Marc Platt', 'Glinda and Elphaba''s story concludes in the second chapter of the epic musical.', 'https://m.media-amazon.com/images/M/MV5BYTI3MGM3ZDItMjI2My00NGQxLWEzMWMtNzQ1NGQ1ZWU5ODU2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg', 'New original songs; wide premium rollout.', 'Musical/Fantasy', 'PG', '2025-11-21 19:00:00', 'COMING_SOON', 'https://i.ytimg.com/vi/VHP4o3xeIMU/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDmzJskgqphGmuO6WUdWOXRMVprTA', 'https://youtu.be/VHP4o3xeIMU?si=tdXNgqXUWXC_HuAA'),
 ('Zootopia 2', 'Ginnifer Goodwin, Jason Bateman, Idris Elba, Shakira, Ke Huy Quan', 'Jared Bush, Byron Howard', 'Yvett Merino', 'Judy and Nick dive into a new case across the mammal metropolis.', 'https://upload.wikimedia.org/wikipedia/en/6/6a/Zootopia_2_%282025_film%29.jpg', 'New song “Zoo” teased; Michael Giacchino score.', 'Animation/Comedy/Adventure', 'Not Yet Rated', '2025-11-26 14:00:00', 'COMING_SOON', 'https://i.ytimg.com/vi/BjkIOU5PhyQ/maxresdefault.jpg', 'https://youtu.be/BjkIOU5PhyQ?si=1CnleT1fsrL8jypF'),
 ('Five Nights at Freddy''s 2', 'Josh Hutcherson, Matthew Lillard, Megan Fox (voice), Elizabeth Lail', 'Emma Tammi', 'Blumhouse, Universal', 'New animatronics, new shift, same nightmare.', 'https://i.redd.it/h401uc8jsduf1.png', 'Bigger scope teased at NYCC/BlumFest.', 'Horror', 'PG-13', '2025-12-05 19:00:00', 'COMING_SOON', 'https://i.ytimg.com/vi/dSDpoobO6yM/maxresdefault.jpg', 'https://youtu.be/dSDpoobO6yM?si=P9DGBrNjAaXd2D-Q');
+
+UPDATE movie 
+SET ticket_price = 12.50
+WHERE ticket_price IS NULL;
+
+ALTER TABLE movie 
+MODIFY ticket_price DOUBLE NOT NULL DEFAULT 12.50;
+
 -- showtimes: movie_id, show_date, show_time
 INSERT INTO showtimes (movie_id, show_date, show_time) VALUES
 (1, '2025-10-14', '17:00:00'),

@@ -74,6 +74,8 @@ public class MovieController {
         movie.setShowtime(updatedMovie.getShowtime());
         movie.setPoster_url(updatedMovie.getPoster_url());
         movie.setStatus(updatedMovie.getStatus());
+        movie.setTicketPrice(updatedMovie.getTicketPrice());
+
 
         return movieService.save(movie);
     }

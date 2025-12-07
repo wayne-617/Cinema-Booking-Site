@@ -113,9 +113,6 @@ public class MovieService  {
             result = movieRepository.findByStatus(status);
         }
         
-        
-
-        
         return result;
     }
 
