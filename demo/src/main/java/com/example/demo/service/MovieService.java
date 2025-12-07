@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +74,7 @@ public class MovieService  {
     }
 
     public List<Movie> searchMovies(String title, String category, String castMembers, String director, String producer,
-        String synopsis, String mpaaRating, String reviews, MovieStatus status
+        String synopsis, String mpaaRating, String reviews, MovieStatus status, LocalDateTime showtime 
     ) {
         // custom query you defined
         List<Movie> result = null;
@@ -111,6 +112,10 @@ public class MovieService  {
 
         if(status != null) {
             result = movieRepository.findByStatus(status);
+        }
+
+         if(showtime != null) {
+            result = movieRepository.findByShowtime(showtime);
         }
         
         return result;
