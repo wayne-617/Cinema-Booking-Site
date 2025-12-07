@@ -83,6 +83,8 @@ public class ProfileService {
             userEntity.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         }
 
+
+        userEntity.setFullName(dto.getFirstName() + " " + dto.getLastName());
         userEntity.setPhone(dto.getPhone());
         userEntity.setPromoOptIn(dto.getPromoOptIn());
         userEntity.setHomeAddress(dto.getHomeAddress());
