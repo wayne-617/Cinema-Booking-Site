@@ -353,6 +353,17 @@ export default function AdminMovies() {
               onChange={(e) => (movie.trailer_video = e.target.value)}
             />
           </div>
+          {/* TICKET PRICE */}
+          <div className="formGroup">
+           <label>Ticket Price</label>
+              <input
+                type="number"
+                step="0.01"
+                defaultValue={movie.ticketPrice}
+                onChange={(e) => movie.ticketPrice = parseFloat(e.target.value)}
+              />
+
+          </div>
 
           
 

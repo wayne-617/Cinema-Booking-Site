@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.BookingEntity;
 import com.example.demo.entity.SeatEntity;
+import com.example.demo.entity.ShowtimeEntity;
 import com.example.demo.dto.BookingReviewDTO;
 import com.example.demo.dto.TicketSelection;
 import com.example.demo.service.BookingService;
@@ -31,6 +32,9 @@ public class OrderController {
     @Autowired
     private com.example.demo.service.PromotionService promotionService;
 
+    @Autowired
+    private com.example.demo.repository.ShowtimeRepository showtimeRepository;
+
 
     public OrderController(BookingService bookingService) {
         this.bookingService = bookingService;
@@ -50,16 +54,23 @@ public class OrderController {
          var user = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found for ID: " + userId));
 
+        ShowtimeEntity showtime = showtimeRepository.findById(showtimeId)
+        .orElseThrow(() -> new RuntimeException("Showtime not found"));
+
+        double basePrice = showtime.getMovie().getTicketPrice();
+
        
         
-        double total = tickets.stream()
-                .mapToDouble(ticket -> switch (ticket.getType()) {
-                    case "ADULT" -> 12.50;
-                    case "CHILD" -> 8.00;
-                    case "SENIOR" -> 10.00;
-                    default -> 12.50;
-                })
-                .sum();
+       double total = tickets.stream()
+            .mapToDouble(ticket -> {
+                double p = basePrice;
+                return switch (ticket.getType()) {
+                    case "CHILD" -> p * 0.65;   // example discount
+                    case "SENIOR" -> p * 0.80; // example discount
+                    default -> p;
+                };
+            })
+            .sum();
 
         // Apply promo code discount if provided and valid
         if (promoCode != null && !promoCode.isBlank()) {
@@ -80,12 +91,12 @@ public class OrderController {
         String movie = booking.getMovieTitle();
         Integer lastFour = booking.getLastFour();
         LocalDateTime date = booking.getPurchaseDate();
-        LocalDateTime showtime = booking.getShowDateTime();
+        LocalDateTime showtimeDate = booking.getShowDateTime();
           try {
                 SimpleMailMessage message = new SimpleMailMessage();
                 message.setTo(user.getUsername());
                 message.setSubject("Showtime Order Confirmed");
-                message.setText("Authorized purchase for following showtime confirmed:\n" + "Movie: " + movie + "\n" + "Showtime: " + showtime + "\n" + "Total: $"+ total + "\n" +  "Card: " + lastFour + "\n" + "Purchase Date: "+ date);
+                message.setText("Authorized purchase for following showtime confirmed:\n" + "Movie: " + movie + "\n" + "Showtime: " + showtimeDate + "\n" + "Total: $"+ total + "\n" +  "Card: " + lastFour + "\n" + "Purchase Date: "+ date);
                 mailSender.send(message);
             } catch (Exception e) {
                 e.printStackTrace();

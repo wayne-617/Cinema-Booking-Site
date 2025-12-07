@@ -118,9 +118,6 @@ public class MovieService  {
             result = movieRepository.findByShowtime(showtime);
         }
         
-        
-
-        
         return result;
     }
 

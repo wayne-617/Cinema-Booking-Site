@@ -10,7 +10,9 @@ import com.example.demo.repository.ShowtimeRepository;
 
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/showtimes")
@@ -72,4 +74,19 @@ public class ShowtimeController {
         showtimeRepository.save(s);
         return ResponseEntity.ok(s);
     }
+
+   @GetMapping("/showtime/{id}")
+public ResponseEntity<?> getShowtimeDetails(@PathVariable Long id) {
+    ShowtimeEntity show = showtimeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Showtime not found"));
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("showtimeId", id);
+    response.put("movieId", show.getMovie().getMovieId());
+    response.put("title", show.getMovie().getTitle());
+    response.put("ticketPrice", show.getMovie().getTicketPrice());
+
+    return ResponseEntity.ok(response);
+}
+
 }

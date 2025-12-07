@@ -116,22 +116,25 @@
 .searchBar {
   position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;       
+  align-items: center;        
+  gap: 10px;                 
 }
-
 /* 🌕 Search input box styling */
 .searchInput {
   padding: 0.6rem 1rem;
   border-radius: 2rem;
   border: 2px solid var(--secondary-accent);
-  width: 220px;
+  width: 180px;
   background-color: var(--background-color);
   color: var(--text-color);
   font-size: 1rem;
   transition: all 0.25s ease-in-out;
   outline: none;
   box-shadow: 0 0 6px rgba(249, 212, 139, 0.3);
+}
+.searchResults {
+  left: calc(2rem + 10px); /* shifts results under input if needed */
 }
 
 /* 💡 Glowing animation on focus */

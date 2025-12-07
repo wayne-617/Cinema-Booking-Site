@@ -21,6 +21,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      List<Movie> findByReviewsContainingIgnoreCase(String reviews);
      List<Movie> findBympaaRatingContainingIgnoreCase(String mpaaRating);
      List<Movie> findByStatus(MovieStatus status);
-     List<Movie> findByShowtime(LocalDateTime showtime);
+     List<Movie> findByTicketPrice(Double ticketPrice);
+
+     
      
 }
