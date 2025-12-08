@@ -15,7 +15,7 @@ function groupByDate(list) {
   }, {});
 }
 function fmtDate(iso) {
-  const d = new Date(iso);
+  const d = new Date(`${iso}T00:00:00`);
   return d.toLocaleDateString(undefined, {
     weekday: "short",
     month: "short",
@@ -127,7 +127,7 @@ export default function MovieDescription() {
     return g;
   }, [myShowtimes]);
   const dateKeys = useMemo(() => Object.keys(grouped).sort(), [grouped]);
-
+  dateKeys.map((d) => console.log(fmtDate(d)));
   // loading / error states
   if (mState.loading) {
     return (
