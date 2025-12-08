@@ -3,7 +3,197 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import "./adminUsers.css";
 
+// shared validation
+const validateUserForm = (form) => {
+  const errors = {};
+  if (!form.fullName || form.fullName.trim().length < 2) {
+    errors.fullName = "Full name must be at least 2 characters.";
+  }
+  if (!form.phone || !/^[0-9]{10}$/.test(form.phone.trim())) {
+    errors.phone = "Phone must be exactly 10 digits.";
+  }
+  if (!form.homeAddress || form.homeAddress.trim().length < 5) {
+    errors.homeAddress = "Address must be at least 5 characters.";
+  }
+  return errors;
+};
 
+// single table row – keeps its own edit state
+function UserRow({
+  user,
+  statusActionLabel,
+  onSaveUser,
+  onToggleStatus,
+  onChangeRole,
+}) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [form, setForm] = useState({
+    fullName: user.fullName || "",
+    phone: user.phone || "",
+    homeAddress: user.homeAddress || "",
+    promoOptIn: !!user.promoOptIn,
+  });
+  const [errors, setErrors] = useState({});
+
+  // keep local form in sync with latest data when not editing
+  useEffect(() => {
+    if (!isEditing) {
+      setForm({
+        fullName: user.fullName || "",
+        phone: user.phone || "",
+        homeAddress: user.homeAddress || "",
+        promoOptIn: !!user.promoOptIn,
+      });
+      setErrors({});
+    }
+  }, [user.fullName, user.phone, user.homeAddress, user.promoOptIn, isEditing]);
+
+  const handleFieldChange = (field) => (e) => {
+    const value =
+      field === "promoOptIn" ? e.target.checked : e.target.value;
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveClick = async () => {
+    const ok = await onSaveUser(user.id, form, setErrors);
+    if (ok) {
+      setIsEditing(false);
+    }
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
+    setForm({
+      fullName: user.fullName || "",
+      phone: user.phone || "",
+      homeAddress: user.homeAddress || "",
+      promoOptIn: !!user.promoOptIn,
+    });
+    setErrors({});
+  };
+
+  return (
+    <tr>
+      <td>{user.id}</td>
+      <td>{user.username}</td>
+
+      {/* Full Name */}
+      <td>
+        {isEditing ? (
+          <>
+            <input
+              type="text"
+              value={form.fullName}
+              onChange={handleFieldChange("fullName")}
+            />
+            {errors.fullName && (
+              <div className="fieldError">{errors.fullName}</div>
+            )}
+          </>
+        ) : (
+          user.fullName
+        )}
+      </td>
+
+      {/* Phone */}
+      <td>
+        {isEditing ? (
+          <>
+            <input
+              type="text"
+              value={form.phone}
+              onChange={handleFieldChange("phone")}
+            />
+            {errors.phone && (
+              <div className="fieldError">{errors.phone}</div>
+            )}
+          </>
+        ) : (
+          user.phone || "—"
+        )}
+      </td>
+
+      {/* Role – locked unless editing */}
+      <td>
+        <select
+          value={user.role}
+          disabled={!isEditing}
+          onChange={(e) => onChangeRole(user.id, e.target.value)}
+        >
+          <option value="CUSTOMER">CUSTOMER</option>
+          <option value="ADMIN">ADMIN</option>
+        </select>
+      </td>
+
+      {/* Status */}
+      <td>{user.enabled ? "Verified" : "Suspended"}</td>
+
+      {/* Promo Opt-In */}
+      <td>
+        {isEditing ? (
+          <input
+            type="checkbox"
+            checked={form.promoOptIn}
+            onChange={handleFieldChange("promoOptIn")}
+          />
+        ) : user.promoOptIn ? (
+          "Yes"
+        ) : (
+          "No"
+        )}
+      </td>
+
+      {/* Address */}
+      <td>
+        {isEditing ? (
+          <>
+            <input
+              type="text"
+              value={form.homeAddress}
+              onChange={handleFieldChange("homeAddress")}
+            />
+            {errors.homeAddress && (
+              <div className="fieldError">{errors.homeAddress}</div>
+            )}
+          </>
+        ) : (
+          user.homeAddress || "—"
+        )}
+      </td>
+
+      {/* Actions */}
+      <td>
+        {isEditing ? (
+          <>
+            <button className="updateBtn" onClick={handleSaveClick}>
+              Save
+            </button>
+            <button className="deleteBtn" onClick={handleCancelClick}>
+              Cancel
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className="updateBtn"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit
+            </button>
+            <button
+              className={
+                statusActionLabel === "Suspend" ? "deleteBtn" : "updateBtn"
+              }
+              onClick={() => onToggleStatus(user)}
+            >
+              {statusActionLabel}
+            </button>
+          </>
+        )}
+      </td>
+    </tr>
+  );
+}
 
 function AdminUsers() {
   const navigate = useNavigate();
@@ -13,16 +203,7 @@ function AdminUsers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [editingUserId, setEditingUserId] = useState(null);
-  const [editForm, setEditForm] = useState({
-    fullName: "",
-    phone: "",
-    homeAddress: "",
-    promoOptIn: false,
-  });
-  const [editErrors, setEditErrors] = useState({});
-
-  // data
+  // load users
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -50,7 +231,7 @@ function AdminUsers() {
   const activeUsers = users.filter((u) => u.enabled);
   const suspendedUsers = users.filter((u) => !u.enabled);
 
-  // actions
+  // suspend/reactivate
   const handleToggleStatus = async (user) => {
     const newStatus = !user.enabled;
     const verb = newStatus ? "reactivate" : "suspend";
@@ -66,8 +247,11 @@ function AdminUsers() {
         }
       );
       if (!res.ok) throw new Error("Failed to update user status");
+
       setUsers((prev) =>
-        prev.map((u) => (u.id === user.id ? { ...u, enabled: newStatus } : u))
+        prev.map((u) =>
+          u.id === user.id ? { ...u, enabled: newStatus } : u
+        )
       );
       alert(`User ${verb}d.`);
     } catch (err) {
@@ -76,6 +260,7 @@ function AdminUsers() {
     }
   };
 
+  // change role (only actually usable while row is editing, since select is disabled otherwise)
   const handleChangeRole = async (userId, newRole) => {
     try {
       const res = await fetch(
@@ -87,8 +272,11 @@ function AdminUsers() {
         }
       );
       if (!res.ok) throw new Error("Failed to update user role");
+
       setUsers((prev) =>
-        prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
+        prev.map((u) =>
+          u.id === userId ? { ...u, role: newRole } : u
+        )
       );
     } catch (err) {
       console.error("Error updating user role:", err);
@@ -96,59 +284,20 @@ function AdminUsers() {
     }
   };
 
-  // edits
-  const startEditUser = (user) => {
-    setEditingUserId(user.id);
-    setEditForm({
-      fullName: user.fullName || "",
-      phone: user.phone || "",
-      homeAddress: user.homeAddress || "",
-      promoOptIn: !!user.promoOptIn,
-    });
-    setEditErrors({});
-  };
-
-  const cancelEdit = () => {
-    setEditingUserId(null);
-    setEditForm({
-      fullName: "",
-      phone: "",
-      homeAddress: "",
-      promoOptIn: false,
-    });
-    setEditErrors({});
-  };
-
-  const validateEditForm = (form) => {
-    const errors = {};
-    if (!form.fullName || form.fullName.trim().length < 2) {
-      errors.fullName = "Full name must be at least 2 characters.";
-    }
-    if (!form.phone || !/^[0-9]{10}$/.test(form.phone.trim())) {
-      errors.phone = "Phone must be exactly 10 digits.";
-    }
-    if (!form.homeAddress || form.homeAddress.trim().length < 5) {
-      errors.homeAddress = "Address must be at least 5 characters.";
-    }
-    return errors;
-  };
-
-  const saveUserEdits = async (userId) => {
-    if (!editForm) return;
-
-    const errors = validateEditForm(editForm);
+  // save edits coming from a row
+  const handleSaveUser = async (userId, form, setRowErrors) => {
+    const errors = validateUserForm(form);
     if (Object.keys(errors).length > 0) {
-      setEditErrors(errors);
+      setRowErrors(errors);
       alert("Please fix the highlighted errors before saving.");
-      return;
+      return false;
     }
 
-    setEditErrors({});
     try {
       const res = await fetch(`http://localhost:9090/auth/users/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editForm),
+        body: JSON.stringify(form),
       });
       if (!res.ok) {
         let msg = "Failed to update user";
@@ -158,26 +307,20 @@ function AdminUsers() {
         } catch {}
         throw new Error(msg);
       }
+
       const updated = await res.json();
       setUsers((prev) =>
         prev.map((u) => (u.id === userId ? { ...u, ...updated } : u))
       );
-      setEditingUserId(null);
-      setEditForm({
-        fullName: "",
-        phone: "",
-        homeAddress: "",
-        promoOptIn: false,
-      });
-      setEditErrors({});
       alert("User updated.");
+      return true;
     } catch (err) {
       console.error("Error updating user:", err);
       alert("Error updating user: " + (err.message || ""));
+      return false;
     }
   };
 
-  // table components
   const UserTable = ({ title, users, statusActionLabel }) => (
     <>
       <h2 className="adminUsers-sectionHeader">{title}</h2>
@@ -206,165 +349,16 @@ function AdminUsers() {
                 </td>
               </tr>
             ) : (
-              users.map((u) => {
-                const isEditing = editingUserId === u.id;
-                return (
-                  <tr key={u.id}>
-                    <td>{u.id}</td>
-                    <td>{u.username}</td>
-
-                    {/* Full Name */}
-                    <td>
-                      {isEditing ? (
-                        <>
-                          <input
-                            type="text"
-                            value={editForm.fullName}
-                            onChange={(e) =>
-                              setEditForm((prev) => ({
-                                ...prev,
-                                fullName: e.target.value,
-                              }))
-                            }
-                          />
-                          {editErrors.fullName && (
-                            <div className="fieldError">
-                              {editErrors.fullName}
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        u.fullName
-                      )}
-                    </td>
-
-                    {/* Phone */}
-                    <td>
-                      {isEditing ? (
-                        <>
-                          <input
-                            type="text"
-                            value={editForm.phone}
-                            onChange={(e) =>
-                              setEditForm((prev) => ({
-                                ...prev,
-                                phone: e.target.value,
-                              }))
-                            }
-                          />
-                          {editErrors.phone && (
-                            <div className="fieldError">
-                              {editErrors.phone}
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        u.phone || "—"
-                      )}
-                    </td>
-
-                    {/* Role */}
-                    <td>
-                      <select
-                        value={u.role}
-                        onChange={(e) =>
-                          handleChangeRole(u.id, e.target.value)
-                        }
-                      >
-                        <option value="CUSTOMER">CUSTOMER</option>
-                        <option value="ADMIN">ADMIN</option>
-                      </select>
-                    </td>
-
-                    {/* Status */}
-                    <td>{u.enabled ? "Verified" : "Suspended"}</td>
-
-                    {/* Promo */}
-                    <td>
-                      {isEditing ? (
-                        <input
-                          type="checkbox"
-                          checked={editForm.promoOptIn}
-                          onChange={(e) =>
-                            setEditForm((prev) => ({
-                              ...prev,
-                              promoOptIn: e.target.checked,
-                            }))
-                          }
-                        />
-                      ) : u.promoOptIn ? (
-                        "Yes"
-                      ) : (
-                        "No"
-                      )}
-                    </td>
-
-                    {/* Address */}
-                    <td>
-                      {isEditing ? (
-                        <>
-                          <input
-                            type="text"
-                            value={editForm.homeAddress}
-                            onChange={(e) =>
-                              setEditForm((prev) => ({
-                                ...prev,
-                                homeAddress: e.target.value,
-                              }))
-                            }
-                          />
-                          {editErrors.homeAddress && (
-                            <div className="fieldError">
-                              {editErrors.homeAddress}
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        u.homeAddress || "—"
-                      )}
-                    </td>
-
-                    {/* Actions */}
-                    <td>
-                      {isEditing ? (
-                        <>
-                          <button
-                            className="updateBtn"
-                            onClick={() => saveUserEdits(u.id)}
-                          >
-                            Save
-                          </button>
-                          <button
-                            className="deleteBtn"
-                            onClick={cancelEdit}
-                          >
-                            Cancel
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            className="updateBtn"
-                            onClick={() => startEditUser(u)}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className={
-                              statusActionLabel === "Suspend"
-                                ? "deleteBtn"
-                                : "updateBtn"
-                            }
-                            onClick={() => handleToggleStatus(u)}
-                          >
-                            {statusActionLabel}
-                          </button>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })
+              users.map((u) => (
+                <UserRow
+                  key={u.id}
+                  user={u}
+                  statusActionLabel={statusActionLabel}
+                  onSaveUser={handleSaveUser}
+                  onToggleStatus={handleToggleStatus}
+                  onChangeRole={handleChangeRole}
+                />
+              ))
             )}
           </tbody>
         </table>
@@ -372,7 +366,6 @@ function AdminUsers() {
     </>
   );
 
-  // main layout
   return (
     <div className="bodyDiv">
       <section className="contentSection">
