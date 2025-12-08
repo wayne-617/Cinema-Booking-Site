@@ -30,7 +30,9 @@ public class ProfileUpdateRequestDTO {
     // Password
     private String currentPassword;
     private String newPassword;
-       private String homeAddress;
+    private String homeAddress;
+
+    
 
     // --- Getters and Setters for all fields ---
 

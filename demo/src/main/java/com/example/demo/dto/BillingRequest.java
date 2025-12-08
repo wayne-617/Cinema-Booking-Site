@@ -13,6 +13,8 @@ public class BillingRequest {
     private String firstName;
     private String lastName;
     private String email;
+    private boolean isDefault;
+    
     
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
@@ -46,4 +48,16 @@ public class BillingRequest {
 
     public String getZip() { return zip; }
     public void setZip(String zip) { this.zip = zip; }
+    
+    public boolean isDefault() { return isDefault; }
+
+
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
+    // Accepts JSON field "isDefault"
+    public void setIsDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
 }

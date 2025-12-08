@@ -211,3 +211,53 @@
   font-size: 1.2rem;
   color: #00ffa3;
 }
+
+.billing-select {
+  width: 100%;
+  padding: 12px 14px;
+
+  background: #0f0f0f;
+  color: #00ffa3;
+
+  border: 2px solid rgba(0, 255, 163, 0.4);
+  border-radius: 10px;
+
+  font-size: 1.05rem;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: 0.25s ease;
+  appearance: none; /* removes default browser arrow */
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.15);
+  margin-top: 10px;
+}
+
+/* Add custom arrow icon */
+.billing-select {
+  background-image: linear-gradient(45deg, transparent 50%, #00ffa3 50%),
+                    linear-gradient(135deg, #00ffa3 50%, transparent 50%);
+  background-position: calc(100% - 20px) calc(1.3em),
+                       calc(100% - 15px) calc(1.3em);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.billing-select:hover {
+  border-color: #00ffa3;
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.35);
+}
+
+.billing-select:focus {
+  border-color: #00ffa3;
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.4);
+  color: #fff;
+}
+
+/* Dropdown list items */
+.billing-select option {
+  background: #111;
+  color: #fff;
+  padding: 10px;
+  font-size: 1rem;
+}

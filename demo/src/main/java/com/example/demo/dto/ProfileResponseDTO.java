@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import java.util.List;
+
 public class ProfileResponseDTO {
 
     private Long userId;
@@ -12,7 +14,6 @@ public class ProfileResponseDTO {
     private String firstName;
     private String lastName;
     private String billingEmail; // billing.email
-    private String cardNumber;    
 
     // Address info
     private String street;
@@ -20,15 +21,20 @@ public class ProfileResponseDTO {
     private String state;
     private String zip;
 
-    // Payment info
-    private String cardType;
-    private Integer expMonth;
-    private Integer expYear;
+   
 
     private String phone;        // users.phone
     private Boolean promoOptIn;  // users.promo_opt_in
     private String homeAddress;
+    private List<PaymentMethodDTO> paymentMethods;
 
+    public List<PaymentMethodDTO> getPaymentMethods() {
+        return paymentMethods;
+    }
+
+    public void setPaymentMethods(List<PaymentMethodDTO> paymentMethods) {
+        this.paymentMethods = paymentMethods;
+    }
 
     // NOTE:
     // You don't yet have phone, street, city, state, zip, expMonth, expYear, cardType
@@ -91,13 +97,7 @@ public class ProfileResponseDTO {
         this.billingEmail = billingEmail;
     }
 
-    public String getCardNumber() {
-        return cardNumber;
-    }
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-
+ 
     public String getStreet() {
         return street;
     }
@@ -122,24 +122,7 @@ public class ProfileResponseDTO {
     public void setZip(String zip) {
         this.zip = zip;
     }
-    public String getCardType() {
-        return cardType;
-    }
-    public void setCardType(String cardType) {
-        this.cardType = cardType;
-    }
-    public Integer getExpMonth() {
-        return expMonth;
-    }
-    public void setExpMonth(Integer expMonth) {
-        this.expMonth = expMonth;
-    }
-    public Integer getExpYear() {
-        return expYear;
-    }
-    public void setExpYear(Integer expYear) {
-        this.expYear = expYear;
-    }
+    
 
     public String getHomeAddress() {
         return homeAddress;
@@ -148,6 +131,7 @@ public class ProfileResponseDTO {
     public void setHomeAddress(String homeAddress) {
         this.homeAddress = homeAddress;
     }
+    
 
 
     

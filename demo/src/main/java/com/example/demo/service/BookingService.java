@@ -1,25 +1,26 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.BookingEntity;
-import com.example.demo.entity.SeatEntity;
-import com.example.demo.entity.ShowtimeEntity;
-import com.example.demo.entity.UserEntity;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.example.demo.dto.BookingHistoryDTO;
 import com.example.demo.dto.BookingReviewDTO;
 import com.example.demo.dto.TicketSelection;
 import com.example.demo.entity.BillingEntity;
+import com.example.demo.entity.BookingEntity;
+import com.example.demo.entity.SeatEntity;
+import com.example.demo.entity.ShowtimeEntity;
+import com.example.demo.entity.UserEntity;
+import com.example.demo.repository.BillingRepository;
 import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.SeatRepository;
 import com.example.demo.repository.ShowtimeRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.util.EncryptionUtil;
-import com.example.demo.repository.BillingRepository;
 
 import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class BookingService {
@@ -49,16 +50,30 @@ public class BookingService {
     // ==========================
     @Transactional
     public BookingEntity createOrder(Long userId, Long showtimeId,
-                                     List<TicketSelection> tickets, double total) {
+                                 Long billingId,
+                                 List<TicketSelection> tickets,
+                                 double total) {
 
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        BillingEntity billing = billingRepository.findByUser_Id(userId)
-                .orElseThrow(() -> new RuntimeException("Billing not found for user " + userId));
+        List<BillingEntity> billingList = billingRepository.findAllByUser_Id(userId);
+        if (billingList.isEmpty()) {
+            throw new RuntimeException("Billing not found for user " + userId);
+        }
+         BillingEntity billing = billingRepository.findById(billingId)
+            .orElseThrow(() -> new RuntimeException("Selected billing method not found"));
+
+        if (!billing.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Security violation: billing does not belong to user.");
+        }
+
+
 
         ShowtimeEntity showtime = showtimeRepository.findById(showtimeId)
                 .orElseThrow(() -> new RuntimeException("Showtime not found"));
+
+                
 
         // Build booking
         BookingEntity booking = new BookingEntity();
@@ -125,8 +140,14 @@ public class BookingService {
 
  
     public BookingEntity saveBooking(Long userId, BookingEntity booking) {
-        BillingEntity billing = billingRepository.findByUser_Id(userId)
-                .orElseThrow(() -> new RuntimeException("Billing not found for user " + userId));
+        List<BillingEntity> billingList = billingRepository.findAllByUser_Id(userId);
+        if (billingList.isEmpty()) {
+            throw new RuntimeException("Billing not found for user " + userId);
+        }
+        BillingEntity billing = billingList.stream()
+            .filter(BillingEntity::isDefault)
+            .findFirst()
+            .orElse(billingList.get(0)); 
 
         booking.setBilling(billing);
 
@@ -149,61 +170,67 @@ public class BookingService {
         return bookingRepository.findByBillingUid(billingUid);
     }
 
-    public List<BookingHistoryDTO> getBookingHistory(Long userId) {
+   public List<BookingHistoryDTO> getBookingHistory(Long userId) {
+
         List<BookingEntity> bookings = bookingRepository.findByUser_Id(userId);
 
-        BillingEntity billing = billingRepository.findByUser_Id(userId).orElse(null);
-        Integer lastFour = null;
-
-        if (billing != null) {
-            try {
-                String decrypted = EncryptionUtil.decrypt(billing.getCardNumber());
-                lastFour = Integer.parseInt(decrypted.substring(decrypted.length() - 4));
-            } catch (Exception e) {
-                lastFour = null;
-            }
-        }
-
-        String customerName = billing != null
-                ? billing.getFirstName() + " " + billing.getLastName()
-                : null;
-
-        final Integer lastFourFinal = lastFour;
-        final String customerNameFinal = customerName;
-
         return bookings.stream().map(b -> {
+
+            BillingEntity billing = b.getBilling();
+
+            // Get last four from THIS booking’s billing (NOT default)
+            Integer lastFour = null;
+            if (billing != null) {
+                try {
+                    String decrypted = EncryptionUtil.decrypt(billing.getCardNumber());
+                    lastFour = Integer.parseInt(
+                            decrypted.substring(decrypted.length() - 4)
+                    );
+                } catch (Exception ignored) {}
+            }
+
+            // Build seat list
             List<String> seats = b.getSeats().stream()
                     .map(s -> "Row " + s.getSeatRow() + " — Seat " + s.getSeatNumber())
                     .toList();
 
             Long ticketCount = (long) seats.size();
+
+            // Customer name for ADMIN VIEW
+            String customerName = (billing != null)
+                    ? billing.getFirstName() + " " + billing.getLastName()
+                    : null;
+
             return new BookingHistoryDTO(
                     b.getBookingNo(),
                     b.getMovieTitle(),
                     b.getTotalAmount(),
                     b.getPurchaseDate(),
-                    lastFourFinal,
+                    lastFour,
                     ticketCount,
                     seats,
-                    customerNameFinal
+                    customerName
             );
         }).toList();
     }
-    public BookingReviewDTO toReviewDTO(BookingEntity b) {
+    
+   public BookingReviewDTO toReviewDTO(BookingEntity b) {
 
-        BillingEntity billing = billingRepository.findByUser_Id(b.getUser().getId()).orElse(null);
+        BillingEntity billing = b.getBilling();
+
         Integer lastFour = null;
-        String FinalCustomerName = null;
-
         if (billing != null) {
             try {
                 String decrypted = EncryptionUtil.decrypt(billing.getCardNumber());
-                lastFour = Integer.parseInt(decrypted.substring(decrypted.length() - 4));
-            } catch (Exception e) {
-                lastFour = null;
-            }
-            FinalCustomerName = billing.getFirstName() + " " + billing.getLastName();
+                lastFour = Integer.parseInt(
+                        decrypted.substring(decrypted.length() - 4)
+                );
+            } catch (Exception ignored) {}
         }
+
+        String customerName = (billing != null)
+                ? billing.getFirstName() + " " + billing.getLastName()
+                : null;
 
         return new BookingReviewDTO(
                 b.getBookingNo(),
@@ -211,9 +238,10 @@ public class BookingService {
                 b.getTotalAmount(),
                 lastFour,
                 b.getPurchaseDate(),
-                FinalCustomerName
+                customerName
         );
     }
+
     public List<BookingEntity> getAllBookings() {
         return bookingRepository.findAll();
     }

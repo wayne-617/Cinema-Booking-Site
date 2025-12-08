@@ -54,7 +54,7 @@ public class BookingHistoryDTO {
     public Integer getLastFour() {
         return lastFour;
     }
-
+ 
     public Long getTicketCount() {
         return ticketCount;
     }
@@ -66,4 +66,4 @@ public class BookingHistoryDTO {
         return customerName;
     }
 
-}
+} 

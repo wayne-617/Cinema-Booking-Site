@@ -9,9 +9,9 @@ INSERT INTO users (id, password, role, username, full_name, phone, promo_opt_in,
 
 
 
-INSERT INTO billing (user_id, first_name, last_name, email, card_number, street, city, state, zip, card_type, exp_month, exp_year) VALUES
-(1, 'Admin', 'User', 'admin@user.com', '4111111111111234', '123 Admin Way', 'Server City', 'GA', '30303', 'Visa', 12, 28),
-(2, 'Customer', 'User', 'user1@user.com', '5500000000005678', '456 Main St', 'Athens', 'GA', '30605', 'Mastercard', 6, 27);
+INSERT INTO billing (user_id, first_name, last_name, email, card_number, street, city, state, zip, card_type, exp_month, exp_year, is_default) VALUES
+(1, 'Admin', 'User', 'admin@user.com', '4111111111111234', '123 Admin Way', 'Server City', 'GA', '30303', 'Visa', 12, 28, true),
+(2, 'Customer', 'User', 'user1@user.com', '5500000000005678', '456 Main St', 'Athens', 'GA', '30605', 'Mastercard', 6, 27, true);
 
 -- Movies: title, cast, director, producer, synopsis, poster_url, reviews, category, mpaa_rating, showtime, status, trailer_picture, trailer_video
 INSERT INTO movie (title, cast, director, producer, synopsis, poster_url, reviews, category, mpaa_rating, showtime, status, trailer_picture, trailer_video) VALUES
@@ -32,6 +32,8 @@ WHERE ticket_price IS NULL;
 
 ALTER TABLE movie 
 MODIFY ticket_price DOUBLE NOT NULL DEFAULT 12.50;
+
+
 
 -- showtimes: movie_id, show_date, show_time
 INSERT INTO showtimes (movie_id, show_date, show_time) VALUES

@@ -45,11 +45,12 @@ public class OrderController {
      * Called from Order Summary Page BEFORE confirmation screen.
      */
     @PostMapping("/create")
-        public ResponseEntity<BookingEntity> createOrder(
-            @RequestParam Long userId,
-            @RequestParam Long showtimeId,
-            @RequestParam(required = false) String promoCode,
-            @RequestBody List<TicketSelection> tickets
+       public ResponseEntity<?> createOrder(
+        @RequestParam Long userId,
+        @RequestParam Long showtimeId,
+        @RequestParam Long billingId,
+        @RequestParam(required = false) String promoCode,
+        @RequestBody List<TicketSelection> tickets
         ) {
          var user = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User not found for ID: " + userId));
@@ -87,7 +88,7 @@ public class OrderController {
             }
         }
 
-        BookingEntity booking = bookingService.createOrder(userId, showtimeId, tickets, total);
+        BookingEntity booking = bookingService.createOrder(userId, showtimeId, billingId, tickets, total);
         String movie = booking.getMovieTitle();
         Integer lastFour = booking.getLastFour();
         LocalDateTime date = booking.getPurchaseDate();

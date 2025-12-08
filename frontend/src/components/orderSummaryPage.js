@@ -33,6 +33,9 @@ export default function OrderSummaryPage() {
   const [discountAmount, setDiscountAmount] = useState(0);
   const [basePrice, setBasePrice] = useState(null); // IMPORTANT: start as null so UI waits
 
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [selectedBilling, setSelectedBilling] = useState(null);
+
   // Helper
   const hasValidBilling = (b) => {
     if (!b) return false;
@@ -52,13 +55,15 @@ export default function OrderSummaryPage() {
   // Load billing
   useEffect(() => {
     if (!userId || !token) return;
-    axios
-      .get(`http://localhost:9090/billing/get/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setBilling(res.data))
-      .catch((err) => console.error("Billing fetch failed:", err));
-  }, [userId]);
+      axios.get(`http://localhost:9090/billing/all/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => {
+      setPaymentMethods(res.data);
+      setSelectedBilling(res.data.find(x => x.default) ?? res.data[0]);
+    })
+    .catch((err) => console.error("Billing fetch failed:", err));
+    }, [userId]);
 
     useEffect(() => {
     if (!showtimeId) return;
@@ -155,9 +160,8 @@ export default function OrderSummaryPage() {
 
   // Create order
   const handleConfirm = async () => {
-    if (!hasValidBilling(billing)) {
-      alert("Please enter your billing and payment information before checking out.");
-      navigate("/editProfile");
+    if (!selectedBilling) {
+      alert("Please select a payment method.");
       return;
     }
 
@@ -167,21 +171,19 @@ export default function OrderSummaryPage() {
         type: ticketTypes[seatId] || "ADULT",
       }));
 
-      const res = await axios.post(
-        `http://localhost:9090/api/orders/create`,
-        tickets,
-        {
-          params: {
-            userId,
-            showtimeId,
-            promoCode: promoApplied?.code,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+     const res = await axios.post(
+      `http://localhost:9090/api/orders/create`,
+      tickets,
+      {
+        params: {
+          userId,
+          showtimeId,
+          billingId: selectedBilling.id,
+          promoCode: promoApplied?.code,
+        },
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
       navigate("/order-confirmation", {
         state: { bookingId: res.data.bookingNo },
@@ -245,37 +247,48 @@ export default function OrderSummaryPage() {
       </div>
 
       {/* Billing Section */}
-      <div className="billing-card">
-        <h3>Billing Information</h3>
+    <div className="billing-card">
+      <h3>Billing Information</h3>
 
-        {billing ? (
-          <>
-            <p>
-              <strong>Card:</strong>{" "}
-              {billing.cardNumber?.startsWith("****")
-                ? `${billing.cardType} ${billing.cardNumber}`
-                : "No card on file"}
-            </p>
+      {selectedBilling ? (
+        <>
+          <p>
+            <strong>Card:</strong> {selectedBilling.cardType} — {selectedBilling.maskedNumber}
+          </p>
 
-            <p>
-              <strong>Name:</strong> {billing.firstName} {billing.lastName}
-            </p>
+          <p>
+            <strong>Expires:</strong> {selectedBilling.expMonth}/{selectedBilling.expYear}
+          </p>
 
-            <p>
-              <strong>Address:</strong>{" "}
-              {billing.street && billing.city && billing.state && billing.zip
-                ? `${billing.street}, ${billing.city}, ${billing.state} ${billing.zip}`
-                : "No billing address added"}
-            </p>
-          </>
-        ) : (
-          <p>No billing information found.</p>
-        )}
+          {selectedBilling.default && (
+            <p><em>(Default payment method)</em></p>
+          )}
+        </>
+      ) : (
+        <p>No billing information found.</p>
+      )}
 
-        <button className="edit-billing-btn" onClick={() => navigate("/editProfile")}>
-          {billing ? "Update Billing" : "Add Billing"}
-        </button>
-      </div>
+      <h3>Payment Method</h3>
+      <select
+        className="billing-select"
+        value={selectedBilling?.id}
+        onChange={(e) => {
+          const chosen = paymentMethods.find(pm => pm.id == e.target.value);
+          setSelectedBilling(chosen);
+        }}
+      >
+        {paymentMethods.map(pm => (
+          <option key={pm.id} value={pm.id}>
+            {pm.cardType} — {pm.maskedNumber} (Exp {pm.expMonth}/{pm.expYear})
+            {pm.default ? " — Default" : ""}
+          </option>
+        ))}
+      </select>
+
+      <button className="edit-billing-btn" onClick={() => navigate("/editProfile")}>
+        {selectedBilling ? "Update Billing" : "Add Billing"}
+      </button>
+    </div>
 
       {/* Promo Section */}
       <div className="promo-card">

@@ -67,7 +67,9 @@ export default function OrderConfirmationPage() {
         </ul>
       ) : (
         <p>No seat information available.</p>
-      )}
+      )} 
+
+      
 
       <h2>Total Paid: ${order.totalAmount?.toFixed(2)}</h2>
 

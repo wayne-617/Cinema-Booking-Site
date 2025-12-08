@@ -1,15 +1,18 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.PaymentMethodDTO;
 import com.example.demo.dto.ProfileResponseDTO;
 import com.example.demo.dto.ProfileUpdateRequestDTO;
 import com.example.demo.entity.BillingEntity;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.repository.BillingRepository;
 import com.example.demo.repository.UserRepository;
-
+import com.example.demo.util.EncryptionUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ProfileService {
@@ -29,84 +32,100 @@ public class ProfileService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // GET PROFILE
+    
     public ProfileResponseDTO getProfileByUserId(Long userId) {
 
-        UserEntity userEntity = userRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
 
-        BillingEntity billingEntity = billingService.getBillingForUser(userId);
+        List<BillingEntity> billingList = billingRepository.findAllByUser_Id(userId);
 
         ProfileResponseDTO dto = new ProfileResponseDTO();
+        dto.setUserId(user.getId());
+        dto.setEmail(user.getUsername());
+        dto.setRole(user.getRole().toString());
+        dto.setPhone(user.getPhone());
+        dto.setPromoOptIn(user.getPromoOptIn());
+        dto.setHomeAddress(user.getHomeAddress());
 
-        // User fields
-        dto.setUserId(userEntity.getId());
-        dto.setEmail(userEntity.getUsername());
-        dto.setRole(userEntity.getRole().toString());
-        dto.setPhone(userEntity.getPhone());
-        dto.setPromoOptIn(userEntity.getPromoOptIn());
-        dto.setHomeAddress(userEntity.getHomeAddress());
 
-        dto.setFirstName(billingEntity.getFirstName());
-        dto.setLastName(billingEntity.getLastName());
-        dto.setBillingEmail(billingEntity.getEmail());
+        // Only use first billing entry for base profile info
+        if (!billingList.isEmpty()) {
+          BillingEntity b = billingList.stream()
+            .filter(BillingEntity::isDefault)
+            .findFirst()
+            .orElse(billingList.get(0));
 
-        dto.setCardNumber(billingEntity.getCardNumber());
-        dto.setCardType(billingEntity.getCardType());
-        dto.setExpMonth(billingEntity.getExpMonth());
-        dto.setExpYear(billingEntity.getExpYear());
+            dto.setFirstName(b.getFirstName());
+            dto.setLastName(b.getLastName());
+            dto.setBillingEmail(b.getEmail());
+            dto.setStreet(b.getStreet());
+            dto.setCity(b.getCity());
+            dto.setState(b.getState());
+            dto.setZip(b.getZip());
+        }
 
-        dto.setStreet(billingEntity.getStreet());
-        dto.setCity(billingEntity.getCity());
-        dto.setState(billingEntity.getState());
-        dto.setZip(billingEntity.getZip());
+        List<PaymentMethodDTO> paymentDTOs = billingList.stream().map(b -> {
+            PaymentMethodDTO pm = new PaymentMethodDTO();
+            pm.setId(b.getUid());
+            pm.setCardType(b.getCardType());
+            pm.setExpMonth(b.getExpMonth());
+            pm.setExpYear(b.getExpYear());
+            pm.setIsDefault(b.isDefault());
+
+
+            // Mask number safely
+            try {
+                String decrypted = EncryptionUtil.decrypt(b.getCardNumber());
+                String last4 = decrypted.substring(decrypted.length() - 4);
+                pm.setMaskedNumber("**** **** **** " + last4);
+            } catch (Exception e) {
+                pm.setMaskedNumber("****");
+            }
+
+            return pm;
+        }).toList();
+
+        dto.setPaymentMethods(paymentDTOs);
 
         return dto;
     }
 
-    // UPDATE PROFILE
+
+   
     @Transactional
     public void updateProfile(Long userId, ProfileUpdateRequestDTO dto) {
 
-        UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        BillingEntity billingEntity = billingRepository.findByUser_Id(userId)
-                .orElseThrow(() -> new RuntimeException("Billing not found for user id " + userId));
-
-        // Update User fields
+        // Update password if needed
         if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
             if (dto.getCurrentPassword() == null ||
-                !passwordEncoder.matches(dto.getCurrentPassword(), userEntity.getPassword())) {
-                throw new RuntimeException("Current password does not match");
+                !passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
+                throw new RuntimeException("Current password is incorrect");
             }
-            userEntity.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+            user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         }
 
-        userEntity.setPhone(dto.getPhone());
-        userEntity.setPromoOptIn(dto.getPromoOptIn());
-        userEntity.setHomeAddress(dto.getHomeAddress());
-        userRepository.save(userEntity);
+        // Update user fields
+        user.setPhone(dto.getPhone());
+        user.setPromoOptIn(dto.getPromoOptIn());
+        user.setHomeAddress(dto.getHomeAddress());
+        userRepository.save(user);
 
-        billingEntity.setFirstName(dto.getFirstName());
-        billingEntity.setLastName(dto.getLastName());
-        billingEntity.setStreet(dto.getStreet());
-        billingEntity.setCity(dto.getCity());
-        billingEntity.setState(dto.getState());
-        billingEntity.setZip(dto.getZip());
-        billingEntity.setCardType(dto.getCardType());
+        // Update ONLY the primary billing entry (NOT adding new cards here)
+        BillingEntity billing = billingRepository.findAllByUser_Id(userId)
+                .stream().findFirst()
+                .orElseThrow(() -> new RuntimeException("Billing not found"));
 
-        String incomingCard = dto.getCardNumber();
+        billing.setFirstName(dto.getFirstName());
+        billing.setLastName(dto.getLastName());
+        billing.setStreet(dto.getStreet());
+        billing.setCity(dto.getCity());
+        billing.setState(dto.getState());
+        billing.setZip(dto.getZip());
 
-        if (incomingCard != null && !incomingCard.startsWith("****") && !incomingCard.isBlank()) {
-            billingEntity.setCardNumber(incomingCard);
-        } else {
-            System.out.println("No new card — keeping existing encrypted card.");
-        }
-
-        billingEntity.setExpMonth(dto.getExpMonth());
-        billingEntity.setExpYear(dto.getExpYear());
-
-        billingService.saveBilling(billingEntity);
+        billingService.saveBilling(billing);
     }
 }
