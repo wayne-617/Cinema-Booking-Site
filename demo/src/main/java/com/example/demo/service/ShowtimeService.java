@@ -58,14 +58,14 @@ public class ShowtimeService {
 
 
     /**
-     * 🗑 Delete a showtime by ID.
+     * Delete a showtime by ID.
      */
     public void deleteShowtime(Long id) {
         if (!showtimeRepository.existsById(id)) {
             throw new RuntimeException("Showtime not found with ID: " + id);
         }
         showtimeRepository.deleteById(id);
-        System.out.println("🗑 Showtime " + id + " deleted successfully.");
+        System.out.println("Showtime " + id + " deleted successfully.");
     }
 
     public ResponseEntity<?> updateShowtime(Long id, ShowtimeEntity updated) {

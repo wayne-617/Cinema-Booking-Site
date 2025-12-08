@@ -49,7 +49,7 @@ public class SeatService {
 
         seatRepository.saveAll(seats);
 
-        System.out.println("🎟 Created " + seats.size() + " seats for showtime " + showtimeId);
+        System.out.println("Created " + seats.size() + " seats for showtime " + showtimeId);
     }
 
     public List<SeatEntity> getSeatsForShowtime(Long showtimeId) {
@@ -85,7 +85,7 @@ public class SeatService {
         }
 
         seatRepository.saveAll(seats);
-        System.out.println("📦 " + seatIds.size() + " seats booked for booking " + booking.getBookingNo());
+        System.out.println(seatIds.size() + " seats booked for booking " + booking.getBookingNo());
     }
 
 }

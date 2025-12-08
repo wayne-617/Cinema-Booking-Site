@@ -180,7 +180,7 @@ export default function MoviesPage() {
 
   return (
     <div className="moviesPageContainer">
-      <h1 className="moviesHeader">🎬 Now Showing</h1>
+      <h1 className="moviesHeader">Now Showing</h1>
       <p className="moviesSubheader">
         {currentTerm
           ? `Search results for “${currentTerm}”`
@@ -217,10 +217,10 @@ export default function MoviesPage() {
                       {getMovieShowtimes(movie.movieId).map((s) => (
                         <div key={s.showtimeId} className="showtimeBox">
                           <p className="showtimeDate">
-                            📅 {new Date(s.showDate).toLocaleDateString()}
+                            {new Date(s.showDate).toLocaleDateString()}
                           </p>
                           <p className="showtimeTime">
-                            🕒{" "}
+                            {" "}
                             {new Date(
                               `1970-01-01T${s.showTime}`
                             ).toLocaleTimeString([], {

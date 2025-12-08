@@ -57,7 +57,7 @@ export default function SeatSelection() {
     );
   };
 
-  // Continue → Order Summary
+  // Continue Order Summary
   const goToOrderSummary = () => {
     if (!userId) {
       navigate("/login");

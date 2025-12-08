@@ -27,7 +27,7 @@ public class SeatEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "showtime_id", nullable = false)
-    @JsonBackReference  // 👈 prevents looping
+    @JsonBackReference
     private ShowtimeEntity showtime;
 
    @ManyToOne(fetch = FetchType.LAZY)

@@ -19,13 +19,13 @@ public class SeatController {
         this.seatService = seatService;
     }
 
-    // 🎟️ Get seats for a showtime
+    // Get seats for a showtime
     @GetMapping("/showtime/{showtimeId}")
     public List<SeatEntity> getSeatsForShowtime(@PathVariable Long showtimeId) {
         return seatService.getSeatsForShowtime(showtimeId);
     }
 
-    // (Optional) Reserve seats without checkout
+    // Reserve seats without checkout
     @PostMapping("/book")
     public String bookSeats(@RequestBody List<Long> seatIds) {
         seatService.bookSeats(seatIds);

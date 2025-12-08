@@ -18,7 +18,7 @@ function CongratsPage() {
             className="popcorn-image"
           />
           <p className="congrats-message">
-            Verification Email <br /> Sent Successfully 🎉
+            Verification Email <br /> Sent Successfully
           </p>
         </div>
 

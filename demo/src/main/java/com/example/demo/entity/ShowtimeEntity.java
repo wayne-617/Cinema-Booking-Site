@@ -28,7 +28,7 @@ public class ShowtimeEntity {
     private LocalTime showTime;
 
     @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference  // 👈 pairs with JsonBackReference
+    @JsonManagedReference
     private List<SeatEntity> seats = new ArrayList<>();
 
     public ShowtimeEntity() {}

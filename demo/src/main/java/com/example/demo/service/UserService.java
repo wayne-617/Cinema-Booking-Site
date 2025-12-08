@@ -85,7 +85,7 @@ public class UserService implements UserDetailsService {
 
         UserEntity savedUser = userRepository.save(newUser);
 
-            // --- 2️⃣ Create Billing record (AFTER user is saved) ---
+
         BillingEntity billing = new BillingEntity();
         billing.setUser(savedUser);
 

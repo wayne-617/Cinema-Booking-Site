@@ -109,7 +109,7 @@ export default function WelcomePage() {
                         className="watchButton"
                         onClick={() => handleWatchTrailer(movie.trailer_video)}
                       >
-                        ▶ Watch Trailer
+                        Watch Trailer
                       </button>
                     </div>
                   </div>
@@ -126,7 +126,7 @@ export default function WelcomePage() {
           overlayClassName="trailerOverlayModal"
         >
           <button className="watchButton" onClick={() => setModalOpen(false)}>
-            ✕ Close
+            Close
           </button>
           {currentTrailer && (
             <iframe

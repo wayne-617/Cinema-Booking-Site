@@ -13,7 +13,7 @@ function Register() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [homeAddress, setHomeAddress] = useState(""); // ✅ new field
+  const [homeAddress, setHomeAddress] = useState(""); // new field
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [stateUS, setStateUS] = useState("");
@@ -56,7 +56,7 @@ function Register() {
         fullName: name,
         phone: phone,
         promoOptIn: promoOptIn,
-        homeAddress: homeAddress, // ✅ send to backend
+        homeAddress: homeAddress, // send to backend
       };
 
       if (street || city || stateUS || zip) {
@@ -150,7 +150,7 @@ function Register() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          {/* ✅ New Home Address Field */}
+          {/* New Home Address Field */}
           <input
             type="text"
             placeholder="Home Address (e.g., 123 Main St, City, State ZIP)"

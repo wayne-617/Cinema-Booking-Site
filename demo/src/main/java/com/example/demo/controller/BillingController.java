@@ -195,7 +195,7 @@ public class BillingController {
             @PathVariable long billingId,
             @PathVariable long userId) {
 
-        System.out.println("🔵 DELETE REQUEST RECEIVED for BillingID=" 
+        System.out.println("DELETE REQUEST RECEIVED for BillingID=" 
                            + billingId + " by user " + userId);
 
         try {

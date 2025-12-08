@@ -126,7 +126,6 @@ export default function AdminMovies() {
     if (res.ok) {
       const newShowtime = await res.json(); // backend returns created showtime
 
-      // ⬇️ Add the new showtime to the local list without refreshing
       setShowtimes(prev => [...prev, newShowtime]);
 
       alert("Showtime added!");
@@ -204,12 +203,12 @@ export default function AdminMovies() {
   showtimes.filter(st => st.movieId === id);
 
   return (
-    <div className="adminMovies-container">
+    <div className="bodyDiv">
       
       {/* Header */}
-      <div className="adminMovies-header">
-        <h1>🎬 Manage Movies</h1>
-        <button className="addMovie-btn" onClick={() => setShowAddForm(!showAddForm)}>
+      <div className="mainHeader">
+        <h1 className="headerText">Manage Movies</h1>
+        <button className="buttons" onClick={() => setShowAddForm(!showAddForm)}>
           {showAddForm ? "Close Form" : "Add New Movie"}
         </button>
       </div>
@@ -503,7 +502,7 @@ export default function AdminMovies() {
               border: "none",
             }}
           >
-            ➕ Add Showtime
+            Add Showtime
           </button>
 
             <label>Status</label>

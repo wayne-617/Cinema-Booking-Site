@@ -15,7 +15,7 @@ public class KeyGeneratorTool {
             // Encode key to Base64 so it can be stored in .env
             String base64Key = Base64.getEncoder().encodeToString(secretKey.getEncoded());
 
-            System.out.println("✅ Your new APP_ENCRYPTION_KEY:");
+            System.out.println("Your new APP_ENCRYPTION_KEY:");
             System.out.println(base64Key);
             System.out.println("\nAdd this line to your .env file:");
             System.out.println("APP_ENCRYPTION_KEY=" + base64Key);

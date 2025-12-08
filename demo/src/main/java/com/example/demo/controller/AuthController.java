@@ -111,7 +111,7 @@ public class AuthController {
         String homeAddress = (String) requestBody.get("homeAddress");
         
 
-        // 2️⃣ Register user first
+        // 2Register user first
           Map<String, Object> address = (Map<String, Object>) requestBody.get("address");
         Map<String, Object> paymentInfo = (Map<String, Object>) requestBody.get("paymentInfo");
 

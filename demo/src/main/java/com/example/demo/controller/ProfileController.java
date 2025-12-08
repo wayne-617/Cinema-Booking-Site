@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/profile")
-@CrossOrigin(origins = "http://localhost:3000") // Make sure this matches your React app's port
+@CrossOrigin(origins = "http://localhost:3000") 
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -23,7 +23,6 @@ public class ProfileController {
     // GET /api/profile/{userId}
     @GetMapping("/{userId}")
     public ResponseEntity<ProfileResponseDTO> getProfile(@PathVariable Long userId) {
-        // You'll need to implement getProfileByUserId in your service
         ProfileResponseDTO profile = profileService.getProfileByUserId(userId);
         return ResponseEntity.ok(profile);
     }
@@ -36,7 +35,6 @@ public class ProfileController {
     ) {
         
         // The service will handle all the update logic
-        // You'll need to implement updateProfile in your service
         try {
             profileService.updateProfile(userId, updateDto);
             return ResponseEntity.ok("Profile updated successfully.");

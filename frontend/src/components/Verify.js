@@ -77,25 +77,37 @@ function Verify() {
   };
 
   return (
-    <div className="register-container">
-      <div className="verify-card">
-        <img src={logo} alt="Logo" className="verify-logo" />
-        <h1 className="verify-title">Verify Your Account</h1>
+    <div className="bodyDiv">
+      <section className="contentSection">
+      <section className="bodySection">
+        <div className="bodyTextDiv">
+        <div className="primaryDiv">
+        <img src={logo} alt="Logo" className="img" />
+        <h1 className="headerText">Verify Your Account</h1>
 
         {/* Display initial success/info message */}
-        {message && <p className="verify-info">{message}</p>}
+        {message && <p className="smallerText">{message}</p>}
 
         {/* Display the email the user needs to check */}
-        <p className="verify-email-display">
+        <p className="smallerText">
           Code sent to: **{userEmail || "N/A"}**
         </p>
 
         <form onSubmit={handleVerify}>
-          <div className="input-group">
+          <div className="bodyTextDiv">
             <input
               type="text"
               placeholder="Enter 6-Digit Code"
               maxLength="6"
+              style={{
+  width: "280px",
+  padding: "10px",
+  borderRadius: "8px",
+  border: "1px solid var(--primary-color)",
+  background: "var(--background-color)",
+  color: "var(--text-color",
+  fontSize: "1rem",
+}}
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ""))} // Only allow numbers
               disabled={loading}
@@ -113,7 +125,10 @@ function Verify() {
         <p className="verify-footer">
           Mistyped your email? <Link to="/register">Re-register</Link>
         </p>
-      </div>
+        </div>
+        </div>
+      </section>
+      </section>
     </div>
   );
 }

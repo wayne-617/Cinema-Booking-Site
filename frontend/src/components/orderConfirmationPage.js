@@ -44,7 +44,7 @@ export default function OrderConfirmationPage() {
 
   return (
     <div className="confirmation-container">
-      <h1>🎉 Order Confirmed!</h1>
+      <h1> Order Confirmed!</h1>
       <p>Your booking was successful.</p>
 
       <h3>Movie</h3>

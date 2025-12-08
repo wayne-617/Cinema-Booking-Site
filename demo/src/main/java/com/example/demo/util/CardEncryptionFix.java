@@ -18,7 +18,7 @@ public class CardEncryptionFix implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        System.out.println("🔧 Running one-time card encryption fix (after startup)...");
+        System.out.println("Running one-time card encryption fix (after startup)...");
         List<BillingEntity> all = billingRepository.findAll();
         int fixedCount = 0;
 
@@ -32,14 +32,14 @@ public class CardEncryptionFix implements ApplicationRunner {
                         b.setCardNumber(encrypted);
                         billingRepository.save(b);
                         fixedCount++;
-                        System.out.println("✅ Encrypted plaintext card for user " + b.getUser().getId());
+                        System.out.println("Encrypted plaintext card for user " + b.getUser().getId());
                     } catch (Exception e) {
-                        System.err.println("⚠️ Failed to encrypt card for user " + b.getUser().getId() + ": " + e.getMessage());
+                        System.err.println("Failed to encrypt card for user " + b.getUser().getId() + ": " + e.getMessage());
                     }
                 }
             }
         }
 
-        System.out.println("🔒 Fixed " + fixedCount + " unencrypted cards.");
+        System.out.println("Fixed " + fixedCount + " unencrypted cards.");
     }
 }
