@@ -32,7 +32,9 @@ public class ProfileService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    
+    // ==========================================================
+    //                        GET PROFILE
+    // ==========================================================
     public ProfileResponseDTO getProfileByUserId(Long userId) {
 
         UserEntity user = userRepository.findById(userId)
@@ -48,13 +50,12 @@ public class ProfileService {
         dto.setPromoOptIn(user.getPromoOptIn());
         dto.setHomeAddress(user.getHomeAddress());
 
-
-        // Only use first billing entry for base profile info
+        // Use default billing entry if present
         if (!billingList.isEmpty()) {
-          BillingEntity b = billingList.stream()
-            .filter(BillingEntity::isDefault)
-            .findFirst()
-            .orElse(billingList.get(0));
+            BillingEntity b = billingList.stream()
+                    .filter(BillingEntity::isDefault)
+                    .findFirst()
+                    .orElse(billingList.get(0));
 
             dto.setFirstName(b.getFirstName());
             dto.setLastName(b.getLastName());
@@ -65,6 +66,7 @@ public class ProfileService {
             dto.setZip(b.getZip());
         }
 
+        // Build PaymentMethodDTOs
         List<PaymentMethodDTO> paymentDTOs = billingList.stream().map(b -> {
             PaymentMethodDTO pm = new PaymentMethodDTO();
             pm.setId(b.getUid());
@@ -73,8 +75,6 @@ public class ProfileService {
             pm.setExpYear(b.getExpYear());
             pm.setIsDefault(b.isDefault());
 
-
-            // Mask number safely
             try {
                 String decrypted = EncryptionUtil.decrypt(b.getCardNumber());
                 String last4 = decrypted.substring(decrypted.length() - 4);
@@ -92,31 +92,36 @@ public class ProfileService {
     }
 
 
-   
+    // ==========================================================
+    //                    UPDATE PROFILE
+    // ==========================================================
     @Transactional
     public void updateProfile(Long userId, ProfileUpdateRequestDTO dto) {
 
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Update password if needed
+        // ===================== PASSWORD UPDATE =====================
         if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
             if (dto.getCurrentPassword() == null ||
-                !passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
+                    !passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
                 throw new RuntimeException("Current password is incorrect");
             }
             user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         }
 
-        // Update user fields
+        // ===================== USER FIELDS =====================
         user.setPhone(dto.getPhone());
         user.setPromoOptIn(dto.getPromoOptIn());
         user.setHomeAddress(dto.getHomeAddress());
+        user.setFullName(dto.getFirstName() + " " + dto.getLastName());
         userRepository.save(user);
 
-        // Update ONLY the primary billing entry (NOT adding new cards here)
+        // ===================== BILLING UPDATE =====================
         BillingEntity billing = billingRepository.findAllByUser_Id(userId)
-                .stream().findFirst()
+                .stream()
+                .filter(BillingEntity::isDefault)
+                .findFirst()
                 .orElseThrow(() -> new RuntimeException("Billing not found"));
 
         billing.setFirstName(dto.getFirstName());
@@ -125,6 +130,28 @@ public class ProfileService {
         billing.setCity(dto.getCity());
         billing.setState(dto.getState());
         billing.setZip(dto.getZip());
+
+        // Card Type
+        if (dto.getCardType() != null)
+            billing.setCardType(dto.getCardType());
+
+        // ===================== CARD NUMBER UPDATE =====================
+        String incomingCard = dto.getCardNumber();
+
+        if (incomingCard != null &&
+                !incomingCard.isBlank() &&
+                !incomingCard.startsWith("****")) {
+
+            // New card number provided → encrypt and update
+            billing.setCardNumber(incomingCard);
+        }
+
+        // Expiration
+        if (dto.getExpMonth() != null)
+            billing.setExpMonth(dto.getExpMonth());
+
+        if (dto.getExpYear() != null)
+            billing.setExpYear(dto.getExpYear());
 
         billingService.saveBilling(billing);
     }
