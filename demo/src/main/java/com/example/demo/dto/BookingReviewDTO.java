@@ -8,5 +8,6 @@ public record BookingReviewDTO(
         Double totalAmount,
         Integer lastFour,
         LocalDateTime purchaseDate,
-        String customerName
+        String customerName,
+        String tixNo
 ) {}

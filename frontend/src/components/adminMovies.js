@@ -8,6 +8,8 @@ export default function AdminMovies() {
   const [expandedMovie, setExpandedMovie] = useState(null);
   const [showtimeForm, setShowtimeForm] = useState(null);
   const [showtimes, setShowtimes] = useState([]);
+  const [onlineFee, setOnlineFee] = useState(0);
+  const [feeInput, setFeeInput] = useState(""); 
   const navigate = useNavigate();
   const [editingShowtimeId, setEditingShowtimeId] = useState(null);
   const [editData, setEditData] = useState({ date: "", time: "" });
@@ -71,6 +73,38 @@ export default function AdminMovies() {
       .then(data => setShowtimes(data))
       .catch(err => console.error("Error loading showtimes:", err));
   }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:9090/settings/fee")
+      .then((res) => res.json())
+      .then((fee) => {
+        setOnlineFee(fee);
+        setFeeInput(fee); // preload input
+      })
+      .catch(() => console.error("Failed to load online fee"));
+  }, []);
+
+  const updateOnlineFee = async () => {
+  const value = parseFloat(feeInput);
+
+  if (isNaN(value) || value < 0) {
+    alert("Please enter a valid fee amount.");
+    return;
+  }
+
+  const res = await fetch("http://localhost:9090/settings/fee", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fee: value })
+    });
+
+    if (res.ok) {
+      setOnlineFee(value);
+      alert("Online fee updated!");
+    } else {
+      alert("Failed to update fee.");
+    }
+  };
 
   const submitShowtime = async () => {
     const { movieId, date, time } = showtimeForm;
@@ -230,6 +264,7 @@ export default function AdminMovies() {
           <button className="publishBtn">Publish Movie</button>
         </form>
       )}
+      
       {/* Movie List */}
 <div className="moviesGrid">
   {movies.map((movie) => (
@@ -544,7 +579,29 @@ export default function AdminMovies() {
     </div>
   </div>
 )}
+
 </div>
+<div className="onlineFeeBox">
+        <h2>Online Convenience Fee</h2>
+
+        <div className="feeRow">
+          <input 
+            type="number"
+            step="0.01"
+            value={feeInput}
+            onChange={(e) => setFeeInput(e.target.value)}
+            className="feeInput"
+          />
+
+          <button className="feeUpdateBtn" onClick={updateOnlineFee}>
+            Update Fee
+          </button>
+        </div>
+
+        <p className="feeCurrent">
+          Current Fee: <strong>${onlineFee.toFixed(2)}</strong>
+        </p>
+      </div>
 
 
 

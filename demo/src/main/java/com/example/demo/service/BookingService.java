@@ -30,18 +30,21 @@ public class BookingService {
     private final UserRepository userRepository;
     private final BillingRepository billingRepository;
     private final BookingRepository bookingRepository;
+    private final SettingsService settingsService;
 
     public BookingService(
             BookingRepository bookingRepository,
             BillingRepository billingRepository,
             UserRepository userRepository,
             SeatRepository seatRepository,
-            ShowtimeRepository showtimeRepository
+            ShowtimeRepository showtimeRepository,
+            SettingsService settingsService
     ) {
         this.bookingRepository = bookingRepository;
         this.billingRepository = billingRepository;
         this.userRepository = userRepository;
         this.seatRepository = seatRepository;
+        this.settingsService = settingsService;
         this.showtimeRepository = showtimeRepository;
     }
 
@@ -85,15 +88,18 @@ public class BookingService {
         booking.setShowDateTime(
             LocalDateTime.of(showtime.getShowDate(), showtime.getShowTime())
         );      
-        booking.setTotalAmount(total);
+        double onlineFee = settingsService.getOnlineFee();
+        booking.setOnlineFee(onlineFee);
+
+        booking.setTotalAmount(total + onlineFee);
         try {
             String decrypted = EncryptionUtil.decrypt(billing.getCardNumber());
             booking.setLastFour(Integer.parseInt(decrypted.substring(decrypted.length() - 4)));
         } catch (Exception e) {
             booking.setLastFour(null);
         }
+        booking.setTixNo(generateTicketNumber());
         BookingEntity savedBooking = bookingRepository.save(booking);
-
         // Assign seats
         for (TicketSelection t : tickets) {
 
@@ -108,6 +114,7 @@ public class BookingService {
             seat.setBooking(savedBooking);
             seatRepository.save(seat);
         }
+        
 
         return savedBooking;
     }
@@ -134,7 +141,7 @@ public class BookingService {
         BookingEntity booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        booking.setTixNo(System.currentTimeMillis()); 
+        booking.setTixNo(generateTicketNumber());
         bookingRepository.save(booking);
     }
 
@@ -206,12 +213,26 @@ public class BookingService {
                     b.getMovieTitle(),
                     b.getTotalAmount(),
                     b.getPurchaseDate(),
+                    b.getOnlineFee(),
+                    b.getShowDateTime(),
                     lastFour,
                     ticketCount,
                     seats,
-                    customerName
+                    customerName,
+                    b.getTixNo()
             );
         }).toList();
+    }
+
+    private String generateTicketNumber() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder sb = new StringBuilder();
+        java.util.Random random = new java.util.Random();
+
+        for (int i = 0; i < 8; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
     
    public BookingReviewDTO toReviewDTO(BookingEntity b) {
@@ -239,6 +260,7 @@ public class BookingService {
                 lastFour,
                 b.getPurchaseDate(),
                 customerName
+                ,b.getTixNo()
         );
     }
 
@@ -253,6 +275,28 @@ public class BookingService {
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         // Unbook seats
+        List<SeatEntity> seats = seatRepository.findByBooking_BookingNo(bookingId);
+        for (SeatEntity s : seats) {
+            s.setIsBooked(false);
+            s.setBooking(null);
+            seatRepository.save(s);
+        }
+
+        bookingRepository.delete(booking);
+    }
+
+    @Transactional
+    public void customerDeleteBooking(Long userId, Long bookingId) {
+
+        BookingEntity booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        // Prevent users from deleting other people's orders
+        if (!booking.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        // Un-book seats
         List<SeatEntity> seats = seatRepository.findByBooking_BookingNo(bookingId);
         for (SeatEntity s : seats) {
             s.setIsBooked(false);

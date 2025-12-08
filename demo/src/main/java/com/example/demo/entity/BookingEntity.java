@@ -26,15 +26,18 @@ public class BookingEntity {
     @JsonIgnore
     private BillingEntity billing;
 
+    @Column
+    private Double onlineFee;
+
     private String movieTitle;
     private LocalDateTime showDateTime;
-    private Long tixNo;
+    private String tixNo;
     private Integer lastFour;
     private Double totalAmount;
     private LocalDateTime purchaseDate = LocalDateTime.now();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "booking")
     private List<SeatEntity> seats = new ArrayList<>();
 
     public BookingEntity() {}
@@ -55,8 +58,11 @@ public class BookingEntity {
     public LocalDateTime getShowDateTime() { return showDateTime; }
     public void setShowDateTime(LocalDateTime showDateTime) { this.showDateTime = showDateTime; }
 
-    public Long getTixNo() { return tixNo; }
-    public void setTixNo(Long tixNo) { this.tixNo = tixNo; }
+    public Double getOnlineFee() { return onlineFee; }
+    public void setOnlineFee(Double onlineFee) { this.onlineFee = onlineFee; }
+
+    public String getTixNo() { return tixNo; }
+    public void setTixNo(String tixNo) { this.tixNo = tixNo; }
 
     public Integer getLastFour() { return lastFour; }
     public void setLastFour(Integer lastFour) { this.lastFour = lastFour; }

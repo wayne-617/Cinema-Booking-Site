@@ -37,6 +37,15 @@ public class BookingController {
         return ResponseEntity.ok(history);
     }
 
+    @DeleteMapping("/customer/{bookingId}")
+    public ResponseEntity<?> deleteCustomerOrder(
+        @PathVariable Long bookingId,
+        @RequestHeader("userId") Long userId
+    ) {
+        bookingService.customerDeleteBooking(userId, bookingId);
+        return ResponseEntity.ok().build();
+    }
+
     
 
     @DeleteMapping("/admin/{id}")
@@ -62,10 +71,13 @@ public class BookingController {
                     b.getMovieTitle(),
                     b.getTotalAmount(),
                     b.getPurchaseDate(),
+                    b.getOnlineFee(),
+                    b.getShowDateTime(),
                     b.getLastFour(),
                     ticketCount,
                     seats,
                     customerName
+                    ,b.getTixNo()
             );
         }).toList();
 

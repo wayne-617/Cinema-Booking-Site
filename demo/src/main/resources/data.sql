@@ -5,10 +5,6 @@ INSERT INTO users (id, password, role, username, full_name, phone, promo_opt_in,
 (1, '$2a$10$jlT2BqziFJsVMpLUIEstIuV0yMG8Yze.wjD66G4JhfLruwNYakNc.', 'ADMIN', 'admin@user.com', 'Admin User', '5555550100', false, true, '123 Admin Lane, Server City, GA 30303'),
 (2, '$2a$10$64tXJNgLMp5m78Krvn964uQRkuFGgLdjJZYpeQrItBzBpgLWmPZ/a', 'CUSTOMER', 'user1@user.com', 'Customer User', '5555550101', false, true, '456 Homewood Dr, Athens, GA 30605');
 
-
-
-
-
 INSERT INTO billing (user_id, first_name, last_name, email, card_number, street, city, state, zip, card_type, exp_month, exp_year, is_default) VALUES
 (1, 'Admin', 'User', 'admin@user.com', '4111111111111234', '123 Admin Way', 'Server City', 'GA', '30303', 'Visa', 12, 28, true),
 (2, 'Customer', 'User', 'user1@user.com', '5500000000005678', '456 Main St', 'Athens', 'GA', '30605', 'Mastercard', 6, 27, true);
@@ -53,3 +49,13 @@ INSERT INTO showtimes (movie_id, show_date, show_time) VALUES
 (5, '2025-10-15', '18:00:00'),
 (5, '2025-10-16', '18:00:00'),
 (5, '2025-10-18', '20:00:00');
+
+INSERT INTO system_settings (id, online_fee) VALUES
+(1, 2.50)
+ON DUPLICATE KEY UPDATE online_fee = 2.50;
+
+ALTER TABLE booking MODIFY COLUMN tix_no VARCHAR(20);
+
+
+
+

@@ -11,6 +11,7 @@ export default function OrderHistoryPage() {
   const userId = storedUser?.userId;
   const token = storedUser?.token;
   const role = storedUser?.role; // "ADMIN" or "CUSTOMER"
+  
 
   useEffect(() => {
     if (!token) return;
@@ -28,6 +29,29 @@ export default function OrderHistoryPage() {
       .catch((err) => console.error("History fetch error:", err));
   }, [role, userId, token]);
 
+  const deleteCustomerOrder = async (bookingNo) => {
+    if (!window.confirm("Cancel this order?")) return;
+
+    try {
+      await axios.delete(
+        `http://localhost:9090/api/bookings/customer/${bookingNo}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            userId: storedUser.userId
+          }
+        }
+      );
+
+      setOrders(prev =>
+        prev.filter(order => order.bookingNo !== bookingNo)
+      );
+
+    } catch (err) {
+      console.error("Customer delete error:", err);
+    }
+  };
+
   const deleteOrder = (bookingNo) => {
     if (!window.confirm("Delete this order?")) return;
 
@@ -43,7 +67,7 @@ export default function OrderHistoryPage() {
       .catch((err) => console.error("Delete error:", err));
   };
 
-  return (
+    return (
     <div className="history-container">
       <h1>{role === "ADMIN" ? "All Orders (Admin)" : "Your Order History"}</h1>
 
@@ -53,50 +77,84 @@ export default function OrderHistoryPage() {
         <ul className="order-list">
           {orders.map((order) => (
             <li key={order.bookingNo} className="order-card">
+
+              {/* Title + Purchase Date */}
               <div className="order-header">
                 <h3>{order.movieTitle}</h3>
                 <span className="date">
-                  {new Date(order.purchaseDate).toLocaleString()}
+                  Purchased: {new Date(order.purchaseDate).toLocaleString()}
                 </span>
               </div>
-              {/* ONLY ADMINS SEE CUSTOMER NAME */}
+
+              {/* ADMIN — Show customer */}
               {role === "ADMIN" && order.customerName && (
                 <p className="customer-name">
                   <strong>Customer:</strong> {order.customerName}
                 </p>
               )}
 
-              <p className="order-number">
-                <strong>Order #:</strong> {order.bookingNo}
-              </p>
-
-              
-
-              
-
+              {/* Booking Number */}
               <p>
-                <strong>Tickets:</strong> {order.tixNo ?? order.ticketCount ?? 1}
+                <strong>Booking #:</strong> {order.bookingNo}
               </p>
 
+              {/* Ticket Number */}
+              <p>
+                <strong>Ticket #:</strong> {order.tixNo ?? "Not Assigned"}
+              </p>
+
+             
+
+              {/* Total Paid */}
               <p>
                 <strong>Total Paid:</strong> ${order.totalAmount.toFixed(2)}
               </p>
 
+              {/* Last 4 Digits */}
               <p>
-                <strong>Last 4:</strong> {order.lastFour ?? "N/A"}
+                <strong>Card:</strong> **** **** **** {order.lastFour ?? "N/A"}
               </p>
 
-          
+            
+              {/* Booking Time */}
+              <p>
+                <strong>Show:</strong> {new Date(order.showDateTime).toLocaleString()}
+              </p>
 
-              {role === "ADMIN" && (
+              {/* View Seats (optional) */}
+              {order.seats && (
+                <details className="seats-details">
+                  <summary>View Seats</summary>
+                  <ul>
+                    {order.seats.map((s, idx) => (
+                      <li key={idx}>{s}</li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+
+
+              {/* ACTION BUTTONS */}
+
+              {/* CUSTOMER delete button */}
+              {role === "CUSTOMER" && (
                 <button
                   className="delete-btn"
+                  onClick={() => deleteCustomerOrder(order.bookingNo)}
+                >
+                  Cancel Order
+                </button>
+              )}
+
+              {/* ADMIN delete button */}
+              {role === "ADMIN" && (
+                <button
+                  className="delete-btn admin"
                   onClick={() => deleteOrder(order.bookingNo)}
                 >
                   Delete Order
                 </button>
               )}
-
             </li>
           ))}
         </ul>

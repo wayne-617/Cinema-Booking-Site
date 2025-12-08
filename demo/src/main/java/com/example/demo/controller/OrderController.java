@@ -97,7 +97,7 @@ public class OrderController {
                 SimpleMailMessage message = new SimpleMailMessage();
                 message.setTo(user.getUsername());
                 message.setSubject("Showtime Order Confirmed");
-                message.setText("Authorized purchase for following showtime confirmed:\n" + "Movie: " + movie + "\n" + "Showtime: " + showtimeDate + "\n" + "Total: $"+ total + "\n" +  "Card: " + lastFour + "\n" + "Purchase Date: "+ date);
+                message.setText("Authorized purchase for following showtime confirmed:\n" + "Movie: " + movie + "\n" + "Showtime: " + showtimeDate + "\n" + "Total Charged: $" + booking.getTotalAmount() + "\n" +  "Card: " + lastFour + "\n" + "Ticket Number: " + booking.getTixNo() + "\n" + "Purchase Date: "+ date);
                 mailSender.send(message);
             } catch (Exception e) {
                 e.printStackTrace();

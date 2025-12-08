@@ -49,6 +49,9 @@ export default function OrderConfirmationPage() {
 
       <h3>Movie</h3>
       <p>{order.movieTitle}</p>
+      
+      <h3>Ticket Number</h3>
+      <p>{order.tixNo}</p>
 
       <h3>Purchase Date</h3>
       <p>{new Date(order.purchaseDate).toLocaleString()}</p>
